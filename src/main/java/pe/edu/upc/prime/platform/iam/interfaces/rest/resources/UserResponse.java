@@ -13,6 +13,10 @@ import jakarta.validation.constraints.NotNull;
  * @param dni document number of the user
  * @param phoneNumber phone number of the user
  */
-public record UserResponse(String idUser, String name, String lastName,
-        String dni, String phoneNumber) {
+public record UserResponse(
+        @JsonProperty("id_user") String idUser,
+        @JsonProperty("name") String name,
+        @JsonProperty("last_name") String lastName,
+        @JsonProperty("dni") String dni,
+        @JsonProperty("phone_number") String phoneNumber) {
 }
