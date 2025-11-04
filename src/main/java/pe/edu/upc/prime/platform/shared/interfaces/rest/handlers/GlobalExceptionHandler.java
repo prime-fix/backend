@@ -15,9 +15,18 @@ import pe.edu.upc.prime.platform.shared.interfaces.rest.resources.ValidationExce
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * Global exception handler for REST controllers.
+ */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    /**
+     * Handles validation exceptions.
+     *
+     * @param ex the MethodArgumentNotValidException
+     * @return a ResponseEntity with validation error details
+     */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<ValidationExceptionResponse> handleValidationExceptions(
@@ -34,6 +43,12 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
+    /**
+     * Handles illegal argument exceptions.
+     *
+     * @param ex the IllegalArgumentException
+     * @return a ResponseEntity with error details
+     */
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<IllegalArgumentExceptionResponse> handleIllegalArgumentException(
@@ -46,6 +61,12 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
+    /**
+     * Handles persistence exceptions.
+     *
+     * @param ex the PersistenceException
+     * @return a ResponseEntity with error details
+     */
     @ExceptionHandler(PersistenceException.class)
     @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
     public ResponseEntity<PersistenceExceptionResponse> handlePersistenceException(
@@ -57,6 +78,12 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(response);
     }
 
+    /**
+     * Handles null pointer exceptions.
+     *
+     * @param ex the NullPointerException
+     * @return a ResponseEntity with error details
+     */
     @ExceptionHandler(NullPointerException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity<NullPointerExceptionResponse> handleNullPointerException(

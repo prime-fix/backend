@@ -19,10 +19,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 public abstract class AuditableAbstractAggregateRoot<T extends AbstractAggregateRoot<T>>
         extends AbstractAggregateRoot<T> {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
     @CreatedDate
     @Column(nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
