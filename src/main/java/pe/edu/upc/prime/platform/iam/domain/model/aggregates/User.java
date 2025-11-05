@@ -46,6 +46,11 @@ public class User extends AuditableAbstractAggregateRoot<User> {
     public User() {
     }
 
+    /**
+     * Constructor to create a User from a CreateUserCommand.
+     *
+     * @param command the command containing user details
+     */
     public User(CreateUserCommand command) {
         this.idUser = command.idUser();
         this.name = command.name();
@@ -55,6 +60,11 @@ public class User extends AuditableAbstractAggregateRoot<User> {
         this.idLocation = command.idLocation();
     }
 
+    /**
+     * Updates the User with details from an UpdateUserCommand.
+     *
+     * @param command the command containing updated user details
+     */
     public void updateUser(UpdateUserCommand command) {
         this.idUser = command.idUser();
         this.name = command.name();

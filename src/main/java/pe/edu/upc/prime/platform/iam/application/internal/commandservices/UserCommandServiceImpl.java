@@ -43,7 +43,7 @@ public class UserCommandServiceImpl implements UserCommandService {
         var name = command.name();
         var lastName = command.lastName();
 
-        if (this.userRepository.existsById(userId)) {
+        if (this.userRepository.existsByIdUser(userId)) {
             throw new IllegalArgumentException("User with the same id " + userId + " already exists.");
         }
         if (this.userRepository.existsByNameAndLastName(name, lastName)) {
@@ -74,11 +74,11 @@ public class UserCommandServiceImpl implements UserCommandService {
             throw new IllegalArgumentException("User with the same name " + name + " and last name " + lastName + " already exists.");
         }
 
-        if (!this.userRepository.existsById(userId)) {
-            throw new IllegalArgumentException("User with id id " + userId + " does not exist.");
+        if (!this.userRepository.existsByIdUser(userId)) {
+            throw new IllegalArgumentException("User with user id " + userId + " does not exist.");
         }
 
-        var userToUpdate = this.userRepository.findById(userId).get();
+        var userToUpdate = this.userRepository.findByIdUser(userId).get();
         userToUpdate.updateUser(command);
 
         try {
@@ -96,7 +96,7 @@ public class UserCommandServiceImpl implements UserCommandService {
      */
     @Override
     public void handle(DeleteUserCommand command) {
-        if (!this.userRepository.existsById(command.idUser())) {
+        if (!this.userRepository.existsByIdUser(command.idUser())) {
             throw new NotFoundArgumentException(
                     String.format("User with id %s does not exist.", command.idUser()));
         }

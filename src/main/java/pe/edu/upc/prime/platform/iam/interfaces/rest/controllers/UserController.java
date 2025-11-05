@@ -45,6 +45,9 @@ public class UserController {
 
     /**
      * Constructor for UserController
+     *
+     * @param userQueryService the user query service
+     * @param userCommandService the user command service
      */
     public UserController(UserQueryService userQueryService, UserCommandService userCommandService) {
         this.userQueryService = userQueryService;
@@ -87,7 +90,7 @@ public class UserController {
         var getUserByIdQuery = new GetUserByIdQuery(userId);
         var user = userQueryService.handle(getUserByIdQuery);
         if (user.isEmpty()) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.notFound().build();
         }
         var userResponse = UserAssembler.toResponseFromEntity(user.get());
         return new ResponseEntity<>(userResponse, HttpStatus.CREATED);

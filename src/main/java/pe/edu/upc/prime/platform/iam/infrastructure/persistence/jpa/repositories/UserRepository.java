@@ -12,6 +12,14 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, String> {
     /**
+     * Check if a user exists by ID.
+     *
+     * @param userId the ID of the user
+     * @return true if a user with the given ID exists, false otherwise
+     */
+    boolean existsByIdUser(String userId);
+
+    /**
      * Check if a user exists by full name.
      *
      * @param name the first name of the user
