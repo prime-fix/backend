@@ -19,10 +19,10 @@ import pe.edu.upc.prime.platform.iam.interfaces.rest.assemblers.UserAssembler;
 import pe.edu.upc.prime.platform.iam.interfaces.rest.resources.CreateUserRequest;
 import pe.edu.upc.prime.platform.iam.interfaces.rest.resources.UpdateUserRequest;
 import pe.edu.upc.prime.platform.iam.interfaces.rest.resources.UserResponse;
-import pe.edu.upc.prime.platform.shared.interfaces.rest.resources.ValidationExceptionResponse;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * REST controller for managing users
@@ -72,7 +72,7 @@ public class UserController {
                     @ApiResponse(responseCode = "400", description = "Bad request - Invalid input data",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = ValidationExceptionResponse.class)))
+                                    schema = @Schema(implementation = RuntimeException.class)))
             }
     )
     @PostMapping
@@ -85,9 +85,11 @@ public class UserController {
         }
 
         var getUserByIdQuery = new GetUserByIdQuery(userId);
-        var optionalUser = userQueryService.handle(getUserByIdQuery);
-
-        var userResponse = UserAssembler.toResponseFromEntity(optionalUser.get());
+        var user = userQueryService.handle(getUserByIdQuery);
+        if (user.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        var userResponse = UserAssembler.toResponseFromEntity(user.get());
         return new ResponseEntity<>(userResponse, HttpStatus.CREATED);
     }
 
@@ -110,7 +112,7 @@ public class UserController {
 
         var userResponses = users.stream()
                 .map(UserAssembler::toResponseFromEntity)
-                .toList();
+                .collect(Collectors.toList());
         return ResponseEntity.ok(userResponses);
     }
 
@@ -132,7 +134,7 @@ public class UserController {
         var getUserByIdQuery = new GetUserByIdQuery(id_user);
         var optionalUser = userQueryService.handle(getUserByIdQuery);
         if (optionalUser.isEmpty()) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.notFound().build();
         }
         var userResponse = UserAssembler.toResponseFromEntity(optionalUser.get());
         return ResponseEntity.ok(userResponse);

@@ -1,5 +1,6 @@
 package pe.edu.upc.prime.platform.iam.application.internal.commandservices;
 
+import jakarta.persistence.PersistenceException;
 import org.springframework.stereotype.Service;
 import pe.edu.upc.prime.platform.iam.domain.model.aggregates.User;
 import pe.edu.upc.prime.platform.iam.domain.model.commands.CreateUserCommand;
@@ -7,6 +8,7 @@ import pe.edu.upc.prime.platform.iam.domain.model.commands.DeleteUserCommand;
 import pe.edu.upc.prime.platform.iam.domain.model.commands.UpdateUserCommand;
 import pe.edu.upc.prime.platform.iam.domain.services.UserCommandService;
 import pe.edu.upc.prime.platform.iam.infrastructure.persistence.jpa.repositories.UserRepository;
+import pe.edu.upc.prime.platform.shared.domain.exceptions.NotFoundArgumentException;
 
 import java.util.Optional;
 
@@ -50,10 +52,10 @@ public class UserCommandServiceImpl implements UserCommandService {
         var user = new User(command);
         try {
             this.userRepository.save(user);
+            return user.getIdUser();
         } catch (Exception e) {
-            throw new IllegalArgumentException("Error creating user: " + e.getMessage());
+            throw new PersistenceException("Error creating user: " + e.getMessage());
         }
-        return user.getIdUser();
     }
 
     /**
@@ -83,7 +85,7 @@ public class UserCommandServiceImpl implements UserCommandService {
             var updatedUser = this.userRepository.save(userToUpdate);
             return Optional.of(updatedUser);
         } catch (Exception e) {
-            throw new IllegalArgumentException("Error updating user: " + e.getMessage());
+            throw new PersistenceException("Error updating user: " + e.getMessage());
         }
     }
 
@@ -95,12 +97,12 @@ public class UserCommandServiceImpl implements UserCommandService {
     @Override
     public void handle(DeleteUserCommand command) {
         if (!this.userRepository.existsById(command.idUser())) {
-            throw new IllegalArgumentException("User with id " + command.idUser() + " does not exist.");
+            throw new NotFoundArgumentException(
+                    String.format("User with id %s does not exist.", command.idUser()));
         }
-        try {
-            this.userRepository.deleteById(command.idUser());
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Error deleting user: " + e.getMessage());
-        }
+
+        this.userRepository.findByIdUser(command.idUser()).ifPresent(optionalUser -> {
+            this.userRepository.deleteById(optionalUser.getIdUser());
+        });
     }
 }

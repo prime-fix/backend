@@ -2,11 +2,11 @@ package pe.edu.upc.prime.platform.iam.application.internal.queryservices;
 
 import org.springframework.stereotype.Service;
 import pe.edu.upc.prime.platform.iam.domain.model.aggregates.User;
-import pe.edu.upc.prime.platform.iam.domain.model.queries.ExistsUserByIdQuery;
 import pe.edu.upc.prime.platform.iam.domain.model.queries.GetAllUsersQuery;
 import pe.edu.upc.prime.platform.iam.domain.model.queries.GetUserByIdQuery;
 import pe.edu.upc.prime.platform.iam.domain.services.UserQueryService;
 import pe.edu.upc.prime.platform.iam.infrastructure.persistence.jpa.repositories.UserRepository;
+import pe.edu.upc.prime.platform.shared.domain.exceptions.NotFoundIdException;
 
 import java.util.List;
 import java.util.Optional;
@@ -46,15 +46,7 @@ public class UserQueryServiceImpl implements UserQueryService {
      */
     @Override
     public Optional<User> handle(GetUserByIdQuery query) {
-        return this.userRepository.findById(query.idUser());
+        return Optional.ofNullable(this.userRepository.findById(query.idUser())
+                .orElseThrow(() -> new NotFoundIdException(User.class, query.idUser())));
     }
-
-    /**
-     * Handle the ExistsUserByIdQuery.
-     *
-     * @param query the query to check if a user exists by ID
-     * @return true if the user exists, false otherwise
-     */
-    @Override
-    public boolean handle(ExistsUserByIdQuery query) { return this.userRepository.existsById(query.idUser()); }
 }

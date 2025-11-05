@@ -35,6 +35,11 @@ public class User extends AuditableAbstractAggregateRoot<User> {
     @JsonProperty("phone_number")
     private String phoneNumber;
 
+    @Getter
+    @Column(name="id_location", nullable = false)
+    @JsonProperty("id_location")
+    private String idLocation;
+
     /**
      * Default constructor for JPA.
      */
@@ -47,6 +52,7 @@ public class User extends AuditableAbstractAggregateRoot<User> {
         this.lastName = command.lastName();
         this.dni = command.dni();
         this.phoneNumber = command.phoneNumber();
+        this.idLocation = command.idLocation();
     }
 
     public void updateUser(UpdateUserCommand command) {
@@ -55,6 +61,7 @@ public class User extends AuditableAbstractAggregateRoot<User> {
         this.lastName = command.lastName();
         this.dni = command.dni();
         this.phoneNumber = command.phoneNumber();
+        this.idLocation = command.idLocation();
     }
 
 }

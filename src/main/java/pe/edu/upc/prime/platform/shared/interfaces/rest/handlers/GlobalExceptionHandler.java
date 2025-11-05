@@ -7,10 +7,9 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import pe.edu.upc.prime.platform.shared.interfaces.rest.resources.IllegalArgumentExceptionResponse;
-import pe.edu.upc.prime.platform.shared.interfaces.rest.resources.NullPointerExceptionResponse;
-import pe.edu.upc.prime.platform.shared.interfaces.rest.resources.PersistenceExceptionResponse;
-import pe.edu.upc.prime.platform.shared.interfaces.rest.resources.ValidationExceptionResponse;
+import pe.edu.upc.prime.platform.shared.domain.exceptions.NotFoundArgumentException;
+import pe.edu.upc.prime.platform.shared.domain.exceptions.NotFoundIdException;
+import pe.edu.upc.prime.platform.shared.interfaces.rest.resources.*;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -25,22 +24,22 @@ public class GlobalExceptionHandler {
      * Handles validation exceptions.
      *
      * @param ex the MethodArgumentNotValidException
-     * @return a ResponseEntity with validation error details
+     * @return a ResponseEntity with error details
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<ValidationExceptionResponse> handleValidationExceptions(
+    public ResponseEntity<BadRequestResponse> handleValidationExceptions(
             MethodArgumentNotValidException ex) {
 
         Map<String, String> errors = new LinkedHashMap<>();
         ex.getBindingResult().getFieldErrors()
                 .forEach(err -> errors.put(err.getField(), err.getDefaultMessage()));
 
-        var response = new ValidationExceptionResponse(
+        var response = new BadRequestResponse(
                 HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.getReasonPhrase(),
-                "Validation failed", errors);
+                "JSON validation failed", errors);
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        return ResponseEntity.badRequest().body(response);
     }
 
     /**
@@ -51,14 +50,16 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<IllegalArgumentExceptionResponse> handleIllegalArgumentException(
+    public ResponseEntity<BadRequestResponse> handleIllegalArgumentException(
             IllegalArgumentException ex) {
 
-        var response = new IllegalArgumentExceptionResponse(
-                HttpStatus.BAD_REQUEST.value(),
-                HttpStatus.BAD_REQUEST.getReasonPhrase(),
-                ex.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        Map<String, String> errors = new LinkedHashMap<>();
+        errors.put("argument", ex.getMessage());
+
+        var response = new BadRequestResponse(
+                HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                "Internal validation failed", errors);
+        return ResponseEntity.badRequest().body(response);
     }
 
     /**
@@ -69,10 +70,10 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(PersistenceException.class)
     @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
-    public ResponseEntity<PersistenceExceptionResponse> handlePersistenceException(
+    public ResponseEntity<ServiceUnavailableResponse> handlePersistenceException(
             PersistenceException ex) {
 
-        var response = new PersistenceExceptionResponse(
+        var response = new ServiceUnavailableResponse(
                 HttpStatus.SERVICE_UNAVAILABLE.value(),
                 HttpStatus.SERVICE_UNAVAILABLE.getReasonPhrase(), ex.getMessage());
         return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(response);
@@ -86,14 +87,46 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(NullPointerException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ResponseEntity<NullPointerExceptionResponse> handleNullPointerException(
+    public ResponseEntity<InternalServerErrorResponse> handleNullPointerException(
             NullPointerException ex) {
 
-        var response = new NullPointerExceptionResponse(
+        var response = new InternalServerErrorResponse(
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
                 ex.getMessage());
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        return ResponseEntity.internalServerError().body(response);
+    }
+
+    /**
+     * Handles NotFoundIdException.
+     *
+     * @param ex the NotFoundIdException
+     * @return a ResponseEntity with error details
+     */
+    @ExceptionHandler(NotFoundIdException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<NotFoundResponse> handleNotFoundIdException(
+            NotFoundIdException ex) {
+        var response = new NotFoundResponse(
+                HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND.name(), ex.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    }
+
+    /**
+     * Handles NotFoundArgumentException.
+     *
+     * @param ex the NotFoundArgumentException
+     * @return a ResponseEntity with error details
+     */
+    @ExceptionHandler(NotFoundArgumentException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<NotFoundResponse> handleNotFoundArgumentException(
+            NotFoundArgumentException ex) {
+        var response = new NotFoundResponse(
+                HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND.name(), ex.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
 
 }

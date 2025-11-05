@@ -20,7 +20,7 @@ public class UserAssembler {
      */
     public static CreateUserCommand toCommandFromRequest(CreateUserRequest request) {
         return new CreateUserCommand(request.idUser(), request.name(),
-                request.lastName(), request.dni(), request.phoneNumber());
+                request.lastName(), request.dni(), request.phoneNumber(), request.idLocation());
     }
 
     /**
@@ -33,7 +33,7 @@ public class UserAssembler {
     public static UpdateUserCommand toCommandFromRequest(String userId,
                                                             UpdateUserRequest request) {
         return new UpdateUserCommand(userId, request.name(),
-                request.lastName(), request.dni(), request.phoneNumber());
+                request.lastName(), request.dni(), request.phoneNumber(), request.idLocation());
     }
 
     /**
@@ -46,6 +46,6 @@ public class UserAssembler {
 
         return new UserResponse(entity.getIdUser(), entity.getName(),
                 entity.getLastName(), entity.getDni(),
-                entity.getPhoneNumber());
+                entity.getPhoneNumber(), entity.getIdLocation());
     }
 }

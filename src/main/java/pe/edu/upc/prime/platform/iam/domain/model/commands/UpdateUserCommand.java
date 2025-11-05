@@ -12,8 +12,9 @@ import java.util.Objects;
  * @param lastName last name of the user to be updated
  * @param dni national identity card of the user to be updated
  * @param phoneNumber phone number of the user to be updated
+ * @param idLocation identifier of the location
  */
-public record UpdateUserCommand(String idUser, String name, String lastName, String dni, String phoneNumber) {
+public record UpdateUserCommand(String idUser, String name, String lastName, String dni, String phoneNumber, String idLocation) {
 
     public UpdateUserCommand {
         Objects.requireNonNull(idUser, "[UpdateUserCommand] id must not be null");
@@ -21,6 +22,7 @@ public record UpdateUserCommand(String idUser, String name, String lastName, Str
         Objects.requireNonNull(lastName, "[UpdateUserCommand] last name must not be null");
         Objects.requireNonNull(dni, "[UpdateUserCommand] dni must not be null");
         Objects.requireNonNull(phoneNumber, "[UpdateUserCommand] phoneNumber must not be null");
+        Objects.requireNonNull(idLocation, "[UpdateUserCommand] id location must not be null");
 
         if (dni.length() != Util.DNI_LENGTH) {
             throw new IllegalArgumentException("[CreateUserCommand] dni must be 8 characters long");
