@@ -18,20 +18,19 @@ public interface VehicleRepository extends JpaRepository<Vehicle, String> {
 
     /**
      * Custom query method to check the existence of a vehicle by vehicle information.
-     *
-     * @param vehicleInformation the vehicle information to check for existence
+     * @param vehicleInformationVehiclePlate the vehicle information to check for existence
      * @return true if a vehicle with the given information exists, false otherwise
      */
-    boolean existsByVehicleInformation(VehicleInformation vehicleInformation);
+    boolean existsByVehicleInformation_VehiclePlate(String vehicleInformationVehiclePlate);
 
     /**
-     * Custom query method to check the existence of a vehicle by vehicle information excluding a specific ID.
+     * Custom query method to check the existence of a vehicle by vehicle information,
      *
-     * @param vehicleInformation the vehicle information to check for existence
-     * @param idVehicle the ID to exclude from the check
-     * @return true if a vehicle with the given information exists, false otherwise
+     * @param vehicleInformationVehiclePlate the vehicle plate to check for existence
+     * @param idVehicle the vehicle ID to exclude from the check
+     * @return true if a vehicle with the given information exists excluding the specified vehicle ID, false otherwise
      */
-    boolean existsByVehicleInformationAndIdVehicleIsNot(VehicleInformation vehicleInformation, String idVehicle);
+    boolean existsByVehicleInformation_VehiclePlateAndIdVehicleIsNot(String vehicleInformationVehiclePlate, String idVehicle);
 
     /**
      * Custom query method to find vehicles by maintenance status.

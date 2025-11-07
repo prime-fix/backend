@@ -39,15 +39,17 @@ public class VehicleCommandServiceImpl implements VehicleCommandService {
      */
     @Override
     public String handle(CreateVehicleCommand command) {
+        var idVehicle = command.idVehicle();
+        var vehiclePlate = command.vehicleInformation().vehiclePlate();
 
-        if (vehicleRepository.existsById(command.idVehicle())) {
+        if (vehicleRepository.existsById(idVehicle)) {
             throw new IllegalArgumentException("[VehicleCommandServiceImpl] Vehicle with ID "
-                    + command.idVehicle() + " already exists");
+                    + idVehicle + " already exists");
         }
 
-        if (vehicleRepository.existsByVehicleInformation(command.vehicleInformation())) {
+        if (vehicleRepository.existsByVehicleInformation_VehiclePlate(vehiclePlate)) {
             throw new IllegalArgumentException("[VehicleCommandServiceImpl] Vehicle with the vehicle plate "
-                    + command.vehicleInformation().vehiclePlate() + " already exists");
+                    + vehiclePlate + " already exists");
         }
 
         var vehicle = new Vehicle(command);
@@ -68,17 +70,18 @@ public class VehicleCommandServiceImpl implements VehicleCommandService {
      */
     @Override
     public Optional<Vehicle> handle(UpdateVehicleCommand command) {
+        var idVehicle = command.idVehicle();
+        var vehiclePlate = command.vehicleInformation().vehiclePlate();
 
-        var vehicleId = command.idVehicle();
-        if (!this.vehicleRepository.existsById(vehicleId)) {
-            throw new NotFoundIdException(Vehicle.class, vehicleId);
+        if (!this.vehicleRepository.existsById(idVehicle)) {
+            throw new NotFoundIdException(Vehicle.class, idVehicle);
         }
-        if (this.vehicleRepository.existsByVehicleInformationAndIdVehicleIsNot(command.vehicleInformation(), vehicleId)) {
+        if (this.vehicleRepository.existsByVehicleInformation_VehiclePlateAndIdVehicleIsNot(vehiclePlate, idVehicle)) {
             throw new IllegalArgumentException("[VehicleCommandServiceImpl] Another vehicle with the vehicle plate "
-                    + command.vehicleInformation().vehiclePlate() + " already exists");
+                    + vehiclePlate + " already exists");
         }
 
-        var vehicleToUpdate = this.vehicleRepository.findById(vehicleId).get();
+        var vehicleToUpdate = this.vehicleRepository.findById(idVehicle).get();
         vehicleToUpdate.updateVehicle(command);
 
         try {

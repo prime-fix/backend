@@ -8,6 +8,9 @@ import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.commands.Upda
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.valueobjects.VehicleInformation;
 import pe.edu.upc.prime.platform.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
 
+/**
+ * Vehicle Aggregate Root
+ */
 @Entity
 @Table(name = "vehicles")
 public class Vehicle extends AuditableAbstractAggregateRoot<Vehicle> {
@@ -20,13 +23,11 @@ public class Vehicle extends AuditableAbstractAggregateRoot<Vehicle> {
 
     @Getter
     @Column(name = "color", nullable = false, length = 50)
-    @JsonProperty("color")
     private String color;
 
 
     @Getter
     @Column(name = "model", nullable = false, length = 100)
-    @JsonProperty("model")
     private String model;
 
     @Getter
@@ -69,6 +70,11 @@ public class Vehicle extends AuditableAbstractAggregateRoot<Vehicle> {
         this.maintenanceStatus = command.maintenanceStatus();
     }
 
+    /**
+     * Update vehicle with UpdateVehicleCommand
+     *
+     * @param command the update vehicle command
+     */
     public void updateVehicle(UpdateVehicleCommand command) {
         this.idVehicle = command.idVehicle();
         this.color = command.color();
@@ -78,6 +84,11 @@ public class Vehicle extends AuditableAbstractAggregateRoot<Vehicle> {
         this.maintenanceStatus = command.maintenanceStatus();
     }
 
+    /**
+     * Get vehicle details
+     *
+     * @return the vehicle details
+     */
     public String getVehicleDetails() {
         return vehicleInformation.getVehicleDetails();
     }

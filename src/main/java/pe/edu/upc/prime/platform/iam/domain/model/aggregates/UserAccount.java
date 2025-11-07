@@ -19,12 +19,10 @@ public class UserAccount extends AuditableAbstractAggregateRoot<UserAccount> {
 
     @Getter
     @Column(name = "username", nullable = false, length = 150)
-    @JsonProperty("username")
     private String username;
 
     @Getter
     @Column(name = "email", nullable = false, length = 200)
-    @JsonProperty("email")
     private String email;
 
 
@@ -40,7 +38,6 @@ public class UserAccount extends AuditableAbstractAggregateRoot<UserAccount> {
 
     @Getter
     @Column(name = "password", nullable = false, length = 100)
-    @JsonProperty("password")
     private String password;
 
 

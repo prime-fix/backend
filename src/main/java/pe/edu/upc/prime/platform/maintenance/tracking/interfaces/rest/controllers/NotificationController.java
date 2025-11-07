@@ -1,0 +1,161 @@
+package pe.edu.upc.prime.platform.maintenance.tracking.interfaces.rest.controllers;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.commands.DeleteNotificationCommand;
+import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.queries.GetAllNotificationsQuery;
+import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.queries.GetNotificationByIdQuery;
+import pe.edu.upc.prime.platform.maintenance.tracking.domain.services.NotificationCommandService;
+import pe.edu.upc.prime.platform.maintenance.tracking.domain.services.NotificationQueryService;
+import pe.edu.upc.prime.platform.maintenance.tracking.interfaces.rest.assemblers.NotificationAssembler;
+import pe.edu.upc.prime.platform.maintenance.tracking.interfaces.rest.resources.CreateNotificationRequest;
+import pe.edu.upc.prime.platform.maintenance.tracking.interfaces.rest.resources.NotificationResponse;
+import pe.edu.upc.prime.platform.maintenance.tracking.interfaces.rest.resources.UpdateNotificationRequest;
+
+
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+@CrossOrigin(origins = "*", methods = { RequestMethod.POST, RequestMethod.GET,
+        RequestMethod.PUT, RequestMethod.DELETE })
+@RestController
+@RequestMapping(value = "/api/v1/notifications", produces = MediaType.APPLICATION_JSON_VALUE)
+@Tag(name = "Notifications", description = "Notification Management Endpoints")
+public class NotificationController {
+    private final NotificationQueryService notificationQueryService;
+
+    private final NotificationCommandService notificationCommandService;
+
+    public NotificationController(NotificationQueryService notificationQueryService,
+                                  NotificationCommandService notificationCommandService) {
+        this.notificationQueryService = notificationQueryService;
+        this.notificationCommandService = notificationCommandService;
+    }
+
+    @Operation(summary = "Create a new notification",
+            description = "Creates a new notification with the provided data",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Notification data for creation", required = true,
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = CreateNotificationRequest.class))),
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "Notification created successfully",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = NotificationResponse.class))),
+                    @ApiResponse(responseCode = "400", description = "Bad request - Invalid input data",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = RuntimeException.class)))
+            }
+    )
+    @PostMapping
+    public ResponseEntity<NotificationResponse> createNotification(@RequestBody CreateNotificationRequest request) {
+        var createNotificationCommand = NotificationAssembler.toCommandFromRequest(request);
+        var notificationId = this.notificationCommandService.handle(createNotificationCommand);
+
+        if (Objects.isNull(notificationId) || notificationId.isBlank()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        var getNotificationByIdQuery = new GetNotificationByIdQuery(notificationId);
+        var notification = this.notificationQueryService.handle(getNotificationByIdQuery);
+        if (notification.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        var notificationResponse = NotificationAssembler.toResponseFromEntity(notification.get());
+        return new ResponseEntity<>(notificationResponse, HttpStatus.CREATED);
+    }
+
+    @Operation(summary = "Retrieve all notifications",
+            description = "Retrieves a list of all notifications",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Notifications retrieved successfully",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = NotificationResponse.class))),
+            })
+    @GetMapping
+    public ResponseEntity<List<NotificationResponse>> getAllNotifications() {
+        var getAllNotificationsQuery = new GetAllNotificationsQuery();
+        var notifications = this.notificationQueryService.handle(getAllNotificationsQuery);
+
+        var notificationResponse = notifications.stream()
+                .map(NotificationAssembler::toResponseFromEntity)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(notificationResponse);
+    }
+
+    @Operation(summary = "Retrieve a notification by its ID",
+            description = "Retrieves a notification using its unique ID",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Notification retrieved successfully",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = NotificationResponse.class))),
+            })
+    @GetMapping("/{id_notification}")
+    public ResponseEntity<NotificationResponse> getNotificationById(@PathVariable String id_notification) {
+        var getNotificationByIdQuery = new GetNotificationByIdQuery(id_notification);
+        var optionalNotification = this.notificationQueryService.handle(getNotificationByIdQuery);
+        if (optionalNotification.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        var notificationResponse = NotificationAssembler.toResponseFromEntity(optionalNotification.get());
+        return ResponseEntity.ok(notificationResponse);
+    }
+
+    @Operation(summary = "Update an existing notification",
+            description = "Update an existing notification with the provided data",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Notification data for update", required = true,
+                    content = @Content (
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = UpdateNotificationRequest.class))),
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Notification updated successfully",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = NotificationResponse.class))),
+                    @ApiResponse(responseCode = "400", description = "Bad request - Invalid input data",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = RuntimeException.class)))
+            }
+    )
+    @PutMapping("/{id_notification}")
+    public ResponseEntity<NotificationResponse> updateNotification(@PathVariable String id_notification,
+                                                                   @RequestBody UpdateNotificationRequest request) {
+        var updateNotificationCommand = NotificationAssembler.toCommandFromRequest(id_notification, request);
+        var optionalNotification = this.notificationCommandService.handle(updateNotificationCommand);
+        if (optionalNotification.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        var notificationResponse = NotificationAssembler.toResponseFromEntity(optionalNotification.get());
+        return ResponseEntity.ok(notificationResponse);
+    }
+
+    @Operation(summary = "Delete a notification by its ID",
+            description = "Deletes a notification using its unique ID",
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "Notification deleted successfully"),
+                    @ApiResponse(responseCode = "400", description = "Bad request - Invalid vehicle ID",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = RuntimeException.class)))
+            }
+    )
+    @DeleteMapping("/{id_notification}")
+    public ResponseEntity<?> deleteNotification(@PathVariable String id_notification) {
+        var deleteNotificationCommand = new DeleteNotificationCommand(id_notification);
+        this.notificationCommandService.handle(deleteNotificationCommand);
+        return ResponseEntity.noContent().build();
+    }
+}

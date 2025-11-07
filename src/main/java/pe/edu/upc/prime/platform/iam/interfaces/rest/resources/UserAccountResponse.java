@@ -15,10 +15,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public record UserAccountResponse(
         @JsonProperty("id_user_account") String idUserAccount,
-        @JsonProperty("username") String username,
-        @JsonProperty("email") String email,
+        String username,
+        String email,
         @JsonProperty("id_role") String idRole,
         @JsonProperty("id_user") String idUser,
-        @JsonProperty("password") String password,
+        String password,
         @JsonProperty("is_new") boolean isNew) {
 }

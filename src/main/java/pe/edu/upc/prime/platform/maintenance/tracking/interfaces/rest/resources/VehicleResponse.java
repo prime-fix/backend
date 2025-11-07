@@ -15,20 +15,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @param maintenanceStatus The maintenance status of the vehicle.
  */
 public record VehicleResponse(
-        @JsonProperty("id_vehicle")
-        String idVehicle,
-        @JsonProperty("color")
+        @JsonProperty("id_vehicle") String idVehicle,
         String color,
-        @JsonProperty("model")
         String model,
-        @JsonProperty("id_user")
-        String idUser,
-        @JsonProperty("vehicle_brand")
-        String vehicleBrand,
-        @JsonProperty("vehicle_plate")
-        String vehiclePlate,
-        @JsonProperty("vehicle_type")
-        String vehicleType,
-        @JsonProperty("maintenance_status")
-        int maintenanceStatus) {
+        @JsonProperty("id_user") String idUser,
+        @JsonProperty("vehicle_brand") String vehicleBrand,
+        @JsonProperty("vehicle_plate") String vehiclePlate,
+        @JsonProperty("vehicle_type") String vehicleType,
+        @JsonProperty("maintenance_status") int maintenanceStatus) {
 }

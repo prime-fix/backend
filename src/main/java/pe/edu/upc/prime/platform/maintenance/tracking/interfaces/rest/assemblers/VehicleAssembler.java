@@ -30,13 +30,13 @@ public class VehicleAssembler {
     /**
      * Converts an UpdateVehicleRequest to an UpdateVehicleCommand.
      *
-     * @param vehicleId the ID of the vehicle to update
+     * @param idVehicle the ID of the vehicle to update
      * @param request the UpdateVehicleRequest to convert
      * @return the corresponding UpdateVehicleCommand
      */
-    public static UpdateVehicleCommand toCommandFromRequest(String vehicleId, UpdateVehicleRequest request) {
+    public static UpdateVehicleCommand toCommandFromRequest(String idVehicle, UpdateVehicleRequest request) {
         return new UpdateVehicleCommand(
-                vehicleId, request.color(), request.model(), request.idUser(),
+                idVehicle, request.color(), request.model(), request.idUser(),
                 new VehicleInformation(request.vehicleBrand(), request.vehiclePlate(), request.vehicleType()),
                 request.maintenanceStatus()
         );

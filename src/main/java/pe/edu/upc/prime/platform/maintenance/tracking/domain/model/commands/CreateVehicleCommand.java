@@ -18,11 +18,11 @@ import java.util.Objects;
 public record CreateVehicleCommand(String idVehicle, String color, String model, String idUser,
                                    VehicleInformation vehicleInformation, int maintenanceStatus) {
     public CreateVehicleCommand {
-        Objects.requireNonNull(idVehicle, "[CreateVehicleCommand] idVehicle must not be null");
+        Objects.requireNonNull(idVehicle, "[CreateVehicleCommand] id vehicle must not be null");
         Objects.requireNonNull(color, "[CreateVehicleCommand] color must not be null");
         Objects.requireNonNull(model, "[CreateVehicleCommand] model must not be null");
-        Objects.requireNonNull(idUser, "[CreateVehicleCommand] idUser must not be null");
-        Objects.requireNonNull(vehicleInformation, "[CreateVehicleCommand] vehicleInformation must not be null");
+        Objects.requireNonNull(idUser, "[CreateVehicleCommand] id user must not be null");
+        Objects.requireNonNull(vehicleInformation, "[CreateVehicleCommand] vehicle information must not be null");
 
         if (maintenanceStatus < Util.MIN_MAINTENANCE_STATUS || maintenanceStatus > Util.MAX_MAINTENANCE_STATUS) {
             throw new IllegalArgumentException(

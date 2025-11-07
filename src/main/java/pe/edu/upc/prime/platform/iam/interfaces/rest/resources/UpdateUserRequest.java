@@ -15,7 +15,6 @@ import jakarta.validation.constraints.Size;
  * @param idLocation identifier of the location
  */
 public record UpdateUserRequest(
-    @JsonProperty("name")
     @NotNull @NotBlank
     @Size(min = 1, max = 100)
     String name,
@@ -25,7 +24,6 @@ public record UpdateUserRequest(
     @Size(min = 1, max = 100)
     String lastName,
 
-    @JsonProperty("dni")
     @NotNull @NotBlank
     @Size(min = 8, max = 8)
     String dni,

@@ -16,9 +16,9 @@ import jakarta.validation.constraints.NotNull;
  */
 public record UserResponse(
         @JsonProperty("id_user") String idUser,
-        @JsonProperty("name") String name,
+        String name,
         @JsonProperty("last_name") String lastName,
-        @JsonProperty("dni") String dni,
+        String dni,
         @JsonProperty("phone_number") String phoneNumber,
         @JsonProperty("id_location") String idLocation) {
 }

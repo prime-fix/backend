@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -25,23 +26,43 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+/**
+ * REST controller for managing vehicles.
+ */
 @CrossOrigin(origins = "*", methods = { RequestMethod.POST, RequestMethod.GET,
         RequestMethod.PUT, RequestMethod.DELETE })
 @RestController
 @RequestMapping(value = "/api/v1/vehicles", produces = MediaType.APPLICATION_JSON_VALUE)
 @Tag(name = "Vehicles", description = "Vehicle Management Endpoints")
 public class VehicleController {
-
+    /**
+     * Service for handling vehicle queries.
+     */
     private final VehicleQueryService vehicleQueryService;
 
+    /**
+     * Service for handling vehicle commands.
+     */
     private final VehicleCommandService vehicleCommandService;
 
+    /**
+     * Constructor for VehicleController.
+     *
+     * @param vehicleQueryService initializes the vehicle query service
+     * @param vehicleCommandService initializes the vehicle command service
+     */
     public VehicleController(VehicleQueryService vehicleQueryService,
                              VehicleCommandService vehicleCommandService) {
         this.vehicleQueryService = vehicleQueryService;
         this.vehicleCommandService = vehicleCommandService;
     }
 
+    /**
+     * Create a new vehicle.
+     *
+     * @param request the vehicle creation request data
+     * @return ResponseEntity with the created vehicle data
+     */
     @Operation(summary = "Create a new vehicle",
             description = "Creates a new vehicle with the provided data",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
@@ -70,7 +91,7 @@ public class VehicleController {
         }
 
         var getVehicleByIdQuery = new GetVehicleByIdQuery(vehicleId);
-        var vehicle = vehicleQueryService.handle(getVehicleByIdQuery);
+        var vehicle = this.vehicleQueryService.handle(getVehicleByIdQuery);
         if (vehicle.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
@@ -78,6 +99,12 @@ public class VehicleController {
         return new ResponseEntity<>(vehicleResponse, HttpStatus.CREATED);
     }
 
+    /**
+     * Retrieve all vehicles or filter by maintenance status.
+     *
+     * @param maintenanceStatus optional maintenance status filter
+     * @return ResponseEntity with the list of vehicles
+     */
     @Operation(summary = "Retrieve all vehicles",
             description = "Retrieves all vehicles or filters them by maintenance status",
             responses = {
@@ -104,6 +131,12 @@ public class VehicleController {
         return ResponseEntity.ok(vehicleResponses);
     }
 
+    /**
+     * Retrieve a vehicle by its ID.
+     *
+     * @param id_vehicle the unique ID of the vehicle
+     * @return ResponseEntity with the vehicle data
+     */
     @Operation(summary = "Retrieve a vehicle by its ID",
             description = "Retrieves a vehicle using its unique ID",
             responses = {
@@ -122,7 +155,13 @@ public class VehicleController {
         return ResponseEntity.ok(vehicleResponse);
     }
 
-
+    /**
+     * Update an existing vehicle.
+     *
+     * @param id_vehicle the unique ID of the vehicle to update
+     * @param request the vehicle update request data
+     * @return ResponseEntity with the updated vehicle data
+     */
     @Operation(summary = "Update an existing vehicle",
             description = "Update an existing vehicle with the provided data",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
@@ -153,6 +192,12 @@ public class VehicleController {
         return ResponseEntity.ok(vehicleResponse);
     }
 
+    /**
+     * Delete a vehicle by its ID.
+     *
+     * @param id_vehicle the unique ID of the vehicle to delete
+     * @return ResponseEntity with no content
+     */
     @Operation(summary = "Delete a vehicle by its ID",
             description = "Deletes a vehicle using its unique ID",
             responses = {

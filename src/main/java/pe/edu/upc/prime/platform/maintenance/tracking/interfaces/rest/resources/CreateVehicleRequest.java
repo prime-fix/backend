@@ -1,9 +1,8 @@
 package pe.edu.upc.prime.platform.maintenance.tracking.interfaces.rest.resources;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
+import pe.edu.upc.prime.platform.shared.utils.Util;
 
 /**
  * Request to create a vehicle.
@@ -24,12 +23,10 @@ public record CreateVehicleRequest(
 
         @NotNull @NotBlank
         @Size(min = 1, max = 50)
-        @JsonProperty("color")
         String color,
 
         @NotNull @NotBlank
         @Size(min = 1, max = 100)
-        @JsonProperty("model")
         String model,
 
         @NotNull @NotBlank
@@ -49,6 +46,7 @@ public record CreateVehicleRequest(
         String vehicleType,
 
         @NotNull @NotBlank
+        @Min(Util.MIN_MAINTENANCE_STATUS) @Max(Util.MAX_MAINTENANCE_STATUS)
         @JsonProperty("maintenance_status")
         int maintenanceStatus) {
 }
