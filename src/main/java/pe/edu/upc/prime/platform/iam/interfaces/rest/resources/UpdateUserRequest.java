@@ -8,7 +8,6 @@ import jakarta.validation.constraints.Size;
 /**
  * Request to update a user.
  *
- * @param idUser identifier of the user
  * @param name name of the user
  * @param lastName last name of the user
  * @param dni document number of the user
@@ -16,10 +15,6 @@ import jakarta.validation.constraints.Size;
  * @param idLocation identifier of the location
  */
 public record UpdateUserRequest(
-    @JsonProperty("id_user")
-    @NotNull @NotBlank
-    String idUser,
-
     @JsonProperty("name")
     @NotNull @NotBlank
     @Size(min = 1, max = 100)

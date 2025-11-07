@@ -89,7 +89,7 @@ public class UserAccountCommandServiceImpl implements UserAccountCommandService 
             );
         }
 
-        var userAccountToUpdate = this.userAccountRepository.findByIdUserAccount(userAccountId).get();
+        var userAccountToUpdate = this.userAccountRepository.findById(userAccountId).get();
         userAccountToUpdate.updateUserAccount(command);
 
         try {
@@ -112,7 +112,7 @@ public class UserAccountCommandServiceImpl implements UserAccountCommandService 
                     String.format("UserAccount with id %s does not exist.", command.idUserAccount()));
         }
 
-        this.userAccountRepository.findByIdUserAccount(command.idUserAccount()).ifPresent(optionalUserAccount -> {
+        this.userAccountRepository.findById(command.idUserAccount()).ifPresent(optionalUserAccount -> {
             this.userAccountRepository.deleteById(optionalUserAccount.getIdUserAccount());
         });
     }

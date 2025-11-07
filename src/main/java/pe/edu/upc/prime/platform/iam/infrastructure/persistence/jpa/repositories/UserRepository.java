@@ -45,12 +45,4 @@ public interface UserRepository extends JpaRepository<User, String> {
      * @return an optional user matching the given full name
      */
     Optional<User> findByNameAndLastName(String name, String lastName);
-
-    /**
-     * Find a user by ID.
-     *
-     * @param idUser the ID of the user
-     * @return an optional user matching the given ID
-     */
-    Optional<User> findByIdUser(String idUser);
 }

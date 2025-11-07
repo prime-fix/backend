@@ -78,7 +78,7 @@ public class UserCommandServiceImpl implements UserCommandService {
             throw new IllegalArgumentException("User with user id " + userId + " does not exist.");
         }
 
-        var userToUpdate = this.userRepository.findByIdUser(userId).get();
+        var userToUpdate = this.userRepository.findById(userId).get();
         userToUpdate.updateUser(command);
 
         try {
@@ -101,7 +101,7 @@ public class UserCommandServiceImpl implements UserCommandService {
                     String.format("User with id %s does not exist.", command.idUser()));
         }
 
-        this.userRepository.findByIdUser(command.idUser()).ifPresent(optionalUser -> {
+        this.userRepository.findById(command.idUser()).ifPresent(optionalUser -> {
             this.userRepository.deleteById(optionalUser.getIdUser());
         });
     }

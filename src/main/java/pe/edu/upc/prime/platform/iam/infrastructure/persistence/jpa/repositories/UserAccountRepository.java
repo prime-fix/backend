@@ -49,12 +49,4 @@ public interface UserAccountRepository extends JpaRepository<UserAccount,String>
      * @return an Optional containing the user account if found, or empty if not found
      */
     Optional<UserAccount> findByUsername(String username);
-
-    /**
-     * Find a user account by its ID.
-     *
-     * @param idUser the ID of the user account
-     * @return an Optional containing the user account if found, or empty if not found
-     */
-    Optional<UserAccount> findByIdUserAccount(String idUser);
 }

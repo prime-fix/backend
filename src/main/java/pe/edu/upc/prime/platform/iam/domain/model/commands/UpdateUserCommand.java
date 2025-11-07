@@ -25,7 +25,7 @@ public record UpdateUserCommand(String idUser, String name, String lastName, Str
         Objects.requireNonNull(idLocation, "[UpdateUserCommand] id location must not be null");
 
         if (dni.length() != Util.DNI_LENGTH) {
-            throw new IllegalArgumentException("[CreateUserCommand] dni must be 8 characters long");
+            throw new IllegalArgumentException("[UpdateUserCommand] dni must be 8 characters long");
         }
     }
 }
