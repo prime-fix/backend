@@ -8,7 +8,7 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import pe.edu.upc.prime.platform.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "memberships")
@@ -22,19 +22,16 @@ public class Membership extends AuditableAbstractAggregateRoot<Membership> {
 
     @Getter
     @Column(name = "description", nullable = false)
-    @JsonProperty("description")
     private String description;
 
 
     @Getter
     @Column(name = "started", nullable = false)
-    @JsonProperty("started")
-    private LocalDateTime started;
+    private LocalDate started;
 
     @Getter
     @Column(name = "over", nullable = false)
-    @JsonProperty("over")
-    private LocalDateTime over;
+    private LocalDate over;
 
     /**
      * Default constructor for JPA.

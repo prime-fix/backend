@@ -8,7 +8,7 @@ import pe.edu.upc.prime.platform.iam.domain.model.commands.DeleteUserCommand;
 import pe.edu.upc.prime.platform.iam.domain.model.commands.UpdateUserCommand;
 import pe.edu.upc.prime.platform.iam.domain.services.UserCommandService;
 import pe.edu.upc.prime.platform.iam.infrastructure.persistence.jpa.repositories.UserRepository;
-import pe.edu.upc.prime.platform.shared.domain.exceptions.NotFoundArgumentException;
+import pe.edu.upc.prime.platform.shared.domain.exceptions.NotFoundIdException;
 
 import java.util.Optional;
 
@@ -44,18 +44,22 @@ public class UserCommandServiceImpl implements UserCommandService {
         var lastName = command.lastName();
 
         if (this.userRepository.existsByIdUser(userId)) {
-            throw new IllegalArgumentException("User with the same id " + userId + " already exists.");
+            throw new IllegalArgumentException("[UserCommandServiceImpl] User with the same id "
+                    + userId + " already exists.");
         }
         if (this.userRepository.existsByNameAndLastName(name, lastName)) {
-            throw new IllegalArgumentException("User with the same name " + name + " and last name " + lastName + " already exists.");
+            throw new IllegalArgumentException("[UserCommandServiceImpl] User with the same name "
+                    + name + " and last name " + lastName + " already exists.");
         }
         var user = new User(command);
         try {
             this.userRepository.save(user);
-            return user.getIdUser();
+
         } catch (Exception e) {
-            throw new PersistenceException("Error creating user: " + e.getMessage());
+            throw new PersistenceException("[UserCommandServiceImpl] Error while creating user: "
+                    + e.getMessage());
         }
+        return user.getIdUser();
     }
 
     /**
@@ -70,12 +74,13 @@ public class UserCommandServiceImpl implements UserCommandService {
         var name = command.name();
         var lastName = command.lastName();
 
-        if (this.userRepository.existsByNameAndLastNameAndIdUserIsNot(userId, lastName, userId)) {
-            throw new IllegalArgumentException("User with the same name " + name + " and last name " + lastName + " already exists.");
+        if (!this.userRepository.existsByIdUser(userId)) {
+            throw new NotFoundIdException(User.class, userId);
         }
 
-        if (!this.userRepository.existsByIdUser(userId)) {
-            throw new IllegalArgumentException("User with user id " + userId + " does not exist.");
+        if (this.userRepository.existsByNameAndLastNameAndIdUserIsNot(userId, lastName, userId)) {
+            throw new IllegalArgumentException("[UserCommandServiceImpl] User with the same name "
+                    + name + " and last name " + lastName + " already exists.");
         }
 
         var userToUpdate = this.userRepository.findById(userId).get();
@@ -85,7 +90,8 @@ public class UserCommandServiceImpl implements UserCommandService {
             var updatedUser = this.userRepository.save(userToUpdate);
             return Optional.of(updatedUser);
         } catch (Exception e) {
-            throw new PersistenceException("Error updating user: " + e.getMessage());
+            throw new PersistenceException("[UserCommandServiceImpl] Error while updating user: "
+                    + e.getMessage());
         }
     }
 
@@ -97,12 +103,14 @@ public class UserCommandServiceImpl implements UserCommandService {
     @Override
     public void handle(DeleteUserCommand command) {
         if (!this.userRepository.existsByIdUser(command.idUser())) {
-            throw new NotFoundArgumentException(
-                    String.format("User with id %s does not exist.", command.idUser()));
+            throw new NotFoundIdException(User.class, command.idUser());
         }
 
-        this.userRepository.findById(command.idUser()).ifPresent(optionalUser -> {
-            this.userRepository.deleteById(optionalUser.getIdUser());
-        });
+        try {
+            this.userRepository.deleteById(command.idUser());
+        } catch (Exception e) {
+            throw new PersistenceException("[UserCommandServiceImpl] Error while deleting user: "
+                    + e.getMessage());
+        }
     }
 }

@@ -12,15 +12,31 @@ import pe.edu.upc.prime.platform.shared.domain.exceptions.NotFoundIdException;
 
 import java.util.Optional;
 
+/**
+ * Implementation of the NotificationCommandService interface.
+ */
 @Service
 public class NotificationCommandServiceImpl implements NotificationCommandService {
-
+    /**
+     * Repository for managing Notification entities.
+     */
     private final NotificationRepository notificationRepository;
 
+    /**
+     * Constructor for NotificationCommandServiceImpl.
+     *
+     * @param notificationRepository The repository for managing Notification entities.
+     */
     public NotificationCommandServiceImpl(NotificationRepository notificationRepository) {
         this.notificationRepository = notificationRepository;
     }
 
+    /**
+     * Handles the creation of a new notification.
+     *
+     * @param command the command containing the notification information
+     * @return the ID of the created notification
+     */
     @Override
     public String handle(CreateNotificationCommand command) {
         var idNotification = command.idNotification();
@@ -40,6 +56,12 @@ public class NotificationCommandServiceImpl implements NotificationCommandServic
         return notification.getIdNotification();
     }
 
+    /**
+     * Handles the update of an existing notification.
+     *
+     * @param command the command containing the updated notification information
+     * @return an Optional containing the updated notification, or empty if not found
+     */
     @Override
     public Optional<Notification> handle(UpdateNotificationCommand command) {
         var idNotification = command.idNotification();
@@ -60,6 +82,11 @@ public class NotificationCommandServiceImpl implements NotificationCommandServic
         }
     }
 
+    /**
+     * Handles the deletion of a notification.
+     *
+     * @param command the command containing the ID of the notification to be deleted
+     */
     @Override
     public void handle(DeleteNotificationCommand command) {
         if (!this.notificationRepository.existsById(command.idNotification())) {

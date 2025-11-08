@@ -6,7 +6,7 @@ import pe.edu.upc.prime.platform.iam.domain.model.aggregates.UserAccount;
 import pe.edu.upc.prime.platform.iam.domain.model.commands.*;
 import pe.edu.upc.prime.platform.iam.domain.services.UserAccountCommandService;
 import pe.edu.upc.prime.platform.iam.infrastructure.persistence.jpa.repositories.UserAccountRepository;
-import pe.edu.upc.prime.platform.shared.domain.exceptions.NotFoundArgumentException;
+import pe.edu.upc.prime.platform.shared.domain.exceptions.NotFoundIdException;
 
 import java.util.Optional;
 
@@ -43,24 +43,28 @@ public class UserAccountCommandServiceImpl implements UserAccountCommandService 
         var email = command.email();
 
         if (this.userAccountRepository.existsByIdUserAccount(userAccountId)) {
-            throw new IllegalArgumentException("User Account with the same id " + userAccountId + " already exists.");
+            throw new IllegalArgumentException("[UserAccountCommandServiceImpl] User Account with the same id "
+                    + userAccountId + " already exists.");
         }
 
-        if (this.userAccountRepository.existsByUsernameAndIdUserAccountIsNot(username, userAccountId)) {
-            throw new IllegalArgumentException("User Account with the same username " + username + " already exists.");
+        if (this.userAccountRepository.existsByUsername(userAccountId)) {
+            throw new IllegalArgumentException("[UserAccountCommandServiceImpl] User Account with the same username " +
+                    username + " already exists.");
         }
 
-        if (this.userAccountRepository.existsByEmailAndIdUserAccountIsNot(email, userAccountId)) {
-            throw new IllegalArgumentException("User Account with the same email " + email + " already exists.");
+        if (this.userAccountRepository.existsByEmail(email)) {
+            throw new IllegalArgumentException("[UserAccountCommandServiceImpl] User Account with the same email "
+                    + email + " already exists.");
         }
 
         var userAccount = new UserAccount(command);
         try {
             this.userAccountRepository.save(userAccount);
-            return userAccount.getIdUserAccount();
         } catch (Exception e) {
-            throw new PersistenceException("Error creating user account: " + e.getMessage());
+            throw new PersistenceException("[UserAccountCommandServiceImpl] Error while creating user account: "
+                    + e.getMessage());
         }
+        return userAccount.getIdUserAccount();
     }
 
     /**
@@ -75,19 +79,20 @@ public class UserAccountCommandServiceImpl implements UserAccountCommandService 
         var username = command.username();
         var email = command.email();
 
+        if (!this.userAccountRepository.existsByIdUserAccount(userAccountId)) {
+            throw new NotFoundIdException(UserAccount.class, userAccountId);
+        }
+
         if (this.userAccountRepository.existsByEmailAndIdUserAccountIsNot(email, userAccountId)) {
-            throw new IllegalArgumentException("User Account with the same email " + email + " already exists.");
+            throw new IllegalArgumentException("[UserAccountCommandServiceImpl]  Account with the same email "
+                    + email + " already exists.");
         }
 
         if (this.userAccountRepository.existsByUsernameAndIdUserAccountIsNot(username, userAccountId)) {
-            throw new IllegalArgumentException("User Account with the same username " + username + " already exists.");
+            throw new IllegalArgumentException("[UserAccountCommandServiceImpl] User Account with the same username "
+                    + username + " already exists.");
         }
 
-        if (!this.userAccountRepository.existsByIdUserAccount(userAccountId)) {
-            throw new NotFoundArgumentException(
-                    String.format("UserAccount with the same id %s does not exist.", userAccountId)
-            );
-        }
 
         var userAccountToUpdate = this.userAccountRepository.findById(userAccountId).get();
         userAccountToUpdate.updateUserAccount(command);
@@ -96,7 +101,8 @@ public class UserAccountCommandServiceImpl implements UserAccountCommandService 
             this.userAccountRepository.save(userAccountToUpdate);
             return Optional.of(userAccountToUpdate);
         } catch (Exception e) {
-            throw new PersistenceException("Error updating user account: " + e.getMessage());
+            throw new PersistenceException(" [UserAccountCommandServiceImpl] Error while updating user account: "
+                    + e.getMessage());
         }
     }
 
@@ -108,12 +114,14 @@ public class UserAccountCommandServiceImpl implements UserAccountCommandService 
     @Override
     public void handle(DeleteUserAccountCommand command) {
         if(!this.userAccountRepository.existsByIdUserAccount(command.idUserAccount())) {
-            throw new NotFoundArgumentException(
-                    String.format("UserAccount with id %s does not exist.", command.idUserAccount()));
+            throw new NotFoundIdException(UserAccount.class, command.idUserAccount());
         }
 
-        this.userAccountRepository.findById(command.idUserAccount()).ifPresent(optionalUserAccount -> {
-            this.userAccountRepository.deleteById(optionalUserAccount.getIdUserAccount());
-        });
+        try {
+            this.userAccountRepository.deleteById(command.idUserAccount());
+        } catch (Exception e) {
+            throw new PersistenceException("[UserAccountCommandServiceImpl] Error while deleting user account: "
+                    + e.getMessage());
+        }
     }
 }

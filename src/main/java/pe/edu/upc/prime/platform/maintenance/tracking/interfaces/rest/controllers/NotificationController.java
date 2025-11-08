@@ -24,22 +24,43 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+/**
+ * REST controller for managing notifications.
+ */
 @CrossOrigin(origins = "*", methods = { RequestMethod.POST, RequestMethod.GET,
         RequestMethod.PUT, RequestMethod.DELETE })
 @RestController
 @RequestMapping(value = "/api/v1/notifications", produces = MediaType.APPLICATION_JSON_VALUE)
 @Tag(name = "Notifications", description = "Notification Management Endpoints")
 public class NotificationController {
+    /**
+     * Service for handling notification queries.
+     */
     private final NotificationQueryService notificationQueryService;
 
+    /**
+     * Service for handling notification commands.
+     */
     private final NotificationCommandService notificationCommandService;
 
+    /**
+     * Constructor for NotificationController.
+     *
+     * @param notificationQueryService the notification query service
+     * @param notificationCommandService the notification command service
+     */
     public NotificationController(NotificationQueryService notificationQueryService,
                                   NotificationCommandService notificationCommandService) {
         this.notificationQueryService = notificationQueryService;
         this.notificationCommandService = notificationCommandService;
     }
 
+    /**
+     * Create a new notification.
+     *
+     * @param request the create notification request
+     * @return the response entity with the created notification
+     */
     @Operation(summary = "Create a new notification",
             description = "Creates a new notification with the provided data",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
@@ -76,6 +97,11 @@ public class NotificationController {
         return new ResponseEntity<>(notificationResponse, HttpStatus.CREATED);
     }
 
+    /**
+     * Retrieve all notifications.
+     *
+     * @return the response entity with the list of notifications
+     */
     @Operation(summary = "Retrieve all notifications",
             description = "Retrieves a list of all notifications",
             responses = {
@@ -94,6 +120,12 @@ public class NotificationController {
         return ResponseEntity.ok(notificationResponse);
     }
 
+    /**
+     * Retrieve a notification by its ID.
+     *
+     * @param id_notification the notification ID
+     * @return the response entity with the notification
+     */
     @Operation(summary = "Retrieve a notification by its ID",
             description = "Retrieves a notification using its unique ID",
             responses = {
@@ -112,6 +144,13 @@ public class NotificationController {
         return ResponseEntity.ok(notificationResponse);
     }
 
+    /**
+     * Update an existing notification.
+     *
+     * @param id_notification the notification ID
+     * @param request the update notification request
+     * @return the response entity with the updated notification
+     */
     @Operation(summary = "Update an existing notification",
             description = "Update an existing notification with the provided data",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
@@ -142,11 +181,17 @@ public class NotificationController {
         return ResponseEntity.ok(notificationResponse);
     }
 
+    /**
+     * Delete a notification by its ID.
+     *
+     * @param id_notification the notification ID
+     * @return the response entity indicating the result of the deletion
+     */
     @Operation(summary = "Delete a notification by its ID",
             description = "Deletes a notification using its unique ID",
             responses = {
                     @ApiResponse(responseCode = "204", description = "Notification deleted successfully"),
-                    @ApiResponse(responseCode = "400", description = "Bad request - Invalid vehicle ID",
+                    @ApiResponse(responseCode = "400", description = "Bad request - Invalid notification ID",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = RuntimeException.class)))

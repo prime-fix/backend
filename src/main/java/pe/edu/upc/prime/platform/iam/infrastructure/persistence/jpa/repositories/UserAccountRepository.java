@@ -6,6 +6,9 @@ import pe.edu.upc.prime.platform.iam.domain.model.aggregates.UserAccount;
 
 import java.util.Optional;
 
+/**
+ * Repository interface for UserAccount entities.
+ */
 @Repository
 public interface UserAccountRepository extends JpaRepository<UserAccount,String> {
     /**
@@ -23,6 +26,14 @@ public interface UserAccountRepository extends JpaRepository<UserAccount,String>
      * @return true if the user account exists, false otherwise
      */
     boolean existsByUsername(String username);
+
+    /**
+     * Check if a user account exists by its email.
+     *
+     * @param email the email of the user account
+     * @return true if the user account exists, false otherwise
+     */
+    boolean existsByEmail(String email);
 
     /**
      * Check if a user account exists by its username excluding a specific user account ID.

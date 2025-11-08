@@ -7,8 +7,16 @@ import pe.edu.upc.prime.platform.maintenance.tracking.interfaces.rest.resources.
 import pe.edu.upc.prime.platform.maintenance.tracking.interfaces.rest.resources.NotificationResponse;
 import pe.edu.upc.prime.platform.maintenance.tracking.interfaces.rest.resources.UpdateNotificationRequest;
 
+/**
+ * Assembler for converting between Notification-related requests, commands, and responses.
+ */
 public class NotificationAssembler {
-
+    /**
+     * Converts a CreateNotificationRequest to a CreateNotificationCommand.
+     *
+     * @param request The create notification request.
+     * @return The corresponding create notification command.
+     */
     public static CreateNotificationCommand toCommandFromRequest(CreateNotificationRequest request) {
         return new CreateNotificationCommand(
                 request.idNotification(), request.message(), request.read(),
@@ -16,7 +24,13 @@ public class NotificationAssembler {
         );
     }
 
-
+    /**
+     * Converts an UpdateNotificationRequest to an UpdateNotificationCommand.
+     *
+     * @param idNotification The ID of the notification to update.
+     * @param request The update notification request.
+     * @return The corresponding update notification command.
+     */
     public static UpdateNotificationCommand toCommandFromRequest(String idNotification, UpdateNotificationRequest request) {
         return new UpdateNotificationCommand(
                 idNotification, request.message(), request.read(),
@@ -24,6 +38,12 @@ public class NotificationAssembler {
         );
     }
 
+    /**
+     * Converts a Notification entity to a NotificationResponse.
+     *
+     * @param entity The notification entity.
+     * @return The corresponding notification response.
+     */
     public static NotificationResponse toResponseFromEntity(Notification entity) {
         return new NotificationResponse(entity.getIdNotification(), entity.getMessage(),
                 entity.isRead(), entity.getIdVehicle(), entity.getSent(),
