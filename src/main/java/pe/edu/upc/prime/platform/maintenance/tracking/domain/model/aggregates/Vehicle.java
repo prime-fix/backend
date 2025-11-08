@@ -76,7 +76,6 @@ public class Vehicle extends AuditableAbstractAggregateRoot<Vehicle> {
      * @param command the update vehicle command
      */
     public void updateVehicle(UpdateVehicleCommand command) {
-        this.idVehicle = command.idVehicle();
         this.color = command.color();
         this.model = command.model();
         this.idUser = command.idUser();

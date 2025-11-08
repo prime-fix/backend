@@ -15,6 +15,9 @@ public record RoleName(String name) {
         if (Objects.isNull(name) || name.isBlank()) {
             throw new IllegalArgumentException("[RoleName] Name cannot be null or blank");
         }
+        if (name.length() > 50) {
+            throw new IllegalArgumentException("[RoleName] Name cannot exceed 50 characters");
+        }
     }
 
     /**

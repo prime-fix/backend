@@ -64,7 +64,6 @@ public class UserAccount extends AuditableAbstractAggregateRoot<UserAccount> {
 
 
     public void updateUserAccount(UpdateUserAccountCommand command) {
-        this.idUserAccount = command.idUserAccount();
         this.username = command.username();
         this.email = command.email();
         this.idRole = command.idRole();

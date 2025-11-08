@@ -61,7 +61,6 @@ public class Role extends AuditableAbstractAggregateRoot<Role> {
      * @param command the command containing updated role details
      */
     public void updateRole(UpdateRoleCommand command) {
-        this.idRole = command.idRole();
         this.roleName = command.roleName();
         this.roleDescription = command.roleDescription();
     }

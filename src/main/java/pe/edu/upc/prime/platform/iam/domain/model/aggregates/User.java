@@ -66,7 +66,6 @@ public class User extends AuditableAbstractAggregateRoot<User> {
      * @param command the command containing updated user details
      */
     public void updateUser(UpdateUserCommand command) {
-        this.idUser = command.idUser();
         this.name = command.name();
         this.lastName = command.lastName();
         this.dni = command.dni();

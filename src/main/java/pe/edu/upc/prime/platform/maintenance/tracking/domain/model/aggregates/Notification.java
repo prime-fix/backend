@@ -73,7 +73,6 @@ public class Notification extends AuditableAbstractAggregateRoot<Notification> {
      * @param command the update notification command
      */
     public void updateNotification(UpdateNotificationCommand command) {
-        this.idNotification = command.idNotification();
         this.message = command.message();
         this.read = command.read();
         this.idVehicle = command.idVehicle();
