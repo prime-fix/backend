@@ -1,0 +1,50 @@
+package pe.edu.upc.prime.platform.vehiclediagnosis.domain.model.aggregates;
+
+import jakarta.persistence.*;
+import lombok.Getter;
+import pe.edu.upc.prime.platform.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
+import pe.edu.upc.prime.platform.vehiclediagnosis.domain.model.commands.UpdateDiagnosticStatusCommand;
+import pe.edu.upc.prime.platform.vehiclediagnosis.domain.model.valueobjects.VisitId;
+
+
+@Entity
+@Table(name = "expected_visit")
+public class ExpectedVisit extends AuditableAbstractAggregateRoot<ExpectedVisit> {
+    /*
+    * Represents the unique identifier for the Expected entity.
+    * @param idExpected the unique identifier for the Expected
+    */
+    @Id
+    @Getter
+    @Column(name = "id_expected", nullable = false, unique = true)
+    private String idExpected;
+
+    /*
+    * Represents the date of the expected visit.
+    * @param dateExpectedVisit the date of the expected visit
+    */
+    @Getter
+    @Column(name = "state_visit", nullable = false)
+    private String stateVisit;
+
+    @Getter
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "visitId",
+                    column = @Column(name = "visit_id", nullable = false))
+    })
+    private VisitId visitId;
+
+    @Getter
+    @Column(name = "id_scheduled", length = 2, nullable = false)
+    private Boolean idScheduled;
+
+    /*
+     * Default constructor for JPA.
+     */
+    protected ExpectedVisit() {  }
+
+    public void updateDiagnosticStatus(UpdateDiagnosticStatusCommand command) {
+        this.stateVisit = command.newState();
+    }
+}
