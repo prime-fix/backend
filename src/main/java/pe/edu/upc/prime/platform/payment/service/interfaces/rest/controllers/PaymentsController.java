@@ -24,10 +24,6 @@ import pe.edu.upc.prime.platform.payment.service.interfaces.rest.assemblers.Paym
 import pe.edu.upc.prime.platform.payment.service.interfaces.rest.resources.CreatePaymentRequest;
 import pe.edu.upc.prime.platform.payment.service.interfaces.rest.resources.PaymentResponse;
 import pe.edu.upc.prime.platform.payment.service.interfaces.rest.resources.UpdatePaymentRequest;
-import pe.edu.upc.prime.platform.shared.interfaces.rest.resources.BadRequestResponse;
-import pe.edu.upc.prime.platform.shared.interfaces.rest.resources.InternalServerErrorResponse;
-import pe.edu.upc.prime.platform.shared.interfaces.rest.resources.NotFoundResponse;
-import pe.edu.upc.prime.platform.shared.interfaces.rest.resources.ServiceUnavailableResponse;
 
 import java.util.List;
 import java.util.Objects;
@@ -56,42 +52,37 @@ public class PaymentsController {
                     description = "Payment data for creation", required = true,
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = CreatePaymentRequest.class))))
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Payment created successfully",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = PaymentResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Bad request - Invalid input data",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = BadRequestResponse.class))),
-            @ApiResponse(responseCode = "500", description = "Internal server error",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = InternalServerErrorResponse.class))),
-            @ApiResponse(responseCode = "503", description = "Service unavailable - Persistence error",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = ServiceUnavailableResponse.class)))
-    })
+                            schema = @Schema(implementation = CreatePaymentRequest.class))),
+            responses = {
+                @ApiResponse(responseCode = "201", description = "Payment created successfully",
+                        content = @Content(
+                                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                schema = @Schema(implementation = PaymentResponse.class))),
+                @ApiResponse(responseCode = "400", description = "Bad request - Invalid input data",
+                        content = @Content(
+                                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                schema = @Schema(implementation = RuntimeException.class)))
+            }
+    )
     @PostMapping
     public ResponseEntity<PaymentResponse> createPayment(
             @Valid @RequestBody CreatePaymentRequest request) {
 
         var createCommand = PaymentAssembler.toCommandFromRequest(request);
-        var paymentId = paymentCommandService.handle(createCommand);
+        var paymentId = this.paymentCommandService.handle(createCommand);
 
         if (Objects.isNull(paymentId) || paymentId.isBlank()) {
             return ResponseEntity.badRequest().build();
         }
 
-        var query = new GetPaymentByIdQuery(paymentId);
-        var optionalPayment = paymentQueryService.handle(query);
+        var getPaymentByIdQuery = new GetPaymentByIdQuery(paymentId);
+        var payment = paymentQueryService.handle(getPaymentByIdQuery);
+        if (payment.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
 
-
-        var response = PaymentAssembler.toResponseFromEntity(optionalPayment.get());
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+        var paymentResponse = PaymentAssembler.toResponseFromEntity(payment.get());
+        return new ResponseEntity<>(paymentResponse, HttpStatus.CREATED);
     }
 
     // GET ALL / BY USER ACCOUNT
@@ -110,40 +101,36 @@ public class PaymentsController {
         List<Payment> payments;
 
         if (Objects.isNull(idUserAccount)) {
-            var query = new GetAllPaymentsQuery();
-            payments = paymentQueryService.handle(query);
+            var getAllPaymentsQuery = new GetAllPaymentsQuery();
+            payments = paymentQueryService.handle(getAllPaymentsQuery);
         } else {
-            var query = new GetPaymentByIdUserAccountQuery(new IdUserAccount(idUserAccount));
-            payments = paymentQueryService.handle(query);
+            var getPaymentByIdUserAccountQuery = new GetPaymentByIdUserAccountQuery(new IdUserAccount(idUserAccount));
+            payments = paymentQueryService.handle(getPaymentByIdUserAccountQuery);
         }
 
-        var responses = payments.stream()
+        var paymentResponses = payments.stream()
                 .map(PaymentAssembler::toResponseFromEntity)
                 .collect(Collectors.toList());
 
-        return ResponseEntity.ok(responses);
+        return ResponseEntity.ok(paymentResponses);
     }
 
     // GET BY ID
     @Operation(summary = "Retrieve a payment by its ID",
-            description = "Retrieves a payment using its unique ID")
-    @ApiResponses(value = {
+            description = "Retrieves a payment using its unique ID",
+            responses = {
             @ApiResponse(responseCode = "200", description = "Payment retrieved successfully",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = PaymentResponse.class))),
-            @ApiResponse(responseCode = "404", description = "Not found",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = NotFoundResponse.class)))
     })
-    @GetMapping("/{paymentId}")
-    public ResponseEntity<PaymentResponse> getPaymentById(@PathVariable String paymentId) {
-        var query = new GetPaymentByIdQuery(paymentId);
-        var optionalPayment = paymentQueryService.handle(query);
+
+    @GetMapping("/{id_payment}")
+    public ResponseEntity<PaymentResponse> getPaymentById(@PathVariable String id_payment) {
+        var getPaymentByIdQuery = new GetPaymentByIdQuery(id_payment);
+        var optionalPayment = paymentQueryService.handle(getPaymentByIdQuery);
 
         if (optionalPayment.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return ResponseEntity.notFound().build();
         }
 
         var response = PaymentAssembler.toResponseFromEntity(optionalPayment.get());
@@ -157,39 +144,25 @@ public class PaymentsController {
                     description = "Payment data for update", required = true,
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = UpdatePaymentRequest.class))))
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Payment updated successfully",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = PaymentResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Bad request - Invalid input data",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = BadRequestResponse.class))),
-            @ApiResponse(responseCode = "404", description = "Not found",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = NotFoundResponse.class)))
-    })
-    @PutMapping("/{paymentId}")
+                            schema = @Schema(implementation = UpdatePaymentRequest.class))),
+            responses = {
+                @ApiResponse(responseCode = "200", description = "Payment updated successfully",
+                        content = @Content(
+                                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                schema = @Schema(implementation = PaymentResponse.class))),
+                @ApiResponse(responseCode = "400", description = "Bad request - Invalid input data",
+                        content = @Content(
+                                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                schema = @Schema(implementation = RuntimeException.class)))
+            }
+    )
+    @PutMapping("/{id_payment}")
     public ResponseEntity<PaymentResponse> updatePayment(
-            @PathVariable String paymentId,
+            @PathVariable String id_payment,
             @Valid @RequestBody UpdatePaymentRequest request) {
 
-        var updateCommand = PaymentAssembler.toCommandFromRequest(
-                new UpdatePaymentRequest(
-                        paymentId,
-                        request.cardNumber(),
-                        request.cardType(),
-                        request.month(),
-                        request.year(),
-                        request.ccv(),
-                        request.idUserAccount()
-                )
-        );
-
-        var optionalPayment = paymentCommandService.handle(updateCommand);
+        var updatePaymentCommand = PaymentAssembler.toCommandFromRequest(id_payment, request);
+        var optionalPayment = this.paymentCommandService.handle(updatePaymentCommand);
         if (optionalPayment.isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
@@ -200,18 +173,19 @@ public class PaymentsController {
 
     // DELETE
     @Operation(summary = "Delete a payment by its ID",
-            description = "Deletes a payment using its unique ID")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Payment deleted successfully"),
-            @ApiResponse(responseCode = "404", description = "Not found",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = NotFoundResponse.class)))
-    })
-    @DeleteMapping("/{paymentId}")
-    public ResponseEntity<?> deletePayment(@PathVariable String paymentId) {
-        var deleteCommand = new DeletePaymentCommand(paymentId);
-        paymentCommandService.handle(deleteCommand);
+            description = "Deletes a payment using its unique ID",
+            responses = {
+                @ApiResponse(responseCode = "204", description = "Payment deleted successfully"),
+                @ApiResponse(responseCode = "400", description = "Bad request - Invalid payment ID",
+                        content = @Content(
+                                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                schema = @Schema(implementation = RuntimeException.class)))
+            }
+    )
+    @DeleteMapping("/{id_payment}")
+    public ResponseEntity<?> deletePayment(@PathVariable String id_payment) {
+        var deletePaymentCommand = new DeletePaymentCommand(id_payment);
+        paymentCommandService.handle(deletePaymentCommand);
         return ResponseEntity.noContent().build();
     }
 }

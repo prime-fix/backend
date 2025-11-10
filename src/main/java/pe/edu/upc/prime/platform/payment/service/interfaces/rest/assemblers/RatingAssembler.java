@@ -13,6 +13,7 @@ public class RatingAssembler {
 
     public static CreateRatingCommand toCommandFromRequest(CreateRatingRequest request) {
         return new CreateRatingCommand(
+                request.idRating(),
                 request.starRating(),
                 request.comment(),
                 new IdAutoRepair(request.idAutoRepair()),
@@ -20,19 +21,19 @@ public class RatingAssembler {
         );
     }
 
-    public static UpdateRatingCommand toCommandFromRequest(UpdateRatingRequest request) {
+    public static UpdateRatingCommand toCommandFromRequest(String ratingId, UpdateRatingRequest request) {
         return new UpdateRatingCommand(
-                request.id(),
+                ratingId,
                 request.starRating(),
                 request.comment(),
-                null,
-                null
+                new IdAutoRepair(request.idAutoRepair()),
+                new IdUserAccount(request.idUserAccount())
         );
     }
 
     public static RatingResponse toResponseFromEntity(Rating entity) {
         return new RatingResponse(
-                entity.getId(),
+                entity.getIdRating(),
                 entity.getStarRating(),
                 entity.getComment(),
 

@@ -20,11 +20,6 @@ public abstract class AuditableAbstractAggregateRoot<T extends AbstractAggregate
         extends AbstractAggregateRoot<T> {
 
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id", updatable = false, nullable = false, length = 36)
-    private String id;
-
     /**
      * The date and time when the entity was created.
      */

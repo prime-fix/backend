@@ -7,6 +7,7 @@ import java.util.Objects;
 /**
  * Command to create a new Rating.
  *
+ * @param idRating the identifier od the rating
  * @param starRating The number of stars (1–5).
  * @param comment The optional comment of the user.
  * @param idAutoRepair The identifier of the auto repair being rated.
@@ -14,12 +15,14 @@ import java.util.Objects;
  */
 
 public record CreateRatingCommand(
+        String idRating,
         int starRating,
         String comment,
         IdAutoRepair idAutoRepair,
         IdUserAccount idUserAccount
 ) {
     public CreateRatingCommand {
+        Objects.requireNonNull(idRating, "[CreateRatingCommand] idRating must not be null");
         Objects.requireNonNull(idAutoRepair, "[CreateRatingCommand] idAutoRepair must not be null");
         Objects.requireNonNull(idUserAccount, "[CreateRatingCommand] idUserAccount must not be null");
 

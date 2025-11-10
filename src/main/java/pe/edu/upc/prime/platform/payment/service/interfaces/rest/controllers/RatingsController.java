@@ -1,33 +1,24 @@
 package pe.edu.upc.prime.platform.payment.service.interfaces.rest.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pe.edu.upc.prime.platform.payment.service.domain.model.aggregates.Rating;
 import pe.edu.upc.prime.platform.payment.service.domain.model.commands.DeleteRatingCommand;
 import pe.edu.upc.prime.platform.payment.service.domain.model.queries.GetAllRatingsQuery;
-import pe.edu.upc.prime.platform.payment.service.domain.model.queries.GetRatingByIdAutoRepairQuery;
 import pe.edu.upc.prime.platform.payment.service.domain.model.queries.GetRatingByIdQuery;
-import pe.edu.upc.prime.platform.payment.service.domain.model.valueobjects.IdAutoRepair;
 import pe.edu.upc.prime.platform.payment.service.domain.services.RatingCommandService;
 import pe.edu.upc.prime.platform.payment.service.domain.services.RatingQueryService;
 import pe.edu.upc.prime.platform.payment.service.interfaces.rest.assemblers.RatingAssembler;
 import pe.edu.upc.prime.platform.payment.service.interfaces.rest.resources.CreateRatingRequest;
 import pe.edu.upc.prime.platform.payment.service.interfaces.rest.resources.RatingResponse;
 import pe.edu.upc.prime.platform.payment.service.interfaces.rest.resources.UpdateRatingRequest;
-import pe.edu.upc.prime.platform.shared.interfaces.rest.resources.BadRequestResponse;
-import pe.edu.upc.prime.platform.shared.interfaces.rest.resources.InternalServerErrorResponse;
-import pe.edu.upc.prime.platform.shared.interfaces.rest.resources.NotFoundResponse;
-import pe.edu.upc.prime.platform.shared.interfaces.rest.resources.ServiceUnavailableResponse;
 
 import java.util.List;
 import java.util.Objects;
@@ -56,69 +47,54 @@ public class RatingsController {
                     description = "Rating data for creation", required = true,
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = CreateRatingRequest.class))))
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Rating created successfully",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = RatingResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Bad request - Invalid input data",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = BadRequestResponse.class))),
-            @ApiResponse(responseCode = "500", description = "Internal server error",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = InternalServerErrorResponse.class))),
-            @ApiResponse(responseCode = "503", description = "Service unavailable - Persistence error",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = ServiceUnavailableResponse.class)))
-    })
+                            schema = @Schema(implementation = CreateRatingRequest.class))),
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "Rating created successfully",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = RatingResponse.class))),
+                    @ApiResponse(responseCode = "400", description = "Bad request - Invalid input data",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = RuntimeException.class)))
+            }
+    )
+
     @PostMapping
     public ResponseEntity<RatingResponse> createRating(
             @Valid @RequestBody CreateRatingRequest request) {
 
         var createCommand = RatingAssembler.toCommandFromRequest(request);
-        var ratingId = ratingCommandService.handle(createCommand);
+        var ratingId = this.ratingCommandService.handle(createCommand);
 
         if (Objects.isNull(ratingId) || ratingId.isBlank()) {
             return ResponseEntity.badRequest().build();
         }
 
-        var query = new GetRatingByIdQuery(ratingId);
-        var optionalRating = ratingQueryService.handle(query);
+        var getRatingByIdQuery = new GetRatingByIdQuery(ratingId);
+        var rating = ratingQueryService.handle(getRatingByIdQuery);
 
-        if (optionalRating.isEmpty()) {
+        if (rating.isEmpty()) {
             return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
         }
 
-        var response = RatingAssembler.toResponseFromEntity(optionalRating.get());
+        var response = RatingAssembler.toResponseFromEntity(rating.get());
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     // GET ALL / FILTER
     @Operation(summary = "Retrieve all ratings",
-            description = "Retrieves all ratings or filters by auto repair if provided")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Ratings retrieved successfully",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            array = @ArraySchema(schema = @Schema(implementation = RatingResponse.class))))
-    })
+            description = "Retrieves all ratings or filters by auto repair if provided",
+            responses = {
+                @ApiResponse(responseCode = "200", description = "Ratings retrieved successfully",
+                        content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                schema = @Schema(implementation = RatingResponse.class)))
+            })
     @GetMapping
-    public ResponseEntity<List<RatingResponse>> getAllRatings(
-            @RequestParam(required = false) IdAutoRepair idAutoRepair) {
+    public ResponseEntity<List<RatingResponse>> getAllRatings() {
 
-        List<Rating> ratings;
-
-        if (Objects.nonNull(idAutoRepair)) {
-            var query = new GetRatingByIdAutoRepairQuery(idAutoRepair);
-            ratings = ratingQueryService.handle(query);
-        } else {
-            var query = new GetAllRatingsQuery();
-            ratings = ratingQueryService.handle(query);
-        }
+        var getAllRatingsQuery = new GetAllRatingsQuery();
+        var ratings = ratingQueryService.handle(getAllRatingsQuery);
 
         var responses = ratings.stream()
                 .map(RatingAssembler::toResponseFromEntity)
@@ -129,28 +105,22 @@ public class RatingsController {
 
     // GET BY ID
     @Operation(summary = "Retrieve a rating by its ID",
-            description = "Retrieves a rating using its unique ID")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Rating retrieved successfully",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = RatingResponse.class))),
-            @ApiResponse(responseCode = "404", description = "Not found",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = NotFoundResponse.class)))
+            description = "Retrieves a rating using its unique ID",
+            responses = {
+                @ApiResponse(responseCode = "200", description = "Rating retrieved successfully",
+                        content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                schema = @Schema(implementation = RatingResponse.class))),
     })
-    @GetMapping("/{ratingId}")
-    public ResponseEntity<RatingResponse> getRatingById(@PathVariable String ratingId) {
-        var query = new GetRatingByIdQuery(ratingId);
-        var optionalRating = ratingQueryService.handle(query);
+    @GetMapping("/{id_rating}")
+    public ResponseEntity<RatingResponse> getRatingById(@PathVariable String id_rating) {
+        var getRatingByIdQuery = new GetRatingByIdQuery(id_rating);
+        var optionalRating = ratingQueryService.handle(getRatingByIdQuery);
 
         if (optionalRating.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return ResponseEntity.notFound().build();
         }
-
-        var response = RatingAssembler.toResponseFromEntity(optionalRating.get());
-        return ResponseEntity.ok(response);
+        var ratingResponse = RatingAssembler.toResponseFromEntity(optionalRating.get());
+        return ResponseEntity.ok(ratingResponse);
     }
 
     // UPDATE
@@ -160,57 +130,47 @@ public class RatingsController {
                     description = "Rating data for update", required = true,
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = UpdateRatingRequest.class))))
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Rating updated successfully",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = RatingResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Bad request - Invalid input data",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = BadRequestResponse.class))),
-            @ApiResponse(responseCode = "404", description = "Not found",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = NotFoundResponse.class)))
-    })
-    @PutMapping("/{ratingId}")
+                            schema = @Schema(implementation = UpdateRatingRequest.class))),
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Rating updated successfully",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = RatingResponse.class))),
+                    @ApiResponse(responseCode = "400", description = "Bad request - Invalid input data",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = RuntimeException.class)))
+            }
+    )
+    @PutMapping("/{id_rating}")
     public ResponseEntity<RatingResponse> updateRating(
-            @PathVariable String ratingId,
+            @PathVariable String id_rating,
             @Valid @RequestBody UpdateRatingRequest request) {
 
-        var updateCommand = RatingAssembler.toCommandFromRequest(
-                new UpdateRatingRequest(
-                        ratingId,
-                        request.starRating(),
-                        request.comment()
-                )
-        );
-
-        var optionalRating = ratingCommandService.handle(updateCommand);
+        var updateCommand = RatingAssembler.toCommandFromRequest(id_rating, request);
+        var optionalRating = this.ratingCommandService.handle(updateCommand);
         if (optionalRating.isEmpty()) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.notFound().build();
         }
-
-        var response = RatingAssembler.toResponseFromEntity(optionalRating.get());
-        return ResponseEntity.ok(response);
+        var ratingResponse = RatingAssembler.toResponseFromEntity(optionalRating.get());
+        return ResponseEntity.ok(ratingResponse);
     }
 
     // DELETE
     @Operation(summary = "Delete a rating by its ID",
-            description = "Deletes a rating using its unique ID")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Rating deleted successfully"),
-            @ApiResponse(responseCode = "404", description = "Not found",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = NotFoundResponse.class)))
-    })
-    @DeleteMapping("/{ratingId}")
-    public ResponseEntity<?> deleteRating(@PathVariable String ratingId) {
-        var deleteCommand = new DeleteRatingCommand(ratingId);
-        ratingCommandService.handle(deleteCommand);
+            description = "Deletes a rating using its unique ID",
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "Rating deleted successfully"),
+                    @ApiResponse(responseCode = "400", description = "Bad request - Invalid rating ID",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = RuntimeException.class)))
+            }
+    )
+    @DeleteMapping("/{id_rating}")
+    public ResponseEntity<?> deleteRating(@PathVariable String id_rating) {
+        var deleteRatingCommand = new DeleteRatingCommand(id_rating);
+        this.ratingCommandService.handle(deleteRatingCommand);
         return ResponseEntity.noContent().build();
     }
 }

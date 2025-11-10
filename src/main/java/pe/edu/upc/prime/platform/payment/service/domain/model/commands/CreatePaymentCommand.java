@@ -7,6 +7,7 @@ import java.util.Objects;
 /**
  * Command to create a new Payment.
  *
+ * @param idPayment identifier of the payment
  * @param cardNumber The card number used for payment.
  * @param cardType The type of the card (e.g. VISA, MASTERCARD).
  * @param month The expiration month of the card.
@@ -15,6 +16,7 @@ import java.util.Objects;
  * @param idUserAccount The identifier of the user account making the payment.
  */
 public record CreatePaymentCommand(
+        String idPayment,
         String cardNumber,
         CardType cardType,
         int month,
@@ -23,6 +25,7 @@ public record CreatePaymentCommand(
         IdUserAccount idUserAccount
 ) {
     public CreatePaymentCommand {
+        Objects.requireNonNull(idPayment, "[CreatePaymentCommand] id must not be null");
         Objects.requireNonNull(cardNumber, "[CreatePaymentCommand] cardNumber must not be null");
         Objects.requireNonNull(cardType, "[CreatePaymentCommand] cardType must not be null");
         Objects.requireNonNull(ccv, "[CreatePaymentCommand] ccv must not be null");

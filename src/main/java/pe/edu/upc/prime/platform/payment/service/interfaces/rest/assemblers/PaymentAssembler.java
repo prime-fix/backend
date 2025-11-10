@@ -13,6 +13,7 @@ public class PaymentAssembler {
 
     public static CreatePaymentCommand toCommandFromRequest(CreatePaymentRequest request) {
         return new CreatePaymentCommand(
+                request.idPayment(),
                 request.cardNumber(),
                 CardType.valueOf(request.cardType()),
                 request.month(),
@@ -22,9 +23,9 @@ public class PaymentAssembler {
         );
     }
 
-    public static UpdatePaymentCommand toCommandFromRequest(UpdatePaymentRequest request) {
+    public static UpdatePaymentCommand toCommandFromRequest(String paymentId, UpdatePaymentRequest request) {
         return new UpdatePaymentCommand(
-                request.id(),
+                paymentId,
                 request.cardNumber(),
                 CardType.valueOf(request.cardType()),
                 request.month(),
@@ -36,7 +37,7 @@ public class PaymentAssembler {
 
     public static PaymentResponse toResponseFromEntity(Payment entity) {
         return new PaymentResponse(
-                entity.getId(),
+                entity.getIdPayment(),
                 entity.getMaskedCardNumber(),
                 entity.getCardType().name(),
                 entity.getMonth(),

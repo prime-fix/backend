@@ -1,5 +1,6 @@
 package pe.edu.upc.prime.platform.payment.service.domain.model.aggregates;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -12,10 +13,18 @@ import pe.edu.upc.prime.platform.shared.domain.model.aggregates.AuditableAbstrac
 @Entity
 @Table(name = "ratings")
 public class Rating extends AuditableAbstractAggregateRoot<Rating> {
+
+    @Id
+    @Getter
+    @Column(name="id_rating", nullable = false, unique = true)
+    @JsonProperty("id_rating")
+    private String idRating;
+
     @Getter
     @Min(1)
     @Max(5)
     @Column(name = "star_rating", nullable = false)
+    @JsonProperty("star_rating")
     private int starRating;
 
     @Getter
@@ -25,17 +34,19 @@ public class Rating extends AuditableAbstractAggregateRoot<Rating> {
     @Getter
     @Embedded
     @AttributeOverride(
-            name = "idAutoRepair",
+            name = "id_auto_repair",
             column = @Column(name = "id_auto_repair", nullable = false, length = 10)
     )
+    @JsonProperty("id_auto_repair")
     private IdAutoRepair idAutoRepair;
 
     @Getter
     @Embedded
     @AttributeOverride(
-            name = "idUserAccount",
+            name = "id_user_account",
             column = @Column(name = "id_user_account", nullable = false, length = 10)
     )
+    @JsonProperty("id_user_account")
     private IdUserAccount idUserAccount;
 
     /**
@@ -50,6 +61,7 @@ public class Rating extends AuditableAbstractAggregateRoot<Rating> {
      * @param command createProfileCommand containing rating details
      */
     public Rating(CreateRatingCommand command) {
+        this.idRating = command.idRating();
         this.starRating = command.starRating();
         this.comment = command.comment();
         this.idAutoRepair = command.idAutoRepair();
@@ -62,6 +74,8 @@ public class Rating extends AuditableAbstractAggregateRoot<Rating> {
     public void updateRating(UpdateRatingCommand command) {
         this.starRating = command.starRating();
         this.comment = command.comment();
+        this.idAutoRepair = command.idAutoRepair();
+        this.idUserAccount = command.idUserAccount();
     }
 
     public String getIdAutoRepairValue() {

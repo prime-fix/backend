@@ -25,6 +25,15 @@ public interface RatingRepository extends JpaRepository<Rating, String> {
      */
     boolean existsByIdUserAccount(IdUserAccount idUserAccount);
 
+    /**
+     * Check if a rating exists by its auto repair ID and user account ID.
+     *
+     * @param idAutoRepair the username of the auto repair
+     * @param idUserAccount the ID of the user account to exclude
+     * @return true if the user account exists, false otherwise
+     */
+    boolean existsByIdAutoRepairAndIdUserAccount(IdAutoRepair idAutoRepair, IdUserAccount idUserAccount);
+
     /** Custom query method to find a rating by idUserAccount.
      *
      * @param idUserAccount the ID of the user account to search for

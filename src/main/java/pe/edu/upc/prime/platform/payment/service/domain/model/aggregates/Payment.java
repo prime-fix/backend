@@ -1,5 +1,6 @@
 package pe.edu.upc.prime.platform.payment.service.domain.model.aggregates;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -13,13 +14,21 @@ import pe.edu.upc.prime.platform.shared.domain.model.aggregates.AuditableAbstrac
 @Table(name="payments")
 public class Payment extends AuditableAbstractAggregateRoot<Payment>{
 
+    @Id
+    @Getter
+    @Column(name = "id_payment", nullable = false, unique = true)
+    @JsonProperty("id_payment")
+    private String idPayment;
+
     @Getter
     @Column(name = "card_number", nullable = false, length = 20)
+    @JsonProperty("card_number")
     private String cardNumber;
 
     @Getter
     @Enumerated(EnumType.STRING)
     @Column(name = "card_type", nullable = false, length = 20)
+    @JsonProperty("card_type")
     private CardType cardType;
 
     @Getter
@@ -39,9 +48,10 @@ public class Payment extends AuditableAbstractAggregateRoot<Payment>{
     @Getter
     @Embedded
     @AttributeOverride(
-            name = "idUserAccount",
+            name = "id_user_account",
             column = @Column(name = "id_user_account", nullable = false, length = 10)
     )
+    @JsonProperty("id_user_account")
     private IdUserAccount idUserAccount;
 
     /**
@@ -56,6 +66,7 @@ public class Payment extends AuditableAbstractAggregateRoot<Payment>{
       * @param command createPaymentCommand containing payment details
       */
     public Payment(CreatePaymentCommand command) {
+        this.idPayment = command.idPayment();
         this.cardNumber = command.cardNumber();
         this.cardType = command.cardType();
         this.month = command.month();
@@ -75,16 +86,12 @@ public class Payment extends AuditableAbstractAggregateRoot<Payment>{
         this.ccv = command.ccv();
     }
 
-    /**
-     * Retorna el id del usuario asociado al pago desde el Value Object.
-     */
+
     public String getIdUserAccountValue() {
         return idUserAccount != null ? idUserAccount.getIdUserAccount() : null;
     }
 
-    /**
-     * Retorna una versión enmascarada del número de tarjeta.
-     */
+
     public String getMaskedCardNumber() {
         if (cardNumber == null || cardNumber.length() <= 4) {
             return cardNumber;
