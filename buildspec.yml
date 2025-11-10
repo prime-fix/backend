@@ -22,8 +22,7 @@ phases:
     commands:
       - echo "Pushing image to ECR..."
       - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$REPOSITORY_NAME:$IMAGE_TAG
-      - echo "Deploying new version to App Runner..."
-      - aws apprunner start-deployment --service-arn $SERVICE_ARN
-
+      - echo "Build and push complete"
+      
 artifacts:
   files: []
