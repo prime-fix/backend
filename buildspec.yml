@@ -2,26 +2,28 @@ version: 0.2
 
 env:
   variables:
-    AWS_REGION: "us-east-1"
+    AWS_REGION: "us-east-2"
     REPOSITORY_NAME: "prime-fix-backend"
     IMAGE_TAG: "latest"
 
 phases:
   pre_build:
     commands:
-      - echo "Authenticating AMAZON ECR..."
+      - echo "Authenticating to Amazon ECR..."
       - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
+
   build:
     commands:
-      - echo "Compiling Docker image (Java 25)..."
+      - echo "Building Docker image (Java 25)..."
       - docker build -t $REPOSITORY_NAME .
       - docker tag $REPOSITORY_NAME:$IMAGE_TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$REPOSITORY_NAME:$IMAGE_TAG
+
   post_build:
     commands:
-      - echo "Uploading Docker image to ECR..."
+      - echo "Pushing image to ECR..."
       - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$REPOSITORY_NAME:$IMAGE_TAG
-      - echo "Starting deployment to AWS App Runner..."
-      - aws apprunner start-deployment --service-arn arn:aws:apprunner:$AWS_REGION:$AWS_ACCOUNT_ID:service/prime-fix-backend/xxxxxxxxxxxx
+      - echo "Deploying new version to App Runner..."
+      - aws apprunner start-deployment --service-arn $SERVICE_ARN
 
 artifacts:
   files: []
