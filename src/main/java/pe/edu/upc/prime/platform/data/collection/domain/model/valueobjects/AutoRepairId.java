@@ -1,4 +1,4 @@
-package pe.edu.upc.center.data_collection.data.domain.model.valueobjects;
+package pe.edu.upc.prime.platform.data.collection.domain.model.valueobjects;
 
 public record AutoRepairId(Long autoRepairId) {
 

@@ -1,13 +1,10 @@
-package pe.edu.upc.center.data_collection.data.application.internal.queryservices;
+package pe.edu.upc.prime.platform.data.collection.application.internal.queryservices;
 
 import org.springframework.stereotype.Service;
-import pe.edu.upc.center.data_collection.data.domain.model.aggregates.Visit;
-import pe.edu.upc.center.data_collection.data.domain.model.queries.GetAllVisitsQuery;
-import pe.edu.upc.center.data_collection.data.domain.model.queries.GetVisitByIdAutoRepair;
-import pe.edu.upc.center.data_collection.data.domain.model.queries.GetVisitByIdQuery;
-import pe.edu.upc.center.data_collection.data.domain.model.queries.GetVisitByIdVehicle;
-import pe.edu.upc.center.data_collection.data.domain.services.VisitQueryService;
-import pe.edu.upc.center.data_collection.data.infrastructure.persistance.jpa.repositories.VisitRepository;
+import pe.edu.upc.prime.platform.data.collection.domain.model.aggregates.Visit;
+import pe.edu.upc.prime.platform.data.collection.domain.model.queries.*;
+import pe.edu.upc.prime.platform.data.collection.domain.services.VisitQueryService;
+import pe.edu.upc.prime.platform.data.collection.infrastructure.persistance.jpa.repositories.VisitRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -28,16 +25,18 @@ public class VisitQueryServiceImpl implements VisitQueryService {
 
     @Override
     public Optional<Visit> handle(GetVisitByIdQuery query) {
-        return this.visitRepository.findById(query.idVisit());
+        return this.visitRepository.findById(Long.valueOf(query.visitId()));
     }
 
     @Override
-    public Optional<Visit> handle(GetVisitByIdAutoRepair query) {
-        return this.visitRepository.findByIdAutoRepair(query.idAutoRepair());
+    public List<Visit> handle(GetVisitByVehicleIdQuery query) {
+        return this.visitRepository.findByVehicleId(query.vehicleId());
     }
 
     @Override
-    public Optional<Visit> handle(GetVisitByIdVehicle query) {
-        return this.visitRepository.findByIdVehicle(query.idVehicle());
+    public List<Visit> handle(GetVisitByAutoRepairIdQuery query) {
+        return this.visitRepository.findByAutoRepairId(query.autoRepairId());
     }
+
+
 }

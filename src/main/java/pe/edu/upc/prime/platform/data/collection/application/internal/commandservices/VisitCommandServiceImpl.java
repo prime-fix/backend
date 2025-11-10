@@ -1,32 +1,42 @@
-package pe.edu.upc.center.data_collection.data.application.internal.commandservices;
-
+package pe.edu.upc.prime.platform.data.collection.application.internal.commandservices;
 
 import org.springframework.stereotype.Service;
-import pe.edu.upc.center.data_collection.data.domain.model.aggregates.Visit;
-import pe.edu.upc.center.data_collection.data.domain.model.commands.CreateVisitCommand;
-import pe.edu.upc.center.data_collection.data.domain.services.VisitCommandService;
-import pe.edu.upc.center.data_collection.data.infrastructure.persistance.jpa.repositories.VisitRepository;
+import pe.edu.upc.prime.platform.data.collection.domain.model.aggregates.Visit;
+import pe.edu.upc.prime.platform.data.collection.domain.model.commands.CreateVisitCommand;
+import pe.edu.upc.prime.platform.data.collection.domain.model.commands.DeleteVisitCommand;
+import pe.edu.upc.prime.platform.data.collection.domain.services.VisitCommandService;
+import pe.edu.upc.prime.platform.data.collection.infrastructure.persistance.jpa.repositories.VisitRepository;
 
 @Service
 public class VisitCommandServiceImpl implements VisitCommandService {
 
     private final VisitRepository visitRepository;
+
     public VisitCommandServiceImpl(VisitRepository visitRepository) {
         this.visitRepository = visitRepository;
     }
 
     @Override
-    public Long handle(CreateVisitCommand command) {
+    public String handle(CreateVisitCommand command) {
 
-        if (this.visitRepository.existsByIdVehicle(command.idVehicle())) {
-            throw new IllegalArgumentException("This Vehicle already exists");
-        }
         var visit = new Visit(command);
-        try {
+        try{
             this.visitRepository.save(visit);
-        }catch (Exception e){
-            throw new IllegalArgumentException("Error while saving visit");
+        } catch (Exception e){
+            throw new IllegalArgumentException("Error while saving visit:"+ e.getMessage());
         }
-        return visit.getId();
+        return visit.getVisitId();
+    }
+
+    @Override
+    public void handle(DeleteVisitCommand command) {
+        if(!this.visitRepository.existsById(Long.valueOf(command.visitId()))){
+            throw new IllegalArgumentException("Error while deleting visit:"+ command.visitId());
+        }
+        try {
+            this.visitRepository.deleteById(Long.valueOf(command.visitId()));
+        }catch (Exception e){
+            throw new IllegalArgumentException("Error while deleting visit:"+ e.getMessage());
+        }
     }
 }

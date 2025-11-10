@@ -1,9 +1,10 @@
-package pe.edu.upc.center.data_collection.data.domain.services;
+package pe.edu.upc.prime.platform.data.collection.domain.services;
 
-import pe.edu.upc.center.data_collection.data.domain.model.aggregates.Visit;
-import pe.edu.upc.center.data_collection.data.domain.model.commands.CreateVisitCommand;
+import pe.edu.upc.prime.platform.data.collection.domain.model.commands.CreateVisitCommand;
+import pe.edu.upc.prime.platform.data.collection.domain.model.commands.DeleteVisitCommand;
 
 public interface VisitCommandService {
 
-    Long handle(CreateVisitCommand command);
+    String handle(CreateVisitCommand command);
+    void handle(DeleteVisitCommand command);
 }

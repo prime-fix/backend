@@ -1,73 +1,61 @@
-package pe.edu.upc.center.data_collection.data.domain.model.aggregates;
+package pe.edu.upc.prime.platform.data.collection.domain.model.aggregates;
 
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
-
-import pe.edu.upc.center.data_collection.data.domain.model.commands.CreateVisitCommand;
-import pe.edu.upc.center.data_collection.data.domain.model.valueobjects.VehicleId;
-import pe.edu.upc.center.data_collection.data.domain.model.valueobjects.AutoRepairId;
-
-import pe.edu.upc.center.data_collection.data.domain.model.valueobjects.Service;
-import pe.edu.upc.center.data_collection.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
+import pe.edu.upc.prime.platform.data.collection.domain.model.commands.CreateVisitCommand;
+import pe.edu.upc.prime.platform.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
 
 import java.util.Date;
 
 @Entity
-@Table(name = "visit")
-public class Visit extends AuditableAbstractAggregateRoot<Visit>{
+@Table(name="visits")
+public class Visit extends AuditableAbstractAggregateRoot<Visit>
+{
+    @Id
+    @Getter
+    @Column(name="visit_id", nullable = false, unique = true)
+    @JsonProperty("visit_id")
+    private String visitId;
 
     @Getter
-    @Embedded
-    @AttributeOverrides({
-            @AttributeOverride(name="vehicle_id",column = @Column(name = "id", nullable = false))
-    })
-    private VehicleId idVehicle;
-
-    @Getter
-    @Embedded
-    @AttributeOverrides({
-            @AttributeOverride(name="type", column = @Column(name="service_type",nullable = false))
-    })
-    private Service service;
-
-    @Getter
-    @NotNull
-    @NotBlank
-    @Column(name="failure", length = 100, nullable = false)
+    @Column(name="failure", nullable = false)
     private String failure;
 
     @Getter
-    @NotNull
+    @Column(name="vehicle_id", nullable = false)
+    private String vehicleId;
+
+    @Getter
     @Temporal(TemporalType.DATE)
-    @Column(name="time_visit", nullable = false)
+    @Column(name = "time_visit", nullable = false)
     private Date timeVisit;
 
-    /*@Getter
-    @Embedded
-    @AttributeOverrides({
-            @AttributeOverride(name="id_expected_visit", column = @Column(name="id_expected_visit", nullable = false))
-    })
-    private IdExpectedVisit idExpectedVisit;
-    */
     @Getter
-    @Embedded
-    @AttributeOverrides({
-            @AttributeOverride(name="auto_repair_id", column = @Column(name = "auto_repair_id", nullable = false))
-    })
-    private AutoRepairId idAutoRepair;
+    @Column(name = "auto_repair_id", nullable = false)
+    private String autoRepairId;
 
+    @Getter
+    @Column(name = "service_id", nullable = false)
+    private String serviceId;
 
     public Visit(CreateVisitCommand command){
-        this.idVehicle = command.idVehicle();
+        this.visitId= command.visitId();
         this.failure=command.failure();
+        this.vehicleId= command.vehicleId();
         this.timeVisit=command.timeVisit();
-        this.idAutoRepair= command.idAutoRepair();
-        this.service= command.service();
-        /*this.idExpectedVisit= command.idExpectedVisit();*/
+        this.autoRepairId= command.autoRepairId();
+        this.serviceId= command.serviceId();
     }
 
-    public Visit(){};
+    public void updateVisit(CreateVisitCommand command){
+        this.failure=command.failure();
+        this.vehicleId= command.vehicleId();
+        this.timeVisit=command.timeVisit();
+        this.autoRepairId= command.autoRepairId();
+        this.serviceId= command.serviceId();
+    }
 
+    public Visit() {}
 }

@@ -1,4 +1,4 @@
 package pe.edu.upc.prime.platform.data.collection.domain.model.queries;
 
-public record GetAllVisitsQuery() {
+public record GetVisitByAutoRepairIdQuery(String autoRepairId) {
 }

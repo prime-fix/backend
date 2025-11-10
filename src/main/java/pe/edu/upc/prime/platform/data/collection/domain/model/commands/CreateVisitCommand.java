@@ -1,11 +1,10 @@
-package pe.edu.upc.center.data_collection.data.domain.model.commands;
-
-import pe.edu.upc.center.data_collection.data.domain.model.valueobjects.Service;
-import pe.edu.upc.center.data_collection.data.domain.model.valueobjects.IdAutoRepair;
-import pe.edu.upc.center.data_collection.data.domain.model.valueobjects.IdVehicle;
+package pe.edu.upc.prime.platform.data.collection.domain.model.commands;
 
 import java.util.Date;
 
-public record CreateVisitCommand(VehicleId vehicleId, Service service, String failure, Date timeVisit, AutoRepairId autoRepairId) {
+public record CreateVisitCommand(String visitId, String failure, String vehicleId,
+Date timeVisit, String autoRepairId, String serviceId) {
+
+
 
 }

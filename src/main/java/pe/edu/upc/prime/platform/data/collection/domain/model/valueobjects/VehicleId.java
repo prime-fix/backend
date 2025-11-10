@@ -1,12 +1,14 @@
-package pe.edu.upc.center.data_collection.data.domain.model.valueobjects;
+package pe.edu.upc.prime.platform.data.collection.domain.model.valueobjects;
 
 public record VehicleId(Long vehicleId) {
     public VehicleId{
-        if(vehicleId <0 ){
+        if(vehicleId<0){
             throw new IllegalArgumentException("VehicleId has to be positive");
         }
     }
-    public Vehicle(){
+
+    public VehicleId(){
         this(0L);
     }
+
 }
