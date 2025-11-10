@@ -9,7 +9,7 @@ import java.util.Objects;
  * @param vehicleId the unique identifier for the vehicle
  */
 @Embeddable
-public record VehicleId(Long vehicleId) {
+public record VehicleId(String vehicleId) {
     /**
      * Constructor for IdVehicle with validation.
      *
@@ -17,7 +17,7 @@ public record VehicleId(Long vehicleId) {
      * @throws IllegalArgumentException if profileId is negative
      */
     public VehicleId {
-        if (Objects.isNull(vehicleId) || vehicleId < 0) {
+        if (Objects.isNull(vehicleId) || vehicleId.isBlank()) {
             throw new IllegalArgumentException("Vehicle ID cannot be null or negative");
         }
     }
@@ -26,6 +26,6 @@ public record VehicleId(Long vehicleId) {
      * Default constructor for IdVehicle with a default value of 0.
      */
     public VehicleId() {
-        this(0L);
+        this(null);
     }
 }

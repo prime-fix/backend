@@ -9,7 +9,7 @@ import java.util.Objects;
  * @param visitId the unique identifier for the Visit
  */
 @Embeddable
-public record VisitId(Long visitId) {
+public record VisitId(String visitId) {
     /**
      * Constructor for IdVisit with validation.
      *
@@ -17,15 +17,15 @@ public record VisitId(Long visitId) {
      * @throws IllegalArgumentException if IdVisit is negative
      */
     public VisitId {
-        if (Objects.isNull(visitId) || visitId < 0) {
+        if (Objects.isNull(visitId) || visitId.isBlank()) {
             throw new IllegalArgumentException("Visit ID cannot be null or negative");
         }
     }
 
     /**
-     * Default constructor for ProfileId with a default value of 0.
+     * Default constructor for IdVehicle with a default value of 0.
      */
     public VisitId() {
-        this(0L);
+        this(null);
     }
 }

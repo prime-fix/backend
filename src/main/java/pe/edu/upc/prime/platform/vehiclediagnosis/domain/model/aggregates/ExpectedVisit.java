@@ -3,7 +3,6 @@ package pe.edu.upc.prime.platform.vehiclediagnosis.domain.model.aggregates;
 import jakarta.persistence.*;
 import lombok.Getter;
 import pe.edu.upc.prime.platform.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
-import pe.edu.upc.prime.platform.vehiclediagnosis.domain.model.commands.UpdateDiagnosticStatusCommand;
 import pe.edu.upc.prime.platform.vehiclediagnosis.domain.model.valueobjects.VisitId;
 
 
@@ -31,7 +30,7 @@ public class ExpectedVisit extends AuditableAbstractAggregateRoot<ExpectedVisit>
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name = "visitId",
-                    column = @Column(name = "visit_id", nullable = false))
+                    column = @Column(name = "id_visit", nullable = false))
     })
     private VisitId visitId;
 
@@ -42,9 +41,21 @@ public class ExpectedVisit extends AuditableAbstractAggregateRoot<ExpectedVisit>
     /*
      * Default constructor for JPA.
      */
-    protected ExpectedVisit() {  }
+    public ExpectedVisit() {  }
 
-    public void updateDiagnosticStatus(UpdateDiagnosticStatusCommand command) {
-        this.stateVisit = command.newState();
+    public ExpectedVisit(String idExpected, String stateVisit, VisitId visitId, Boolean isScheduled) {
+        this.idExpected = idExpected;
+        this.stateVisit = stateVisit;
+        this.visitId = visitId;
+        this.idScheduled = isScheduled;
+    }
+
+    public boolean makeAScheduled() {
+        if (!this.idScheduled) {
+            this.idScheduled = true;
+            this.stateVisit = "SCHEDULED";
+            return true;
+        }
+        return false;
     }
 }

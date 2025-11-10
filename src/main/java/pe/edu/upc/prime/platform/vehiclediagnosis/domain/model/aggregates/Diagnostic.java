@@ -3,7 +3,8 @@ package pe.edu.upc.prime.platform.vehiclediagnosis.domain.model.aggregates;
 import jakarta.persistence.*;
 import lombok.Getter;
 import pe.edu.upc.prime.platform.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
-import pe.edu.upc.prime.platform.vehiclediagnosis.domain.model.commands.CreateDiagnosticCommand;
+import pe.edu.upc.prime.platform.vehiclediagnosis.domain.model.commands.CreateDiagnosisCommand;
+import pe.edu.upc.prime.platform.vehiclediagnosis.domain.model.commands.UpdateDiagnosisCommand;
 import pe.edu.upc.prime.platform.vehiclediagnosis.domain.model.valueobjects.VehicleId;
 
 @Entity
@@ -11,6 +12,7 @@ import pe.edu.upc.prime.platform.vehiclediagnosis.domain.model.valueobjects.Vehi
 public class Diagnostic extends AuditableAbstractAggregateRoot<Diagnostic> {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Getter
     @Column(name = "id_diagnostic", nullable = false, unique = true)
     private String idDiagnostic;
@@ -22,8 +24,8 @@ public class Diagnostic extends AuditableAbstractAggregateRoot<Diagnostic> {
     @Getter
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name = "vehicleId",
-                    column = @Column(name = "vehicle_id", nullable = false))
+            @AttributeOverride(name = "idVehicle",
+                    column = @Column(name = "id_vehicle", nullable = false))
     })
     private VehicleId vehicleId;
 
@@ -31,16 +33,30 @@ public class Diagnostic extends AuditableAbstractAggregateRoot<Diagnostic> {
     @Column(name = "diagnosis", nullable = false)
     private String diagnosis;
 
-    public Diagnostic(CreateDiagnosticCommand command) {
+    @Getter
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "expected_visit_id", referencedColumnName = "id_expected")
+    private ExpectedVisit expectedVisit;
+
+    public Diagnostic(CreateDiagnosisCommand command) {
         this.vehicleId = command.vehicleId();
         this.diagnosis = command.diagnosis();
         this.price = command.price();
     }
-    /*@Getter
-    @Embedded
-    @AttributeOverrides({
-            @AttributeOverride(name = "expectedVisit",
-                    column = @Column(name = "expected_visit", nullable = false))
-    })
-    private ExpectedVisit expectedVisit;*/
+
+    public Diagnostic() {
+    }
+
+    public void updateDiagnostic(UpdateDiagnosisCommand command) {
+        this.idDiagnostic = command.diagnosisId();
+        this.diagnosis = command.diagnosis();
+        this.price = command.price();
+    }
+
+    /*public static Diagnostic sendNewDiagnostic(VehicleId vehicleId, ExpectedVisit expectedVisit) {
+        String diagnosticId = "DIAG_" + System.currentTimeMillis();
+        return new Diagnostic(new CreateVehicleDiagnosisCommand(
+                        diagnosticId, vehicleId, "INITIAL_DIAGNOSIS", 0.0f, expectedVisit
+                ));
+    }*/
 }
