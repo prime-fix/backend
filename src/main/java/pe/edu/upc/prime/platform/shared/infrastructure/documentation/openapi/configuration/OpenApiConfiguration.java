@@ -1,5 +1,7 @@
 package pe.edu.upc.prime.platform.shared.infrastructure.documentation.openapi.configuration;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.v3.core.jackson.ModelResolver;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.ExternalDocumentation;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -22,7 +24,7 @@ public class OpenApiConfiguration {
      * @return an OpenAPI object with the configured settings
      */
     @Bean
-    public OpenAPI learningPlatformOpenApi() {
+    public OpenAPI primePlatformOpenApi() {
         // General configuration
         var openApi = new OpenAPI();
         openApi

@@ -16,11 +16,17 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Getter
 public abstract class AuditableModel {
 
+    /**
+     * The first created date of the auditable model.
+     */
     @CreatedDate
     @Column(nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime createdAt;
 
+    /**
+     * The last modified date of the auditable model.
+     */
     @LastModifiedDate
     @Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
