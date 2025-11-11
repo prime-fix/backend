@@ -7,11 +7,18 @@ import pe.edu.upc.prime.platform.data.collection.domain.model.commands.DeleteVis
 import pe.edu.upc.prime.platform.data.collection.domain.services.VisitCommandService;
 import pe.edu.upc.prime.platform.data.collection.infrastructure.persistance.jpa.repositories.VisitRepository;
 
+/**
+ * Implementation of VisitCommandService.
+ */
 @Service
 public class VisitCommandServiceImpl implements VisitCommandService {
 
     private final VisitRepository visitRepository;
 
+    /**
+     * Constructor for VisitCommandServiceImpl.
+     * @param visitRepository the visit repository
+     */
     public VisitCommandServiceImpl(VisitRepository visitRepository) {
         this.visitRepository = visitRepository;
     }

@@ -6,6 +6,15 @@ import jakarta.validation.constraints.NotNull;
 
 import java.util.Date;
 
+/**
+ * Request record for creating a new visit.
+ * @param visitId  the ID of the visit
+ * @param vehicleId the ID of the vehicle
+ * @param serviceId the ID of the service
+ * @param failure the failure description
+ * @param timeVisit  the time of the visit
+ * @param autoRepairId the ID of the auto repair
+ */
 public record CreateVisitRequest(
 
         @NotBlank

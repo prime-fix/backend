@@ -9,11 +9,18 @@ import pe.edu.upc.prime.platform.data.collection.infrastructure.persistance.jpa.
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Implementation of VisitQueryService.
+ */
 @Service
 public class VisitQueryServiceImpl implements VisitQueryService {
 
     private final VisitRepository visitRepository;
 
+    /**
+     * Constructor for VisitQueryServiceImpl.
+     * @param visitRepository the visit repository
+     */
     public VisitQueryServiceImpl(VisitRepository visitRepository) {
         this.visitRepository = visitRepository;
     }
