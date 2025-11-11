@@ -1,4 +1,4 @@
-package pe.edu.upc.prime.platform.workshop.catalog.domain.model.aggregates;
+package pe.edu.upc.prime.platform.workshopCatalog.domain.model.aggregates;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;

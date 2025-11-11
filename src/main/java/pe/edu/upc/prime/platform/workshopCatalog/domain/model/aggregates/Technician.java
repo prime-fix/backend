@@ -1,11 +1,12 @@
-package pe.edu.upc.prime.platform.workshop.catalog.domain.model.aggregates;
+package pe.edu.upc.prime.platform.workshopCatalog.domain.model.aggregates;
 
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
-import pe.edu.upc.prime.platform.workshop.catalog.domain.model.valueObjects.TechnicianSpecialty;
+import pe.edu.upc.prime.platform.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
+import pe.edu.upc.prime.platform.workshopCatalog.domain.model.valueObjects.TechnicianSpecialty;
 //import pe.edu.upc.prime.platform.workshop.catalog.domain.model.aggregates.AuditableAbstractAggregateRoot;
 
 @Entity
