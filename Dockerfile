@@ -2,6 +2,11 @@
 FROM eclipse-temurin:25-jdk AS build
 WORKDIR /app
 COPY . .
+
+# Give permissions
+RUN chmod +x mvnw
+
+# Build Project
 RUN ./mvnw -Dmaven.test.skip=true clean package
 
 # Run .jar
