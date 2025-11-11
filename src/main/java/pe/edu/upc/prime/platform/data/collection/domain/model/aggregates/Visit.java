@@ -9,6 +9,9 @@ import pe.edu.upc.prime.platform.shared.domain.model.aggregates.AuditableAbstrac
 
 import java.util.Date;
 
+/**
+ * Represents a visit in the system
+ */
 @Entity
 @Table(name="visits")
 public class Visit extends AuditableAbstractAggregateRoot<Visit>
@@ -40,6 +43,10 @@ public class Visit extends AuditableAbstractAggregateRoot<Visit>
     @Column(name = "service_id", nullable = false)
     private String serviceId;
 
+    /**
+     *  Update the profile with the specified detail
+     * @param command the UpdateVisitCommand containing the new visit details
+     */
     public Visit(CreateVisitCommand command){
         this.visitId= command.visitId();
         this.failure=command.failure();
@@ -49,6 +56,10 @@ public class Visit extends AuditableAbstractAggregateRoot<Visit>
         this.serviceId= command.serviceId();
     }
 
+    /**
+     *Update the visit instance from a CreateVisitCommand
+     * @param command createVisitCommand containing visit details.
+     */
     public void updateVisit(CreateVisitCommand command){
         this.failure=command.failure();
         this.vehicleId= command.vehicleId();
@@ -57,5 +68,8 @@ public class Visit extends AuditableAbstractAggregateRoot<Visit>
         this.serviceId= command.serviceId();
     }
 
+    /**
+     *Default constructor for JPA
+     */
     public Visit() {}
 }

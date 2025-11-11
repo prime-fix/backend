@@ -9,7 +9,5 @@ import java.util.List;
 @Repository
 public interface ServiceRepository extends JpaRepository<Service, Long> {
 
-   /*List<Service> findByAutoRepairId(String autoRepairId);
-}
-   */
+   /*List<Service> findByAutoRepairId(String autoRepairId); */
 }

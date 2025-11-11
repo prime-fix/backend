@@ -1,5 +1,9 @@
 package pe.edu.upc.prime.platform.data.collection.domain.model.valueobjects;
 
+/**
+ * Value Object representing a AutoRepair ID
+ * @param autoRepairId the autoRepairId
+ */
 public record AutoRepairId(Long autoRepairId) {
 
     public AutoRepairId{

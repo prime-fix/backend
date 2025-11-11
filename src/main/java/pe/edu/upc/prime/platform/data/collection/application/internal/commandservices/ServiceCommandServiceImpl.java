@@ -10,12 +10,18 @@ import pe.edu.upc.prime.platform.shared.domain.exceptions.NotFoundIdException;
 
 import java.util.Optional;
 
-
+/**
+ * Implementation of ServiceCommandService.
+ */
 @org.springframework.stereotype.Service
 public class ServiceCommandServiceImpl implements ServiceCommandService {
 
     private final ServiceRepository serviceRepository;
 
+    /**
+     * Constructor for ServiceCommandServiceImpl.
+     * @param serviceRepository the service repository
+     */
     public ServiceCommandServiceImpl(ServiceRepository serviceRepository) {
         this.serviceRepository = serviceRepository;
     }
