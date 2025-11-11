@@ -7,9 +7,26 @@ import pe.edu.upc.prime.platform.data.collection.domain.model.aggregates.Visit;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Repository interface for managing Visit entities.
+ *
+ * <p>This interface extends JpaRepository to provide CRUD operations and custom query methods
+ * for the Visit entity</p>
+ */
 @Repository
 public interface VisitRepository extends JpaRepository<Visit,Long> {
+    /**
+     * Custom query method to check the existence of a visit by vehicleId
+     * @param vehicleId the vehicleId to search for vehicleId
+     * @return an Optional containing the found Visit if found, or empty if not found
+     */
     List<Visit> findByVehicleId(String vehicleId);
+
+    /**
+     * Custom query method to find visits by autoRepairId
+     * @param autoRepairId the autoRepairId to search for ID
+     * @return a list of visits matching the auto repair ID
+     */
     List<Visit> findByAutoRepairId(String autoRepairId);
 
 }
