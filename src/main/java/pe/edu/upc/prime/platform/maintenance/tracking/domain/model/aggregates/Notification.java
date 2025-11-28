@@ -17,11 +17,6 @@ import java.time.LocalDate;
 @Table(name = "notifications")
 public class Notification extends AuditableAbstractAggregateRoot<Notification> {
 
-    @Id
-    @Getter
-    @Column(name="id_notification", nullable = false, unique = true)
-    @JsonProperty("id_notification")
-    private String idNotification;
 
     @Getter
     @Column(name = "message", nullable = false)
@@ -59,7 +54,6 @@ public class Notification extends AuditableAbstractAggregateRoot<Notification> {
      * @param command the create notification command
      */
     public Notification(CreateNotificationCommand command) {
-        this.idNotification = command.idNotification();
         this.message = command.message();
         this.read = command.read();
         this.idVehicle = command.idVehicle();

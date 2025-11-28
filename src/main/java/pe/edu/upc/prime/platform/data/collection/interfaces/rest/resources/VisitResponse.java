@@ -2,6 +2,8 @@ package pe.edu.upc.prime.platform.data.collection.interfaces.rest.resources;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.Date;
 
 /**
@@ -18,7 +20,7 @@ public record VisitResponse(
         String visitId, String failure ,
         @JsonProperty("vehicle_id")
         String vehicleId,
-        Date timeVisit,
+        LocalDateTime timeVisit,
         @JsonProperty("auto_repair_id")
         String autoRepairId,
         @JsonProperty("service_id")

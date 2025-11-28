@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpServerErrorException;
 import pe.edu.upc.prime.platform.data.collection.domain.model.commands.DeleteServiceCommand;
 import pe.edu.upc.prime.platform.data.collection.domain.model.queries.GetAllServicesQuery;
 import pe.edu.upc.prime.platform.data.collection.domain.model.queries.GetServiceByAutoRepairIdQuery;
@@ -29,6 +30,7 @@ import pe.edu.upc.prime.platform.shared.interfaces.rest.resources.BadRequestResp
 import pe.edu.upc.prime.platform.shared.interfaces.rest.resources.InternalServerErrorResponse;
 import pe.edu.upc.prime.platform.shared.interfaces.rest.resources.NotFoundResponse;
 import pe.edu.upc.prime.platform.shared.interfaces.rest.resources.ServiceUnavailableResponse;
+
 
 import java.util.List;
 import java.util.Objects;
@@ -84,7 +86,7 @@ public class ServicesController {
             @ApiResponse(responseCode = "500", description = "Internal server error - Unexpected error",
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = InternalServerErrorResponse.class))),
+                            schema = @Schema(implementation = HttpServerErrorException.InternalServerError.class))),
             @ApiResponse(responseCode = "503", description = "Service unavailable - Persistence error",
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,

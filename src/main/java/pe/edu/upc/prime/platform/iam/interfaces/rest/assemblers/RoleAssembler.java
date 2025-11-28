@@ -20,7 +20,7 @@ public class RoleAssembler {
      * @return the corresponding CreateRoleCommand object
      */
     public static CreateRoleCommand toCommandFromRequest(CreateRoleRequest request) {
-        return new CreateRoleCommand(request.idRole(),
+        return new CreateRoleCommand(
                 new RoleName(request.name()), new RoleDescription(request.description()));
     }
 
@@ -43,6 +43,6 @@ public class RoleAssembler {
      * @return the corresponding RoleResponse object
      */
     public static RoleResponse toResponseFromEntity(Role entity) {
-        return new RoleResponse(entity.getIdRole(), entity.getRoleName().name(), entity.getRoleDescription().description());
+        return new RoleResponse(entity.getId().toString(), entity.getRoleName().name(), entity.getRoleDescription().description());
     }
 }

@@ -16,11 +16,6 @@ import pe.edu.upc.prime.platform.shared.domain.model.aggregates.AuditableAbstrac
 @Table(name = "roles")
 public class Role extends AuditableAbstractAggregateRoot<Role> {
 
-    @Id
-    @Getter
-    @Column(name = "id_role", nullable = false, unique = true)
-    @JsonProperty("id_role")
-    private String idRole;
 
     @Getter
     @Embedded
@@ -50,7 +45,6 @@ public class Role extends AuditableAbstractAggregateRoot<Role> {
      * @param command the command containing role details
      */
     public Role(CreateRoleCommand command) {
-        this.idRole = command.idRole();
         this.roleName = command.roleName();
         this.roleDescription = command.roleDescription();
     }

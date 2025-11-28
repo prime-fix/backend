@@ -39,6 +39,7 @@ public class RoleCommandServiceImpl implements RoleCommandService {
      */
     @Override
     public String handle(CreateRoleCommand command) {
+        /*
         var roleId = command.idRole();
         var roleName = command.roleName();
         var roleDescription = command.roleDescription();
@@ -57,7 +58,7 @@ public class RoleCommandServiceImpl implements RoleCommandService {
             throw new IllegalArgumentException("[RoleCommandServiceImpl] Role with the same description " +
                     roleDescription.description() + " already exists.");
         }
-
+        */
         var role = new Role(command);
         try {
             this.roleRepository.save(role);
@@ -65,7 +66,7 @@ public class RoleCommandServiceImpl implements RoleCommandService {
             throw new PersistenceException("[RoleCommandServiceImpl] Error while saving Role: "
                     + e.getMessage());
         }
-        return role.getIdRole();
+        return role.getId().toString();
     }
 
     /**
@@ -80,21 +81,21 @@ public class RoleCommandServiceImpl implements RoleCommandService {
         var roleName = command.roleName();
         var roleDescription = command.roleDescription();
 
-        if (!this.roleRepository.existsById(roleId)) {
+        if (!this.roleRepository.existsById(Long.valueOf(roleId))) {
             throw new NotFoundIdException(Role.class, roleId);
         }
 
-        if (this.roleRepository.existsByRoleNameAndIdRoleIsNot(roleName, roleId)) {
+        if (this.roleRepository.existsByRoleNameAndIdIsNot(roleName, Long.valueOf(roleId))) {
             throw new IllegalArgumentException("[RoleCommandServiceImpl] Role with the same name " +
                     roleName.name() + " already exists.");
         }
 
-        if (this.roleRepository.existsByRoleDescriptionAndIdRoleIsNot(roleDescription, roleId)) {
+        if (this.roleRepository.existsByRoleDescriptionAndIdIsNot(roleDescription, Long.valueOf(roleId))) {
             throw new IllegalArgumentException("[RoleCommandServiceImpl] Role with the same description " +
                     roleDescription.description() + " already exists.");
         }
 
-        var roleToUpdate = this.roleRepository.findById(roleId).get();
+        var roleToUpdate = this.roleRepository.findById(Long.valueOf(roleId)).get();
         roleToUpdate.updateRole(command);
 
         try {
@@ -113,12 +114,12 @@ public class RoleCommandServiceImpl implements RoleCommandService {
      */
     @Override
     public void handle(DeleteRoleCommand command) {
-        if (!this.roleRepository.existsById(command.idRole())) {
+        if (!this.roleRepository.existsById(Long.valueOf(command.idRole()))) {
             throw new NotFoundIdException(Role.class, command.idRole());
         }
 
         try {
-            this.roleRepository.deleteById(command.idRole());
+            this.roleRepository.deleteById(Long.valueOf(command.idRole()));
         } catch (Exception e) {
             throw new PersistenceException("[RoleCommandServiceImpl] Error while deleting Role: "
                     + e.getMessage());

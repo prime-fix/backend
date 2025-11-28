@@ -15,11 +15,6 @@ import java.time.LocalDate;
 @Table(name = "memberships")
 public class Membership extends AuditableAbstractAggregateRoot<Membership> {
 
-    @Id
-    @Getter
-    @Column(name="id_membership", nullable = false, unique = true)
-    @JsonProperty("id_membership")
-    private String idMembership;
 
     @Getter
     @Embedded
@@ -52,7 +47,6 @@ public class Membership extends AuditableAbstractAggregateRoot<Membership> {
      * @param command the command to create a membership
      */
     public Membership(CreateMembershipCommand command) {
-        this.idMembership = command.idMembership();
         this.membershipDescription = command.membershipDescription();
         this.started = command.started();
         this.over = command.over();

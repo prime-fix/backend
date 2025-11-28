@@ -39,7 +39,7 @@ public class UserCommandServiceImpl implements UserCommandService {
      */
     @Override
     public String handle(CreateUserCommand command) {
-        var userId = command.idUser();
+        /*var userId = command.idUser();
         var name = command.name();
         var lastName = command.lastName();
 
@@ -50,7 +50,7 @@ public class UserCommandServiceImpl implements UserCommandService {
         if (this.userRepository.existsByNameAndLastName(name, lastName)) {
             throw new IllegalArgumentException("[UserCommandServiceImpl] User with the same name "
                     + name + " and last name " + lastName + " already exists.");
-        }
+        }*/
         var user = new User(command);
         try {
             this.userRepository.save(user);
@@ -59,7 +59,7 @@ public class UserCommandServiceImpl implements UserCommandService {
             throw new PersistenceException("[UserCommandServiceImpl] Error while creating user: "
                     + e.getMessage());
         }
-        return user.getIdUser();
+        return user.getId().toString();
     }
 
     /**
@@ -74,16 +74,16 @@ public class UserCommandServiceImpl implements UserCommandService {
         var name = command.name();
         var lastName = command.lastName();
 
-        if (!this.userRepository.existsByIdUser(userId)) {
+        if (!this.userRepository.existsById(Long.valueOf(userId))) {
             throw new NotFoundIdException(User.class, userId);
         }
 
-        if (this.userRepository.existsByNameAndLastNameAndIdUserIsNot(userId, lastName, userId)) {
+        if (this.userRepository.existsByNameAndLastNameAndIdIsNot(userId, lastName, Long.valueOf(userId))) {
             throw new IllegalArgumentException("[UserCommandServiceImpl] User with the same name "
                     + name + " and last name " + lastName + " already exists.");
         }
 
-        var userToUpdate = this.userRepository.findById(userId).get();
+        var userToUpdate = this.userRepository.findById(Long.valueOf(userId)).get();
         userToUpdate.updateUser(command);
 
         try {
@@ -102,12 +102,12 @@ public class UserCommandServiceImpl implements UserCommandService {
      */
     @Override
     public void handle(DeleteUserCommand command) {
-        if (!this.userRepository.existsByIdUser(command.idUser())) {
+        if (!this.userRepository.existsById(Long.valueOf(command.idUser()))) {
             throw new NotFoundIdException(User.class, command.idUser());
         }
 
         try {
-            this.userRepository.deleteById(command.idUser());
+            this.userRepository.deleteById(Long.valueOf(command.idUser()));
         } catch (Exception e) {
             throw new PersistenceException("[UserCommandServiceImpl] Error while deleting user: "
                     + e.getMessage());

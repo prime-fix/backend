@@ -7,7 +7,6 @@ import pe.edu.upc.prime.platform.shared.utils.Util;
 /**
  * Request to create a vehicle.
  *
- * @param idVehicle         The unique identifier of the vehicle.
  * @param color             The color of the vehicle.
  * @param model             The model of the vehicle.
  * @param idUser            The identifier of the user associated with the vehicle.
@@ -17,9 +16,7 @@ import pe.edu.upc.prime.platform.shared.utils.Util;
  * @param maintenanceStatus The maintenance status of the vehicle.
  */
 public record CreateVehicleRequest(
-        @NotNull @NotBlank
-        @JsonProperty("id_vehicle")
-        String idVehicle,
+
 
         @NotNull @NotBlank
         @Size(min = 1, max = 50)

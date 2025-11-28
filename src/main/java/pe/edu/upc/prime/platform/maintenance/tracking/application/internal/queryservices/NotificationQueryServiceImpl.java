@@ -49,7 +49,7 @@ public class NotificationQueryServiceImpl implements NotificationQueryService {
      */
     @Override
     public Optional<Notification> handle(GetNotificationByIdQuery query) {
-        return Optional.ofNullable(this.notificationRepository.findById(query.idNotification())
+        return Optional.ofNullable(this.notificationRepository.findById(Long.valueOf(query.idNotification()))
         .orElseThrow(() -> new NotFoundIdException(Notification.class, query.idNotification())));
     }
 }

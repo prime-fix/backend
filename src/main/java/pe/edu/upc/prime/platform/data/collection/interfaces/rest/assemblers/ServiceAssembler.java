@@ -11,7 +11,6 @@ public class ServiceAssembler {
 
     public static CreateServiceCommand toCommandFromRequest(CreateServiceRequest request) {
         return new CreateServiceCommand(
-                request.serviceId(),
                 request.name(),
                 request.description()
         );
@@ -29,7 +28,7 @@ public class ServiceAssembler {
 
     public static ServiceResponse toResponseFromEntity(Service entity){
         return new ServiceResponse(
-                entity.getServiceId(),
+                entity.getId().toString(),
                 entity.getName(),
                 entity.getDescription()
         );

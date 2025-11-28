@@ -19,7 +19,7 @@ public class MembershipAssembler {
      * @return the corresponding CreateMembershipCommand object
      */
     public static CreateMembershipCommand toCommandFromRequest(CreateMembershipRequest request) {
-        return new CreateMembershipCommand(request.idMembership(),
+        return new CreateMembershipCommand(
                 new MembershipDescription(request.description()), request.started(), request.over());
     }
 
@@ -42,7 +42,7 @@ public class MembershipAssembler {
      * @return the corresponding MembershipResponse object
      */
     public static MembershipResponse toResponseFromEntity(Membership entity) {
-        return new MembershipResponse(entity.getIdMembership(), entity.getMembershipDescription().description(),
+        return new MembershipResponse(entity.getId().toString(), entity.getMembershipDescription().description(),
                 entity.getStarted(), entity.getOver());
     }
 }

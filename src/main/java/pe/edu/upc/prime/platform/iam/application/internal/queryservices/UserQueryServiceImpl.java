@@ -46,7 +46,7 @@ public class UserQueryServiceImpl implements UserQueryService {
      */
     @Override
     public Optional<User> handle(GetUserByIdQuery query) {
-        return Optional.ofNullable(this.userRepository.findById(query.idUser())
+        return Optional.ofNullable(this.userRepository.findById(Long.valueOf(query.idUser()))
                 .orElseThrow(() -> new NotFoundIdException(User.class, query.idUser())));
     }
 }

@@ -19,7 +19,7 @@ public class UserAssembler {
      * @return the corresponding CreateUserCommand
      */
     public static CreateUserCommand toCommandFromRequest(CreateUserRequest request) {
-        return new CreateUserCommand(request.idUser(), request.name(),
+        return new CreateUserCommand( request.name(),
                 request.lastName(), request.dni(), request.phoneNumber(), request.idLocation());
     }
 
@@ -44,7 +44,7 @@ public class UserAssembler {
      */
     public static UserResponse toResponseFromEntity(User entity) {
 
-        return new UserResponse(entity.getIdUser(), entity.getName(),
+        return new UserResponse(entity.getId().toString(), entity.getName(),
                 entity.getLastName(), entity.getDni(),
                 entity.getPhoneNumber(), entity.getIdLocation());
     }

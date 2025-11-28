@@ -8,7 +8,6 @@ import jakarta.validation.constraints.Size;
 /**
  * Request to create a user.
  *
- * @param idUser identifier of the user
  * @param name name of the user
  * @param lastName last name of the user
  * @param dni document number of the user
@@ -16,9 +15,6 @@ import jakarta.validation.constraints.Size;
  * @param idLocation identifier of the location
  */
 public record CreateUserRequest(
-        @JsonProperty("id_user")
-        @NotNull @NotBlank
-        String idUser,
 
         @NotNull @NotBlank
         @Size(min = 1, max = 100)

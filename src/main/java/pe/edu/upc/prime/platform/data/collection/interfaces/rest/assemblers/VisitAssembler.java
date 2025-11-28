@@ -11,7 +11,6 @@ public class VisitAssembler {
 
     public static CreateVisitCommand toCommandFromRequest(CreateVisitRequest request) {
         return new CreateVisitCommand(
-                request.visitId(),
                 request.failure(),
                 request.vehicleId(),
                 request.timeVisit(),
@@ -22,7 +21,7 @@ public class VisitAssembler {
 
     public static VisitResponse toResponseFromEntity(Visit visit) {
         return new VisitResponse(
-                visit.getVisitId(),
+                visit.getId().toString(),
                 visit.getFailure(),
                 visit.getVehicleId(),
                 visit.getTimeVisit(),

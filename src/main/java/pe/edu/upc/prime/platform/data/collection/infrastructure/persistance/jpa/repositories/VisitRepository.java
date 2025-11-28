@@ -29,4 +29,17 @@ public interface VisitRepository extends JpaRepository<Visit,Long> {
      */
     List<Visit> findByAutoRepairId(String autoRepairId);
 
+    /**
+     * Custom query method to check the existence of a visit by autoRepairId
+     * @param autoRepairId the auto repair ID to check for existence
+     * @return true if a visit with the given autoRepairId exists
+     */
+    boolean existsByAutoRepairId(String autoRepairId);
+
+    /**
+     * Custom query method to check the existence of a visit by VehicleId
+     * @param vehicleId the vehicle ID to check for existence
+     * @return true if a visit with the given vehicleId exists
+     */
+    boolean existsByVehicleId(String vehicleId);
 }

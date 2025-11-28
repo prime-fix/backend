@@ -10,14 +10,14 @@ import java.util.Optional;
  * Repository interface for UserAccount entities.
  */
 @Repository
-public interface UserAccountRepository extends JpaRepository<UserAccount,String> {
+public interface UserAccountRepository extends JpaRepository<UserAccount,Long> {
     /**
      * Check if a user account exists by its ID.
      *
      * @param idUserAccount the ID of the user account
      * @return true if the user account exists, false otherwise
      */
-    boolean existsByIdUserAccount(String idUserAccount);
+    boolean existsById(Long idUserAccount);
 
     /**
      * Check if a user account exists by its username.
@@ -42,7 +42,7 @@ public interface UserAccountRepository extends JpaRepository<UserAccount,String>
      * @param idUserAccount the ID of the user account to exclude
      * @return true if the user account exists, false otherwise
      */
-    boolean existsByUsernameAndIdUserAccountIsNot(String username, String idUserAccount);
+    boolean existsByUsernameAndIdIsNot(String username, Long idUserAccount);
 
     /**
      * Check if a user account exists by its email excluding a specific user account ID.
@@ -51,7 +51,7 @@ public interface UserAccountRepository extends JpaRepository<UserAccount,String>
      * @param idUserAccount the ID of the user account to exclude
      * @return true if the user account exists, false otherwise
      */
-    boolean existsByEmailAndIdUserAccountIsNot(String email, String idUserAccount);
+    boolean existsByEmailAndIdIsNot(String email, Long idUserAccount);
 
     /**
      * Find a user account by its username.

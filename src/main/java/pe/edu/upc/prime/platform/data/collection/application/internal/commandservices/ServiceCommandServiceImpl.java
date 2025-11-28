@@ -36,7 +36,7 @@ public class ServiceCommandServiceImpl implements ServiceCommandService {
         } catch (Exception e){
             throw new IllegalArgumentException("Error while saving service:"+ e.getMessage());
         }
-        return service.getServiceId();
+        return service.getId().toString();
     }
 
     @Override

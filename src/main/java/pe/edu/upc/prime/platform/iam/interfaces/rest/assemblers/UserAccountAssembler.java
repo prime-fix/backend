@@ -19,7 +19,7 @@ public class UserAccountAssembler {
      * @return the corresponding CreateUserAccountCommand
      */
     public static CreateUserAccountCommand toCommandFromRequest(CreateUserAccountRequest request) {
-        return new CreateUserAccountCommand(request.idUserAccount(), request.username(),
+        return new CreateUserAccountCommand( request.username(),
                 request.email(), request.idRole(), request.idUser(),
                 request.password(), request.isNew());
     }
@@ -45,7 +45,7 @@ public class UserAccountAssembler {
      * @return the corresponding UserAccountResponse
      */
     public static UserAccountResponse toResponseFromEntity(UserAccount entity) {
-        return new UserAccountResponse(entity.getIdUserAccount(), entity.getUsername(),
+        return new UserAccountResponse(entity.getId().toString(), entity.getUsername(),
                 entity.getEmail(), entity.getIdRole(),
                 entity.getIdUser(), entity.getPassword(), entity.isNew());
     }

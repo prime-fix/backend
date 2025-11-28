@@ -15,11 +15,6 @@ import pe.edu.upc.prime.platform.shared.domain.model.aggregates.AuditableAbstrac
 @Table(name = "vehicles")
 public class Vehicle extends AuditableAbstractAggregateRoot<Vehicle> {
 
-    @Id
-    @Getter
-    @Column(name="id_vehicle", nullable = false, unique = true)
-    @JsonProperty("id_vehicle")
-    private String idVehicle;
 
     @Getter
     @Column(name = "color", nullable = false, length = 50)
@@ -62,7 +57,6 @@ public class Vehicle extends AuditableAbstractAggregateRoot<Vehicle> {
      * Default constructor for JPA.
      */
     public Vehicle(CreateVehicleCommand command) {
-        this.idVehicle = command.idVehicle();
         this.color = command.color();
         this.model = command.model();
         this.idUser = command.idUser();

@@ -24,5 +24,5 @@ public interface MembershipRepository extends JpaRepository<Membership, String> 
      * @param idMembership the ID of the membership to exclude
      * @return true if a membership with the given description exists excluding the specified membership ID, false otherwise
      */
-    boolean existsByMembershipDescriptionAndIdMembershipIsNot(MembershipDescription membershipDescription, String idMembership);
+    boolean existsByMembershipDescriptionAndIdIsNot(MembershipDescription membershipDescription, Long idMembership);
 }

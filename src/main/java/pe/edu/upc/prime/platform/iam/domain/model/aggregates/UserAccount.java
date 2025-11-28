@@ -11,12 +11,6 @@ import pe.edu.upc.prime.platform.shared.domain.model.aggregates.AuditableAbstrac
 @Table(name = "user_accounts")
 public class UserAccount extends AuditableAbstractAggregateRoot<UserAccount> {
 
-    @Id
-    @Getter
-    @Column(name="id_user_account", nullable = false, unique = true)
-    @JsonProperty("id_user_account")
-    private String idUserAccount;
-
     @Getter
     @Column(name = "username", nullable = false, length = 150)
     private String username;
@@ -53,7 +47,6 @@ public class UserAccount extends AuditableAbstractAggregateRoot<UserAccount> {
     }
 
     public UserAccount(CreateUserAccountCommand command) {
-        this.idUserAccount = command.idUserAccount();
         this.username = command.username();
         this.email = command.email();
         this.idRole = command.idRole();

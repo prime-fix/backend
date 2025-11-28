@@ -8,17 +8,16 @@ import java.util.Objects;
 /**
  * Command to create a new vehicle.
  *
- * @param idVehicle the unique identifier of the vehicle to be created
  * @param color the color of the vehicle to be created
  * @param model the model of the vehicle to be created
  * @param idUser the identifier of the user associated with the vehicle to be created
  * @param vehicleInformation the vehicle information value object containing brand, plate, and type
  * @param maintenanceStatus the maintenance status of the vehicle to be created
  */
-public record CreateVehicleCommand(String idVehicle, String color, String model, String idUser,
+public record CreateVehicleCommand( String color, String model, String idUser,
                                    VehicleInformation vehicleInformation, int maintenanceStatus) {
     public CreateVehicleCommand {
-        Objects.requireNonNull(idVehicle, "[CreateVehicleCommand] id vehicle must not be null");
+
         Objects.requireNonNull(color, "[CreateVehicleCommand] color must not be null");
         Objects.requireNonNull(model, "[CreateVehicleCommand] model must not be null");
         Objects.requireNonNull(idUser, "[CreateVehicleCommand] id user must not be null");

@@ -19,7 +19,7 @@ public class NotificationAssembler {
      */
     public static CreateNotificationCommand toCommandFromRequest(CreateNotificationRequest request) {
         return new CreateNotificationCommand(
-                request.idNotification(), request.message(), request.read(),
+                 request.message(), request.read(),
                 request.idVehicle(), request.sent(), request.idDiagnostic()
         );
     }
@@ -45,7 +45,7 @@ public class NotificationAssembler {
      * @return The corresponding notification response.
      */
     public static NotificationResponse toResponseFromEntity(Notification entity) {
-        return new NotificationResponse(entity.getIdNotification(), entity.getMessage(),
+        return new NotificationResponse(entity.getId().toString(), entity.getMessage(),
                 entity.isRead(), entity.getIdVehicle(), entity.getSent(),
                 entity.getIdDiagnostic());
     }

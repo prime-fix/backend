@@ -25,14 +25,16 @@ public class VisitCommandServiceImpl implements VisitCommandService {
 
     @Override
     public String handle(CreateVisitCommand command) {
-
+        if(this.visitRepository.existsByVehicleId(command.vehicleId())){
+            throw new IllegalArgumentException("Vehicle already registered");
+        }
         var visit = new Visit(command);
         try{
             this.visitRepository.save(visit);
         } catch (Exception e){
             throw new IllegalArgumentException("Error while saving visit:"+ e.getMessage());
         }
-        return visit.getVisitId();
+        return visit.getId().toString();
     }
 
     @Override

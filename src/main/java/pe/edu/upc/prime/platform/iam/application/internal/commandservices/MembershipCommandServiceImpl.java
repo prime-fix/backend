@@ -39,7 +39,7 @@ public class MembershipCommandServiceImpl implements MembershipCommandService {
      */
     @Override
     public String handle(CreateMembershipCommand command) {
-        var membershipId = command.idMembership();
+       /* var membershipId = command.idMembership();
         var membershipDescription = command.membershipDescription();
 
         if (this.membershipRepository.existsById(membershipId)) {
@@ -60,7 +60,18 @@ public class MembershipCommandServiceImpl implements MembershipCommandService {
                     + e.getMessage());
         }
         return membership.getIdMembership();
+    */
+
+
+        var membership = new Membership(command);
+        try{
+            this.membershipRepository.save(membership);
+        } catch (Exception e){
+            throw new IllegalStateException(e);
+        }
+        return membership.getId().toString();
     }
+
 
     /**
      * Handles the update of an existing membership based on the provided command.
@@ -77,7 +88,7 @@ public class MembershipCommandServiceImpl implements MembershipCommandService {
             throw new NotFoundIdException(Membership.class, membershipId);
         }
 
-        if (this.membershipRepository.existsByMembershipDescriptionAndIdMembershipIsNot(membershipDescription, membershipId)) {
+        if (this.membershipRepository.existsByMembershipDescriptionAndIdIsNot(membershipDescription, Long.valueOf(membershipId))) {
             throw new IllegalArgumentException("[MembershipCommandServiceImpl] Membership with the same description " +
                     membershipDescription.description() + " already exists.");
         }

@@ -9,7 +9,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import pe.edu.upc.prime.platform.shared.domain.exceptions.NotFoundArgumentException;
 import pe.edu.upc.prime.platform.shared.domain.exceptions.NotFoundIdException;
-import pe.edu.upc.prime.platform.shared.interfaces.rest.resources.*;
+import pe.edu.upc.prime.platform.shared.interfaces.rest.resources.BadRequestResponse;
+import pe.edu.upc.prime.platform.shared.interfaces.rest.resources.InternalServerErrorResponse;
+import pe.edu.upc.prime.platform.shared.interfaces.rest.resources.NotFoundResponse;
+import pe.edu.upc.prime.platform.shared.interfaces.rest.resources.ServiceUnavailableResponse;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

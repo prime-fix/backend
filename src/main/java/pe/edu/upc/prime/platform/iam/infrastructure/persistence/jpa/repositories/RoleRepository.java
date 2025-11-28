@@ -10,7 +10,7 @@ import pe.edu.upc.prime.platform.iam.domain.model.valueobjects.RoleName;
  * Repository interface for Role entities.
  */
 @Repository
-public interface RoleRepository extends JpaRepository<Role, String> {
+public interface RoleRepository extends JpaRepository<Role, Long> {
     /**
      * Check if a role exists by its name.
      *
@@ -34,7 +34,7 @@ public interface RoleRepository extends JpaRepository<Role, String> {
      * @param idRole the ID of the role to exclude
      * @return true if a role with the given name exists excluding the specified role ID, false otherwise
      */
-    boolean existsByRoleNameAndIdRoleIsNot(RoleName roleName, String idRole);
+    boolean existsByRoleNameAndIdIsNot(RoleName roleName, Long idRole);
 
     /**
      * Check if a role exists by its description, excluding a specific role ID.
@@ -43,5 +43,5 @@ public interface RoleRepository extends JpaRepository<Role, String> {
      * @param idRole the ID of the role to exclude
      * @return true if a role with the given description exists excluding the specified role ID, false otherwise
      */
-    boolean existsByRoleDescriptionAndIdRoleIsNot(RoleDescription roleDescription, String idRole);
+    boolean existsByRoleDescriptionAndIdIsNot(RoleDescription roleDescription, Long idRole);
 }

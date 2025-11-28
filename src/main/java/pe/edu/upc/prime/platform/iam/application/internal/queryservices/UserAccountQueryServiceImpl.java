@@ -50,7 +50,7 @@ public class UserAccountQueryServiceImpl implements UserAccountQueryService {
      */
     @Override
     public Optional<UserAccount> handle(GetUserAccountByIdQuery query) {
-        return Optional.ofNullable(this.userAccountRepository.findById(query.idUserAccount())
+        return Optional.ofNullable(this.userAccountRepository.findById(Long.valueOf(query.idUserAccount()))
                 .orElseThrow(() -> new NotFoundIdException(UserAccount.class, query.idUserAccount())));
     }
 }

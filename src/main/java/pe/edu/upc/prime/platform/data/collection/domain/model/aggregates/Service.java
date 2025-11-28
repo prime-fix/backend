@@ -19,12 +19,6 @@ import pe.edu.upc.prime.platform.shared.domain.model.aggregates.AuditableAbstrac
 @Table(name ="services")
 public class Service extends AuditableAbstractAggregateRoot<Service> {
 
-    @Id
-    @Getter
-    @Column(name="service_id", nullable = false, unique = true)
-    @JsonProperty("service_id")
-    private String serviceId;
-
 
     @Getter
     @Column(name="name", nullable = false)
@@ -39,7 +33,6 @@ public class Service extends AuditableAbstractAggregateRoot<Service> {
      * @param command createServiceCommand containing service details
      */
     public Service(CreateServiceCommand command) {
-        this.serviceId = command.serviceId();
         this.name = command.name();
         this.description = command.description();
     }

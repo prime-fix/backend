@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.HttpServerErrorException;
 import pe.edu.upc.prime.platform.data.collection.domain.model.aggregates.Visit;
 import pe.edu.upc.prime.platform.data.collection.domain.model.commands.DeleteVisitCommand;
 import pe.edu.upc.prime.platform.data.collection.domain.model.queries.*;
@@ -81,11 +82,11 @@ public class VisitsController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
             content = @Content(
                 mediaType = MediaType.APPLICATION_JSON_VALUE,
-                schema = @Schema(implementation = InternalServerErrorResponse.class))),
+                schema = @Schema(implementation = InternalError.class))),
             @ApiResponse(responseCode = "503", description = "Service unavailable",
             content = @Content(
                 mediaType = MediaType.APPLICATION_JSON_VALUE,
-                schema = @Schema(implementation = InternalServerErrorResponse.class)
+                schema = @Schema(implementation = HttpServerErrorException.InternalServerError.class)
             ))
     })
     @PostMapping

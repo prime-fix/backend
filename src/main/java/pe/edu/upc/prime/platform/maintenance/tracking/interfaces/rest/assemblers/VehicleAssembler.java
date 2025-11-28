@@ -21,7 +21,7 @@ public class VehicleAssembler {
      */
     public static CreateVehicleCommand toCommandFromRequest(CreateVehicleRequest request) {
         return new CreateVehicleCommand(
-                request.idVehicle(), request.color(), request.model(), request.idUser(),
+                 request.color(), request.model(), request.idUser(),
                 new VehicleInformation(request.vehicleBrand(), request.vehiclePlate(), request.vehicleType()),
                 request.maintenanceStatus()
         );
@@ -49,7 +49,7 @@ public class VehicleAssembler {
      * @return the corresponding VehicleResponse
      */
     public static VehicleResponse toResponseFromEntity(Vehicle entity) {
-        return new VehicleResponse(entity.getIdVehicle(), entity.getColor(), entity.getModel(),
+        return new VehicleResponse(entity.getId().toString(), entity.getColor(), entity.getModel(),
                 entity.getIdUser(), entity.getVehicleInformation().vehicleBrand(),
                 entity.getVehicleInformation().vehiclePlate(), entity.getVehicleInformation().vehicleType(),
                 entity.getMaintenanceStatus());

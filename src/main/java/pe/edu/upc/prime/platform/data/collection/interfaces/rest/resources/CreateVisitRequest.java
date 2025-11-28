@@ -4,11 +4,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.Date;
 
 /**
  * Request record for creating a new visit.
- * @param visitId  the ID of the visit
  * @param vehicleId the ID of the vehicle
  * @param serviceId the ID of the service
  * @param failure the failure description
@@ -17,10 +18,6 @@ import java.util.Date;
  */
 public record CreateVisitRequest(
 
-        @NotBlank
-        @NotNull
-        @JsonProperty("visit_id")
-        String visitId,
 
         @NotNull
         @NotBlank
@@ -37,8 +34,8 @@ public record CreateVisitRequest(
         String failure,
 
         @NotNull
-        @NotBlank
-        Date timeVisit,
+        @JsonProperty("timeVisit")
+        LocalDateTime timeVisit,
 
         @NotNull
         @NotBlank

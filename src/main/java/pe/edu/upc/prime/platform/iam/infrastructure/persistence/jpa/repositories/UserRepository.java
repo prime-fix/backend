@@ -10,14 +10,14 @@ import java.util.Optional;
  * Repository interface for User entity.
  */
 @Repository
-public interface UserRepository extends JpaRepository<User, String> {
+public interface UserRepository extends JpaRepository<User, Long> {
     /**
      * Check if a user exists by ID.
      *
      * @param userId the ID of the user
      * @return true if a user with the given ID exists, false otherwise
      */
-    boolean existsByIdUser(String userId);
+    boolean existsById(Long userId);
 
     /**
      * Check if a user exists by full name.
@@ -33,9 +33,10 @@ public interface UserRepository extends JpaRepository<User, String> {
      *
      * @param name the first name of the user
      * @param lastName the last name of the user
+     * @param idUser the ID of the user to exclude
      * @return true if a user with the given full name exists excluding the specified user ID, false otherwise
      */
-    boolean existsByNameAndLastNameAndIdUserIsNot(String name, String lastName, String idUser);
+    boolean existsByNameAndLastNameAndIdIsNot(String name, String lastName, Long idUser);
 
     /**
      * Find a user by full name.

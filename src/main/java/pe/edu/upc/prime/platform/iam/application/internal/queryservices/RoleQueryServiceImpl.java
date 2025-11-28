@@ -49,7 +49,7 @@ public class RoleQueryServiceImpl implements RoleQueryService {
      */
     @Override
     public Optional<Role> handle(GetRoleByIdQuery query) {
-        return Optional.ofNullable(this.roleRepository.findById(query.idRole())
+        return Optional.ofNullable(this.roleRepository.findById(Long.valueOf(query.idRole()))
         .orElseThrow(() -> new NotFoundIdException(Role.class, query.idRole())));
     }
 }

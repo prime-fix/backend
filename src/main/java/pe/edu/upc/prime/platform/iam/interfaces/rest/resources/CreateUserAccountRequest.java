@@ -7,7 +7,6 @@ import jakarta.validation.constraints.*;
 /**
  * CreateUserAccountRequest
  *
- * @param idUserAccount the identifier of the user account to be created
  * @param username the username for the new user account
  * @param email the email address associated with the new user account
  * @param idRole the role identifier assigned to the new user account
@@ -16,9 +15,6 @@ import jakarta.validation.constraints.*;
  * @param isNew flag indicating if the account is new
  */
 public record CreateUserAccountRequest(
-        @JsonProperty("id_user_account")
-        @NotNull @NotBlank
-        String idUserAccount,
 
         @NotNull @NotBlank
         @Size(min = 1, max = 150)
