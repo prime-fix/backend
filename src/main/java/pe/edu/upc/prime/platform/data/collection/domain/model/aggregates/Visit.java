@@ -58,6 +58,8 @@ public class Visit extends AuditableAbstractAggregateRoot<Visit>
         this.timeVisit=command.timeVisit();
         this.autoRepairId= command.autoRepairId();
         this.serviceId= command.serviceId();
+
+
     }
 
     /**

@@ -8,7 +8,11 @@ import pe.edu.upc.prime.platform.workshopCatalog.domain.model.commands.UpdateAut
 import pe.edu.upc.prime.platform.workshopCatalog.domain.model.valueobjects.UserAccountId;
 import pe.edu.upc.prime.platform.workshopCatalog.interfaces.rest.resources.AutoRepairResponse;
 import pe.edu.upc.prime.platform.workshopCatalog.interfaces.rest.resources.CreateAutoRepairRequest;
+import pe.edu.upc.prime.platform.workshopCatalog.interfaces.rest.resources.ServiceOfferResource;
 import pe.edu.upc.prime.platform.workshopCatalog.interfaces.rest.resources.UpdateAutoRepairRequest;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class AutoRepairAssembler {
 
@@ -32,12 +36,18 @@ public class AutoRepairAssembler {
     }
 
     public static AutoRepairResponse toResponseFromEntity(AutoRepair entity) {
+
+        List<ServiceOfferResource> serviceOffer = entity.getServiceCatalog().getServiceOffers().stream()
+                .map(ServiceOfferAssembler::toResourceFromEntity)
+                .collect(Collectors.toUnmodifiableList());
+
         return new AutoRepairResponse(
                 entity.getId().toString(),
                 entity.getContact_email(),
                 entity.getTechnicians_count().toString(),
                 entity.getRUC(),
-                entity.getUserAccountId().userAccountId()
+                entity.getUserAccountId().userAccountId(),
+                serviceOffer
         );
     }
 

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import pe.edu.upc.prime.platform.iam.domain.model.aggregates.UserAccount;
 import pe.edu.upc.prime.platform.workshopCatalog.domain.model.valueobjects.UserAccountId;
 
+import java.util.List;
+
 public record AutoRepairResponse(
         @JsonProperty("auto_repair_id")
         String autoRepairId,
@@ -11,7 +13,8 @@ public record AutoRepairResponse(
         String technician_count,
         String RUC,
         @JsonProperty("user_account_id")
-        Long userAccountId
-
+        Long userAccountId,
+        @JsonProperty("service_catalog")
+        List<ServiceOfferResource> serviceOffer
 ) {
 }
