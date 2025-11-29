@@ -3,12 +3,8 @@ package pe.edu.upc.prime.platform.data.collection.infrastructure.persistance.jpa
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import pe.edu.upc.prime.platform.data.collection.domain.model.aggregates.Visit;
-import pe.edu.upc.prime.platform.data.collection.domain.model.valueobjects.AutoRepairId;
-import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.aggregates.Vehicle;
-import pe.edu.upc.prime.platform.vehiclediagnosis.domain.model.valueobjects.VehicleId;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Repository interface for managing Visit entities.

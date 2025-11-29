@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
  * REST Controller for managing Technician Schedules.
  */
 @RestController
-@RequestMapping("/api/v1/technician-schedules")
+@RequestMapping("/api/v1/technician_schedules")
 public class TechnicianScheduleController {
 
     private final TechnicianScheduleCommandService technicianScheduleCommandService;
