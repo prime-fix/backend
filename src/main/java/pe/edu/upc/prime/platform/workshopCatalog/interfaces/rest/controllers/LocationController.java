@@ -78,7 +78,7 @@ public class LocationController {
         var createLocationCommand = LocationAssembler.toCommandFromRequest(request);
         var locationId = this.locationCommandService.handle(createLocationCommand);
 
-        if (Objects.isNull(locationId) || locationId.isBlank()) {
+        if (Objects.isNull(locationId) || locationId.equals(0L)) {
             return ResponseEntity.badRequest().build();
         }
 
@@ -115,7 +115,7 @@ public class LocationController {
     }
 
     @GetMapping("/{locationId}")
-    public ResponseEntity<LocationResponse> getLocationById(@PathVariable String locationId) {
+    public ResponseEntity<LocationResponse> getLocationById(@PathVariable Long locationId) {
         var getLocationByIdQuery = new GetLocationByIdQuery(locationId);
         var optionalLocation = locationQueryService.handle(getLocationByIdQuery);
         if(optionalLocation.isEmpty()){

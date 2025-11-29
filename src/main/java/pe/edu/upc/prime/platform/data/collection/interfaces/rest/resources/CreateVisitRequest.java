@@ -1,8 +1,13 @@
 package pe.edu.upc.prime.platform.data.collection.interfaces.rest.resources;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import pe.edu.upc.prime.platform.data.collection.domain.model.valueobjects.AutoRepairId;
+import pe.edu.upc.prime.platform.data.collection.domain.model.valueobjects.ServiceId;
+import pe.edu.upc.prime.platform.data.collection.domain.model.valueobjects.VehicleId;
+import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.aggregates.Vehicle;
 
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
@@ -20,14 +25,14 @@ public record CreateVisitRequest(
 
 
         @NotNull
-        @NotBlank
+        @Min(0)
         @JsonProperty("vehicle_id")
-        String vehicleId,
+        Long vehicleId,
 
         @NotNull
         @NotBlank
         @JsonProperty("service_id")
-        String serviceId,
+        Long serviceId,
 
         @NotNull
         @NotBlank
@@ -38,7 +43,7 @@ public record CreateVisitRequest(
         LocalDateTime timeVisit,
 
         @NotNull
-        @NotBlank
+        @Min(0)
         @JsonProperty("auto_repair_id")
-        String autoRepairId) {
+        Long autoRepairId) {
 }

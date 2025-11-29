@@ -1,6 +1,7 @@
 package pe.edu.upc.prime.platform.workshopCatalog.domain.services;
 
 import pe.edu.upc.prime.platform.workshopCatalog.domain.model.aggregates.AutoRepair;
+import pe.edu.upc.prime.platform.workshopCatalog.domain.model.commands.AddServiceToAutoRepairServiceCatalogCommand;
 import pe.edu.upc.prime.platform.workshopCatalog.domain.model.commands.CreateAutoRepairCommand;
 import pe.edu.upc.prime.platform.workshopCatalog.domain.model.commands.DeleteAutoRepairCommand;
 import pe.edu.upc.prime.platform.workshopCatalog.domain.model.commands.UpdateAutoRepairCommand;
@@ -14,10 +15,11 @@ public interface AutoRepairCommandService {
 
     /**
      * Handle the creation of a new Auto Repair based on the provided command
+     *
      * @param command the command containing the auto repair information
      * @return the ID of the newly created auto repair
      */
-    String handle(CreateAutoRepairCommand command);
+    Long handle(CreateAutoRepairCommand command);
 
     /**
      * Handles the update of a Auto Repair based on the provided command
@@ -32,4 +34,9 @@ public interface AutoRepairCommandService {
      */
     void handle(DeleteAutoRepairCommand command);
 
+    /**
+     * Handle an add service to AutoRepair command
+     * @param command The add service to AutoRepair Service catalog command containing the service id and auto repair id
+     */
+    void handle(AddServiceToAutoRepairServiceCatalogCommand command);
 }

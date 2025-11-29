@@ -1,4 +1,4 @@
-package pe.edu.upc.prime.platform.data.collection.domain.model.commands;
+package pe.edu.upc.prime.platform.workshopCatalog.domain.model.commands;
 
 /**
  * Command to delete a service by its ID

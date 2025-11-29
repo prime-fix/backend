@@ -2,9 +2,10 @@ package pe.edu.upc.prime.platform.data.collection.interfaces.rest.assemblers;
 
 import pe.edu.upc.prime.platform.data.collection.domain.model.aggregates.Visit;
 import pe.edu.upc.prime.platform.data.collection.domain.model.commands.CreateVisitCommand;
-import pe.edu.upc.prime.platform.data.collection.domain.model.commands.UpdateServiceCommand;
+import pe.edu.upc.prime.platform.data.collection.domain.model.valueobjects.AutoRepairId;
+import pe.edu.upc.prime.platform.data.collection.domain.model.valueobjects.ServiceId;
+import pe.edu.upc.prime.platform.data.collection.domain.model.valueobjects.VehicleId;
 import pe.edu.upc.prime.platform.data.collection.interfaces.rest.resources.CreateVisitRequest;
-import pe.edu.upc.prime.platform.data.collection.interfaces.rest.resources.UpdateServiceRequest;
 import pe.edu.upc.prime.platform.data.collection.interfaces.rest.resources.VisitResponse;
 
 public class VisitAssembler {
@@ -12,10 +13,10 @@ public class VisitAssembler {
     public static CreateVisitCommand toCommandFromRequest(CreateVisitRequest request) {
         return new CreateVisitCommand(
                 request.failure(),
-                request.vehicleId(),
+                new VehicleId(request.vehicleId()),
                 request.timeVisit(),
-                request.autoRepairId(),
-                request.serviceId()
+                new AutoRepairId(request.autoRepairId()),
+                new ServiceId(request.serviceId())
         );
     }
 
@@ -23,11 +24,10 @@ public class VisitAssembler {
         return new VisitResponse(
                 visit.getId().toString(),
                 visit.getFailure(),
-                visit.getVehicleId(),
+                visit.getVehicleId().vehicleId(),
                 visit.getTimeVisit(),
-                visit.getAutoRepairId(),
-                visit.getServiceId()
-        );
+                visit.getAutoRepairId().autoRepairId(),
+                visit.getServiceId().serviceId());
     }
 
 }

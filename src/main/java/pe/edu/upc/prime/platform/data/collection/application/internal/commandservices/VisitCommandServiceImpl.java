@@ -24,8 +24,8 @@ public class VisitCommandServiceImpl implements VisitCommandService {
     }
 
     @Override
-    public String handle(CreateVisitCommand command) {
-        if(this.visitRepository.existsByVehicleId(command.vehicleId())){
+    public Long handle(CreateVisitCommand command) {
+        if(this.visitRepository.existsByVehicleId_VehicleId(command.vehicleId().vehicleId())){
             throw new IllegalArgumentException("Vehicle already registered");
         }
         var visit = new Visit(command);
@@ -34,7 +34,7 @@ public class VisitCommandServiceImpl implements VisitCommandService {
         } catch (Exception e){
             throw new IllegalArgumentException("Error while saving visit:"+ e.getMessage());
         }
-        return visit.getId().toString();
+        return visit.getId();
     }
 
     @Override

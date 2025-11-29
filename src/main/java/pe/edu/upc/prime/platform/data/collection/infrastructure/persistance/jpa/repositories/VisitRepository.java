@@ -3,6 +3,9 @@ package pe.edu.upc.prime.platform.data.collection.infrastructure.persistance.jpa
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import pe.edu.upc.prime.platform.data.collection.domain.model.aggregates.Visit;
+import pe.edu.upc.prime.platform.data.collection.domain.model.valueobjects.AutoRepairId;
+import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.aggregates.Vehicle;
+import pe.edu.upc.prime.platform.vehiclediagnosis.domain.model.valueobjects.VehicleId;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,26 +23,26 @@ public interface VisitRepository extends JpaRepository<Visit,Long> {
      * @param vehicleId the vehicleId to search for vehicleId
      * @return an Optional containing the found Visit if found, or empty if not found
      */
-    List<Visit> findByVehicleId(String vehicleId);
+    List<Visit> findByVehicleId_VehicleId(Long vehicleId);
 
     /**
      * Custom query method to find visits by autoRepairId
      * @param autoRepairId the autoRepairId to search for ID
      * @return a list of visits matching the auto repair ID
      */
-    List<Visit> findByAutoRepairId(String autoRepairId);
+    List<Visit> findByAutoRepairId_AutoRepairId(Long autoRepairId);
 
     /**
      * Custom query method to check the existence of a visit by autoRepairId
      * @param autoRepairId the auto repair ID to check for existence
      * @return true if a visit with the given autoRepairId exists
      */
-    boolean existsByAutoRepairId(String autoRepairId);
+    boolean existsByAutoRepairId_AutoRepairId(Long autoRepairId);
 
     /**
      * Custom query method to check the existence of a visit by VehicleId
      * @param vehicleId the vehicle ID to check for existence
      * @return true if a visit with the given vehicleId exists
      */
-    boolean existsByVehicleId(String vehicleId);
+    boolean existsByVehicleId_VehicleId( Long vehicleId);
 }

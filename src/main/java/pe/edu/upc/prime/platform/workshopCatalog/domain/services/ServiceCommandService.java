@@ -1,9 +1,9 @@
-package pe.edu.upc.prime.platform.data.collection.domain.services;
+package pe.edu.upc.prime.platform.workshopCatalog.domain.services;
 
-import pe.edu.upc.prime.platform.data.collection.domain.model.aggregates.Service;
-import pe.edu.upc.prime.platform.data.collection.domain.model.commands.CreateServiceCommand;
-import pe.edu.upc.prime.platform.data.collection.domain.model.commands.DeleteServiceCommand;
-import pe.edu.upc.prime.platform.data.collection.domain.model.commands.UpdateServiceCommand;
+import pe.edu.upc.prime.platform.workshopCatalog.domain.model.aggregates.Service;
+import pe.edu.upc.prime.platform.workshopCatalog.domain.model.commands.CreateServiceCommand;
+import pe.edu.upc.prime.platform.workshopCatalog.domain.model.commands.DeleteServiceCommand;
+import pe.edu.upc.prime.platform.workshopCatalog.domain.model.commands.UpdateServiceCommand;
 
 import java.util.Optional;
 
@@ -14,10 +14,11 @@ public interface ServiceCommandService {
 
     /**
      * Handles the creation of a new service based on the provided command
+     *
      * @param command the command containing the service information
      * @return the ID of the newly created service
      */
-    String handle(CreateServiceCommand command);
+    Long handle(CreateServiceCommand command);
 
     /**
      * Handles the update of a visit based on the provided command

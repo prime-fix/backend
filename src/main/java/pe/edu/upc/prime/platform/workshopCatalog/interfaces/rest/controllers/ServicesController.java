@@ -1,4 +1,4 @@
-package pe.edu.upc.prime.platform.data.collection.interfaces.rest.controllers;
+package pe.edu.upc.prime.platform.workshopCatalog.interfaces.rest.controllers;
 
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -16,16 +16,15 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpServerErrorException;
-import pe.edu.upc.prime.platform.data.collection.domain.model.commands.DeleteServiceCommand;
-import pe.edu.upc.prime.platform.data.collection.domain.model.queries.GetAllServicesQuery;
-import pe.edu.upc.prime.platform.data.collection.domain.model.queries.GetServiceByAutoRepairIdQuery;
-import pe.edu.upc.prime.platform.data.collection.domain.model.queries.GetServiceByIdQuery;
-import pe.edu.upc.prime.platform.data.collection.domain.services.ServiceCommandService;
-import pe.edu.upc.prime.platform.data.collection.domain.services.ServiceQueryService;
-import pe.edu.upc.prime.platform.data.collection.interfaces.rest.assemblers.ServiceAssembler;
-import pe.edu.upc.prime.platform.data.collection.interfaces.rest.resources.CreateServiceRequest;
-import pe.edu.upc.prime.platform.data.collection.interfaces.rest.resources.ServiceResponse;
-import pe.edu.upc.prime.platform.data.collection.interfaces.rest.resources.UpdateServiceRequest;
+import pe.edu.upc.prime.platform.workshopCatalog.domain.model.commands.DeleteServiceCommand;
+import pe.edu.upc.prime.platform.workshopCatalog.domain.model.queries.GetAllServicesQuery;
+import pe.edu.upc.prime.platform.workshopCatalog.domain.model.queries.GetServiceByIdQuery;
+import pe.edu.upc.prime.platform.workshopCatalog.domain.services.ServiceCommandService;
+import pe.edu.upc.prime.platform.workshopCatalog.domain.services.ServiceQueryService;
+import pe.edu.upc.prime.platform.workshopCatalog.interfaces.rest.assemblers.ServiceAssembler;
+import pe.edu.upc.prime.platform.workshopCatalog.interfaces.rest.resources.CreateServiceRequest;
+import pe.edu.upc.prime.platform.workshopCatalog.interfaces.rest.resources.ServiceResponse;
+import pe.edu.upc.prime.platform.workshopCatalog.interfaces.rest.resources.UpdateServiceRequest;
 import pe.edu.upc.prime.platform.shared.interfaces.rest.resources.BadRequestResponse;
 import pe.edu.upc.prime.platform.shared.interfaces.rest.resources.InternalServerErrorResponse;
 import pe.edu.upc.prime.platform.shared.interfaces.rest.resources.NotFoundResponse;
@@ -34,7 +33,6 @@ import pe.edu.upc.prime.platform.shared.interfaces.rest.resources.ServiceUnavail
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 /**
@@ -97,7 +95,7 @@ public class ServicesController {
         var createServiceCommand = ServiceAssembler.toCommandFromRequest(request);
         var serviceId = this.serviceCommandService.handle(createServiceCommand);
 
-        if (Objects.isNull(serviceId) || serviceId.isEmpty()) {
+        if (Objects.isNull(serviceId) || serviceId.equals(0L)) {
             return ResponseEntity.badRequest().build();
         }
 

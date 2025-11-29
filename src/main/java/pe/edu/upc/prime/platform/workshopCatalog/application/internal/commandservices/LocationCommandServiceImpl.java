@@ -28,7 +28,7 @@ public class LocationCommandServiceImpl implements LocationCommandService {
 
 
     @Override
-    public String handle(CreateLocationCommand command) {
+    public Long handle(CreateLocationCommand command) {
         var location = new Location(command);
 
         try{
@@ -36,7 +36,7 @@ public class LocationCommandServiceImpl implements LocationCommandService {
         } catch (Exception e){
             throw new IllegalArgumentException("Error while saving location" + e.getMessage());
         }
-        return location.getId().toString();
+        return location.getId();
     }
 
     @Override

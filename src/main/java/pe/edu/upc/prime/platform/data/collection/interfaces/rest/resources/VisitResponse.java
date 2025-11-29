@@ -1,6 +1,9 @@
 package pe.edu.upc.prime.platform.data.collection.interfaces.rest.resources;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import pe.edu.upc.prime.platform.data.collection.domain.model.valueobjects.AutoRepairId;
+import pe.edu.upc.prime.platform.data.collection.domain.model.valueobjects.ServiceId;
+import pe.edu.upc.prime.platform.data.collection.domain.model.valueobjects.VehicleId;
 
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
@@ -19,11 +22,11 @@ public record VisitResponse(
         @JsonProperty("visit_id")
         String visitId, String failure ,
         @JsonProperty("vehicle_id")
-        String vehicleId,
+        Long vehicleId,
         LocalDateTime timeVisit,
         @JsonProperty("auto_repair_id")
-        String autoRepairId,
+        Long autoRepairId,
         @JsonProperty("service_id")
-        String serviceId
+        Long serviceId
 ) {
 }

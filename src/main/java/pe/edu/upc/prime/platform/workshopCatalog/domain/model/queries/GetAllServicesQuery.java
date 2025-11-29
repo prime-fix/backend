@@ -1,4 +1,4 @@
-package pe.edu.upc.prime.platform.data.collection.domain.model.queries;
+package pe.edu.upc.prime.platform.workshopCatalog.domain.model.queries;
 
 /**
  * Query to get all Services

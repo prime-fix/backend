@@ -1,11 +1,10 @@
-package pe.edu.upc.prime.platform.data.collection.application.internal.queryservices;
+package pe.edu.upc.prime.platform.workshopCatalog.application.internal.queryservices;
 
-import pe.edu.upc.prime.platform.data.collection.domain.model.aggregates.Service;
-import pe.edu.upc.prime.platform.data.collection.domain.model.queries.GetAllServicesQuery;
-import pe.edu.upc.prime.platform.data.collection.domain.model.queries.GetServiceByAutoRepairIdQuery;
-import pe.edu.upc.prime.platform.data.collection.domain.model.queries.GetServiceByIdQuery;
-import pe.edu.upc.prime.platform.data.collection.domain.services.ServiceQueryService;
-import pe.edu.upc.prime.platform.data.collection.infrastructure.persistance.jpa.repositories.ServiceRepository;
+import pe.edu.upc.prime.platform.workshopCatalog.domain.model.aggregates.Service;
+import pe.edu.upc.prime.platform.workshopCatalog.domain.model.queries.GetAllServicesQuery;
+import pe.edu.upc.prime.platform.workshopCatalog.domain.model.queries.GetServiceByIdQuery;
+import pe.edu.upc.prime.platform.workshopCatalog.domain.services.ServiceQueryService;
+import pe.edu.upc.prime.platform.workshopCatalog.infrastructure.persistence.jpa.repositories.ServiceRepository;
 
 
 import java.util.List;

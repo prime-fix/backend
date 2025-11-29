@@ -1,9 +1,8 @@
-package pe.edu.upc.prime.platform.data.collection.domain.services;
+package pe.edu.upc.prime.platform.workshopCatalog.domain.services;
 
-import pe.edu.upc.prime.platform.data.collection.domain.model.aggregates.Service;
-import pe.edu.upc.prime.platform.data.collection.domain.model.queries.GetAllServicesQuery;
-import pe.edu.upc.prime.platform.data.collection.domain.model.queries.GetServiceByAutoRepairIdQuery;
-import pe.edu.upc.prime.platform.data.collection.domain.model.queries.GetServiceByIdQuery;
+import pe.edu.upc.prime.platform.workshopCatalog.domain.model.aggregates.Service;
+import pe.edu.upc.prime.platform.workshopCatalog.domain.model.queries.GetAllServicesQuery;
+import pe.edu.upc.prime.platform.workshopCatalog.domain.model.queries.GetServiceByIdQuery;
 
 import java.util.List;
 import java.util.Optional;

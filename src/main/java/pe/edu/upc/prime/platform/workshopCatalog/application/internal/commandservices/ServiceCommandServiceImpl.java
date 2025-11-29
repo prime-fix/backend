@@ -1,11 +1,11 @@
-package pe.edu.upc.prime.platform.data.collection.application.internal.commandservices;
+package pe.edu.upc.prime.platform.workshopCatalog.application.internal.commandservices;
 
-import pe.edu.upc.prime.platform.data.collection.domain.model.aggregates.Service;
-import pe.edu.upc.prime.platform.data.collection.domain.model.commands.CreateServiceCommand;
-import pe.edu.upc.prime.platform.data.collection.domain.model.commands.DeleteServiceCommand;
-import pe.edu.upc.prime.platform.data.collection.domain.model.commands.UpdateServiceCommand;
-import pe.edu.upc.prime.platform.data.collection.domain.services.ServiceCommandService;
-import pe.edu.upc.prime.platform.data.collection.infrastructure.persistance.jpa.repositories.ServiceRepository;
+import pe.edu.upc.prime.platform.workshopCatalog.domain.model.aggregates.Service;
+import pe.edu.upc.prime.platform.workshopCatalog.domain.model.commands.CreateServiceCommand;
+import pe.edu.upc.prime.platform.workshopCatalog.domain.model.commands.DeleteServiceCommand;
+import pe.edu.upc.prime.platform.workshopCatalog.domain.model.commands.UpdateServiceCommand;
+import pe.edu.upc.prime.platform.workshopCatalog.domain.services.ServiceCommandService;
+import pe.edu.upc.prime.platform.workshopCatalog.infrastructure.persistence.jpa.repositories.ServiceRepository;
 import pe.edu.upc.prime.platform.shared.domain.exceptions.NotFoundIdException;
 
 import java.util.Optional;
@@ -27,7 +27,7 @@ public class ServiceCommandServiceImpl implements ServiceCommandService {
     }
 
     @Override
-    public String handle(CreateServiceCommand command) {
+    public Long handle(CreateServiceCommand command) {
 
         var service = new Service(command);
 
@@ -36,7 +36,7 @@ public class ServiceCommandServiceImpl implements ServiceCommandService {
         } catch (Exception e){
             throw new IllegalArgumentException("Error while saving service:"+ e.getMessage());
         }
-        return service.getId().toString();
+        return service.getId();
     }
 
     @Override

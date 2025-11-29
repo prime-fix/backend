@@ -1,6 +1,6 @@
 package pe.edu.upc.prime.platform.workshopCatalog.domain.model.commands;
 
-import pe.edu.upc.prime.platform.workshopCatalog.domain.model.valueObjects.UserAccountId;
+import pe.edu.upc.prime.platform.workshopCatalog.domain.model.valueobjects.UserAccountId;
 
 /**
  * Command to update an existing service

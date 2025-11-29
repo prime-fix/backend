@@ -1,6 +1,4 @@
-package pe.edu.upc.prime.platform.data.collection.domain.model.commands;
-
-import org.aspectj.bridge.IMessage;
+package pe.edu.upc.prime.platform.workshopCatalog.domain.model.commands;
 
 import java.util.Objects;
 

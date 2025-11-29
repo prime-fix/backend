@@ -33,7 +33,7 @@ public class VisitContextFacade {
      * @param visitId the ID of the visit to retrieve
      * @return an Optional containing the visitResponse if found
      */
-    public Optional<VisitResponse> fetchVisitById(String visitId){
+    public Optional<VisitResponse> fetchVisitById(Long visitId){
         var getVisitByIdQuery = new GetVisitByIdQuery(visitId);
         var optionalVisit = visitQueryService.handle(getVisitByIdQuery);
         if(optionalVisit.isEmpty()){
@@ -48,7 +48,7 @@ public class VisitContextFacade {
      * @param vehicleId the ID of the vehicle whose visits are being requested
      * @return a list of VisitResponse objects matching the given vehicle ID
      */
-    public List<VisitResponse> fetchVisitByVehicleId(String vehicleId){
+    public List<VisitResponse> fetchVisitByVehicleId(Long vehicleId){
         var visitQuery = new GetVisitByVehicleIdQuery(vehicleId);
         var visits = visitQueryService.handle(visitQuery);
 
@@ -61,7 +61,7 @@ public class VisitContextFacade {
      * @param autoRepairId  the ID of the auto repair
      * @return  a list of VisitResponse objects associated with the auto repair ID
      */
-    public List<VisitResponse> fetchVisitsByAutoRepairId(String autoRepairId){
+    public List<VisitResponse> fetchVisitsByAutoRepairId(Long autoRepairId){
             var visitQuery = new GetVisitByAutoRepairIdQuery(autoRepairId);
             var visits = visitQueryService.handle(visitQuery);
 

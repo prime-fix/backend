@@ -75,12 +75,12 @@ public class AutoRepairController {
                     ))
     })
     @PostMapping
-    public ResponseEntity<AutoRepairResponse> createAutoRepair(@RequestBody CreateAutoRepairRequest request){
+    public ResponseEntity<AutoRepairResponse> createAutoRepair(@Valid @RequestBody CreateAutoRepairRequest request){
         var createAutoRepairServiceCommand = AutoRepairAssembler.toCommandFromRequest(request);
 
         var autoRepairId = this.autoRepairCommandService.handle(createAutoRepairServiceCommand);
 
-        if (Objects.isNull(autoRepairId) || autoRepairId.isEmpty()){
+        if (Objects.isNull(autoRepairId) || autoRepairId.equals(0L)){
             return ResponseEntity.badRequest().build();
         }
 
@@ -104,6 +104,7 @@ public class AutoRepairController {
                     array = @ArraySchema(schema = @Schema(implementation = AutoRepairResponse.class))
             ))
     })
+    @GetMapping
     public ResponseEntity<List<AutoRepairResponse>> getAllAutoRepairs(){
         var getAllAutoRepairQuery = new GetAllAutoRepairsQuery();
         var autoRepairs = this.autoRepairQueryService.handle(getAllAutoRepairQuery);
@@ -136,7 +137,7 @@ public class AutoRepairController {
                     )),
     })
     @GetMapping("/{id}")
-    public ResponseEntity<AutoRepairResponse> getAutoRepairById(@PathVariable String id){
+    public ResponseEntity<AutoRepairResponse> getAutoRepairById(@PathVariable Long id){
         var getAutoRepairByIdQuery = new GetAutoRepairByIdQuery(id);
         var optionalAutoRepair = autoRepairQueryService.handle(getAutoRepairByIdQuery);
         if(optionalAutoRepair.isEmpty()){
@@ -167,7 +168,6 @@ public class AutoRepairController {
         this.autoRepairCommandService.handle(deleteAutoRepairCommand);
         return ResponseEntity.noContent().build();
     }
-
 
 
 }

@@ -12,10 +12,11 @@ public interface LocationCommandService {
 
     /**
      * Handles the creation of a new Location based on the provided command
+     *
      * @param command the command containing the location information
      * @return the ID of the newly created location
      */
-    String handle(CreateLocationCommand command);
+    Long handle(CreateLocationCommand command);
 
     /**
      * Handle the update of a location based on the provided command

@@ -1,4 +1,4 @@
-package pe.edu.upc.prime.platform.data.collection.interfaces.rest.resources;
+package pe.edu.upc.prime.platform.workshopCatalog.interfaces.rest.resources;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

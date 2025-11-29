@@ -10,10 +10,11 @@ public interface VisitCommandService {
 
     /**
      * Handles the creation of a new visit based on the provided command.
+     *
      * @param command the command containing the visit information
      * @return the ID of the newly created visit
      */
-    String handle(CreateVisitCommand command);
+    Long handle(CreateVisitCommand command);
 
     /**
      * Handles the deletion of a visit based on the provided command.

@@ -1,5 +1,9 @@
 package pe.edu.upc.prime.platform.data.collection.domain.model.commands;
 
+import pe.edu.upc.prime.platform.data.collection.domain.model.valueobjects.AutoRepairId;
+import pe.edu.upc.prime.platform.data.collection.domain.model.valueobjects.ServiceId;
+import pe.edu.upc.prime.platform.data.collection.domain.model.valueobjects.VehicleId;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
@@ -15,8 +19,8 @@ import java.util.Objects;
  * @param autoRepairId The autoRepairId of the Visit
  * @param serviceId the Service ID of the visit
  */
-public record CreateVisitCommand(String failure, String vehicleId,
-                                 LocalDateTime timeVisit, String autoRepairId, String serviceId) {
+public record CreateVisitCommand(String failure, VehicleId vehicleId,
+                                 LocalDateTime timeVisit, AutoRepairId autoRepairId, ServiceId serviceId) {
 
     public CreateVisitCommand {
         Objects.requireNonNull(failure, "[CreateVisitCommand] failure is required");

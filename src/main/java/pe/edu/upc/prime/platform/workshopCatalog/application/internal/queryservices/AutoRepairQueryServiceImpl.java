@@ -1,10 +1,12 @@
 package pe.edu.upc.prime.platform.workshopCatalog.application.internal.queryservices;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
-import pe.edu.upc.prime.platform.data.collection.domain.services.ServiceQueryService;
 import pe.edu.upc.prime.platform.workshopCatalog.domain.model.aggregates.AutoRepair;
+import pe.edu.upc.prime.platform.workshopCatalog.domain.model.entites.ServiceOffer;
 import pe.edu.upc.prime.platform.workshopCatalog.domain.model.queries.GetAllAutoRepairsQuery;
 import pe.edu.upc.prime.platform.workshopCatalog.domain.model.queries.GetAutoRepairByIdQuery;
+import pe.edu.upc.prime.platform.workshopCatalog.domain.model.queries.GetServiceOfferByServiceIdAndAutoRepairIdQuery;
 import pe.edu.upc.prime.platform.workshopCatalog.domain.services.AutoRepairQueryService;
 import pe.edu.upc.prime.platform.workshopCatalog.infrastructure.persistence.jpa.repositories.AutoRepairRepository;
 
@@ -35,5 +37,12 @@ public class AutoRepairQueryServiceImpl implements AutoRepairQueryService {
     @Override
     public List<AutoRepair> handle(GetAllAutoRepairsQuery query) {
         return this.autoRepairRepository.findAll();
+    }
+
+    @Override
+    public Optional<ServiceOffer> handle(GetServiceOfferByServiceIdAndAutoRepairIdQuery query) {
+        if(!autoRepairRepository.existsById(query.autoRepairId())) throw new EntityNotFoundException("AutoRepair Not Found");
+        return autoRepairRepository.findById(query.autoRepairId())
+                .map(autoRepair -> autoRepair.getServiceCatalog().getOfferByAutoRepairId(query.autoRepairId()));
     }
 }

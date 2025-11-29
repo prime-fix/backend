@@ -1,14 +1,12 @@
-package pe.edu.upc.prime.platform.data.collection.domain.model.aggregates;
+package pe.edu.upc.prime.platform.workshopCatalog.domain.model.aggregates;
 
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
-import pe.edu.upc.prime.platform.data.collection.domain.model.commands.CreateServiceCommand;
-import pe.edu.upc.prime.platform.data.collection.domain.model.commands.UpdateServiceCommand;
+import pe.edu.upc.prime.platform.workshopCatalog.domain.model.commands.CreateServiceCommand;
+import pe.edu.upc.prime.platform.workshopCatalog.domain.model.commands.UpdateServiceCommand;
 import pe.edu.upc.prime.platform.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
 
 

@@ -1,9 +1,12 @@
 package pe.edu.upc.prime.platform.workshopCatalog.domain.services;
 
 import pe.edu.upc.prime.platform.workshopCatalog.domain.model.aggregates.AutoRepair;
+import pe.edu.upc.prime.platform.workshopCatalog.domain.model.entites.ServiceOffer;
 import pe.edu.upc.prime.platform.workshopCatalog.domain.model.queries.GetAllAutoRepairsQuery;
 import pe.edu.upc.prime.platform.workshopCatalog.domain.model.queries.GetAutoRepairByIdQuery;
+import pe.edu.upc.prime.platform.workshopCatalog.domain.model.queries.GetServiceOfferByServiceIdAndAutoRepairIdQuery;
 
+import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,4 +25,6 @@ public interface AutoRepairQueryService {
      * @return a list of all auto repair
      */
     List<AutoRepair> handle(GetAllAutoRepairsQuery query);
+
+    Optional<ServiceOffer> handle(GetServiceOfferByServiceIdAndAutoRepairIdQuery query);
 }

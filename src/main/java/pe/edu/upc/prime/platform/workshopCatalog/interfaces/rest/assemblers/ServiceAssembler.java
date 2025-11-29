@@ -1,11 +1,11 @@
-package pe.edu.upc.prime.platform.data.collection.interfaces.rest.assemblers;
+package pe.edu.upc.prime.platform.workshopCatalog.interfaces.rest.assemblers;
 
-import pe.edu.upc.prime.platform.data.collection.domain.model.aggregates.Service;
-import pe.edu.upc.prime.platform.data.collection.domain.model.commands.CreateServiceCommand;
-import pe.edu.upc.prime.platform.data.collection.domain.model.commands.UpdateServiceCommand;
-import pe.edu.upc.prime.platform.data.collection.interfaces.rest.resources.CreateServiceRequest;
-import pe.edu.upc.prime.platform.data.collection.interfaces.rest.resources.ServiceResponse;
-import pe.edu.upc.prime.platform.data.collection.interfaces.rest.resources.UpdateServiceRequest;
+import pe.edu.upc.prime.platform.workshopCatalog.domain.model.aggregates.Service;
+import pe.edu.upc.prime.platform.workshopCatalog.domain.model.commands.CreateServiceCommand;
+import pe.edu.upc.prime.platform.workshopCatalog.domain.model.commands.UpdateServiceCommand;
+import pe.edu.upc.prime.platform.workshopCatalog.interfaces.rest.resources.CreateServiceRequest;
+import pe.edu.upc.prime.platform.workshopCatalog.interfaces.rest.resources.ServiceResponse;
+import pe.edu.upc.prime.platform.workshopCatalog.interfaces.rest.resources.UpdateServiceRequest;
 
 public class ServiceAssembler {
 

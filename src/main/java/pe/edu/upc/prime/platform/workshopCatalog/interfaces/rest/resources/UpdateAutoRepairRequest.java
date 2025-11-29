@@ -2,7 +2,7 @@ package pe.edu.upc.prime.platform.workshopCatalog.interfaces.rest.resources;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import pe.edu.upc.prime.platform.workshopCatalog.domain.model.valueObjects.UserAccountId;
+import pe.edu.upc.prime.platform.workshopCatalog.domain.model.valueobjects.UserAccountId;
 
 public record UpdateAutoRepairRequest(
         @NotBlank

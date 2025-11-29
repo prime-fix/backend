@@ -1,9 +1,12 @@
 package pe.edu.upc.prime.platform.data.collection.domain.model.valueobjects;
 
+import jakarta.persistence.Embeddable;
+
 /**
  * Value Object representing a AutoRepair ID
  * @param autoRepairId the autoRepairId
  */
+@Embeddable
 public record AutoRepairId(Long autoRepairId) {
 
     public AutoRepairId{

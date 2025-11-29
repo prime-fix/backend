@@ -3,11 +3,13 @@ package pe.edu.upc.prime.platform.workshopCatalog.application.internal.commandse
 import org.springframework.stereotype.Service;
 import pe.edu.upc.prime.platform.shared.domain.exceptions.NotFoundIdException;
 import pe.edu.upc.prime.platform.workshopCatalog.domain.model.aggregates.AutoRepair;
+import pe.edu.upc.prime.platform.workshopCatalog.domain.model.commands.AddServiceToAutoRepairServiceCatalogCommand;
 import pe.edu.upc.prime.platform.workshopCatalog.domain.model.commands.CreateAutoRepairCommand;
 import pe.edu.upc.prime.platform.workshopCatalog.domain.model.commands.DeleteAutoRepairCommand;
 import pe.edu.upc.prime.platform.workshopCatalog.domain.model.commands.UpdateAutoRepairCommand;
 import pe.edu.upc.prime.platform.workshopCatalog.domain.services.AutoRepairCommandService;
 import pe.edu.upc.prime.platform.workshopCatalog.infrastructure.persistence.jpa.repositories.AutoRepairRepository;
+import pe.edu.upc.prime.platform.workshopCatalog.infrastructure.persistence.jpa.repositories.ServiceRepository;
 
 import java.util.Optional;
 
@@ -18,26 +20,26 @@ import java.util.Optional;
 public class AutoRepairCommandServiceImpl implements AutoRepairCommandService {
 
     private final AutoRepairRepository autoRepairRepository;
-
+    private final ServiceRepository serviceRepository;
     /**
      * Constructor for AutoRepairCommandServiceImpl
      * @param autoRepairRepository the autoRepair repository
      */
-    public AutoRepairCommandServiceImpl(AutoRepairRepository autoRepairRepository) {
+    public AutoRepairCommandServiceImpl(AutoRepairRepository autoRepairRepository, ServiceRepository serviceRepository) {
         this.autoRepairRepository = autoRepairRepository;
+        this.serviceRepository = serviceRepository;
     }
 
 
     @Override
-    public String handle(CreateAutoRepairCommand command) {
+    public Long handle(CreateAutoRepairCommand command) {
         var autoRepair = new AutoRepair(command);
-
-        try {
+        try{
             this.autoRepairRepository.save(autoRepair);
-        } catch (Exception ex) {
-            throw  new IllegalArgumentException("Error while saving auto repair"+ ex.getMessage());
+        } catch (Exception e){
+            throw new IllegalArgumentException("Error while saving new Auto Repair");
         }
-        return autoRepair.getId().toString();
+        return autoRepair.getId();
     }
 
     @Override
@@ -66,6 +68,25 @@ public class AutoRepairCommandServiceImpl implements AutoRepairCommandService {
             this.autoRepairRepository.deleteById(Long.valueOf(command.autoRepairId()));
         } catch (Exception ex) {
             throw   new IllegalArgumentException("Error while deleting auto repair"+ ex.getMessage());
+        }
+    }
+
+    @Override
+    public void handle(AddServiceToAutoRepairServiceCatalogCommand command) {
+        var service = serviceRepository.findById(command.serviceId())
+                .orElseThrow(() -> new NotFoundIdException(Service.class, command.serviceId().toString()));
+
+        var autoRepair = autoRepairRepository.findById(command.autoRepairId())
+                .orElseThrow(() -> new NotFoundIdException(AutoRepair.class, command.autoRepairId().toString()));
+
+        try {
+            autoRepair.registerNewOffer(service, command.price());
+            autoRepairRepository.save(autoRepair);
+
+        } catch (IllegalStateException ex) {
+            throw new IllegalArgumentException("Error de dominio al registrar oferta: " + ex.getMessage());
+        } catch (Exception ex) {
+            throw new IllegalArgumentException("Error al guardar la oferta del taller: " + ex.getMessage());
         }
     }
 }
