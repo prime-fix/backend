@@ -1,8 +1,5 @@
 package pe.edu.upc.prime.platform.data.collection.domain.model.queries;
 
-import pe.edu.upc.prime.platform.data.collection.domain.model.valueobjects.AutoRepairId;
-import pe.edu.upc.prime.platform.workshopCatalog.domain.model.aggregates.AutoRepair;
-
 import java.util.Objects;
 
 /**
