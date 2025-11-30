@@ -16,8 +16,16 @@ public record UserAccountId(Long userAccountId) {
         }
     }
 
+    /**
+     * Default constructor for JPA
+     */
     public UserAccountId(){this(0L);}
 
+    /**
+     * Returns the user account ID value.
+     *
+     * @return the user account ID
+     */
     public Long value() {
         return userAccountId;
     }

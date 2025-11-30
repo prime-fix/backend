@@ -1,13 +1,10 @@
 package pe.edu.upc.prime.platform.data.collection.domain.model.commands;
 
-import pe.edu.upc.prime.platform.data.collection.domain.model.valueobjects.AutoRepairId;
 import pe.edu.upc.prime.platform.data.collection.domain.model.valueobjects.ServiceId;
-import pe.edu.upc.prime.platform.data.collection.domain.model.valueobjects.VehicleId;
+import pe.edu.upc.prime.platform.shared.domain.model.valueobjects.AutoRepairId;
+import pe.edu.upc.prime.platform.shared.domain.model.valueobjects.VehicleId;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.util.Date;
 import java.util.Objects;
 
 

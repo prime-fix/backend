@@ -2,11 +2,11 @@ package pe.edu.upc.prime.platform.data.collection.interfaces.rest.assemblers;
 
 import pe.edu.upc.prime.platform.data.collection.domain.model.aggregates.Visit;
 import pe.edu.upc.prime.platform.data.collection.domain.model.commands.CreateVisitCommand;
-import pe.edu.upc.prime.platform.data.collection.domain.model.valueobjects.AutoRepairId;
 import pe.edu.upc.prime.platform.data.collection.domain.model.valueobjects.ServiceId;
-import pe.edu.upc.prime.platform.data.collection.domain.model.valueobjects.VehicleId;
 import pe.edu.upc.prime.platform.data.collection.interfaces.rest.resources.CreateVisitRequest;
 import pe.edu.upc.prime.platform.data.collection.interfaces.rest.resources.VisitResponse;
+import pe.edu.upc.prime.platform.shared.domain.model.valueobjects.AutoRepairId;
+import pe.edu.upc.prime.platform.shared.domain.model.valueobjects.VehicleId;
 
 public class VisitAssembler {
 

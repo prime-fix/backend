@@ -22,4 +22,13 @@ public record VehicleId(Long vehicleId) {
     public VehicleId(){
         this(0L);
     }
+
+    /**
+     * Returns the vehicle ID value.
+     *
+     * @return the vehicle ID
+     */
+    public Long value() {
+        return vehicleId;
+    }
 }

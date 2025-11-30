@@ -15,9 +15,8 @@ import jakarta.validation.constraints.Size;
  */
 public record CreateDiagnosticRequest(
         @JsonProperty("id_vehicle")
-        @NotNull(message = "El ID del vehículo no debe ser nulo")
-        @NotBlank
-        String vehicleId,
+        @NotNull @NotBlank
+        Long vehicleId,
 
         @JsonProperty("diagnosis")
         @NotNull @NotBlank

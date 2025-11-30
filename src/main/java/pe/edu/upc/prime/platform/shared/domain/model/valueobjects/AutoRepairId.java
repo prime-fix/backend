@@ -29,6 +29,11 @@ public record AutoRepairId(Long autoRepairId) {
         this(0L);
     }
 
+    /**
+     * Returns the auto repair ID value.
+     *
+     * @return the auto repair ID
+     */
     public Long value() {
         return this.autoRepairId;
     }

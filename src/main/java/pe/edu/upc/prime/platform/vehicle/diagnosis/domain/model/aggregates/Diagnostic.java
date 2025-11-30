@@ -3,9 +3,9 @@ package pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.aggregates;
 import jakarta.persistence.*;
 import lombok.Getter;
 import pe.edu.upc.prime.platform.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
+import pe.edu.upc.prime.platform.shared.domain.model.valueobjects.VehicleId;
 import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.commands.CreateDiagnosisCommand;
 import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.commands.UpdateDiagnosisCommand;
-import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.valueobjects.VehicleId;
 
 @Entity
 @Table(name = "diagnostic")
