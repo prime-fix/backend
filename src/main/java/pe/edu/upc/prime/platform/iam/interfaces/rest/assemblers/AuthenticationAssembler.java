@@ -63,6 +63,6 @@ public class AuthenticationAssembler {
      * @return the corresponding authenticated user account response
      */
     public static AuthenticatedUserAccountResponse toResponseFromEntityUserAccount(UserAccount entity, String token) {
-        return new AuthenticatedUserAccountResponse(entity.getId(), entity.getPassword(),token);
+        return new AuthenticatedUserAccountResponse(entity.getId(), entity.getUsername(),token);
     }
 }
