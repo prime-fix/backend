@@ -45,10 +45,10 @@ public class AutoRepairCommandServiceImpl implements AutoRepairCommandService {
     @Override
     public Optional<AutoRepair> handle(UpdateAutoRepairCommand command) {
         var autoRepairId = command.autoRepairId();
-        if(!this.autoRepairRepository.existsById(Long.valueOf(autoRepairId))){
+        if(!this.autoRepairRepository.existsById(autoRepairId)){
             throw new NotFoundIdException(AutoRepair.class, autoRepairId);
         }
-        var autoRepairUpdate = this.autoRepairRepository.findById(Long.valueOf(autoRepairId)).get();
+        var autoRepairUpdate = this.autoRepairRepository.findById(autoRepairId).get();
         autoRepairUpdate.updateAutoRepair(command);
 
         try {
@@ -61,11 +61,11 @@ public class AutoRepairCommandServiceImpl implements AutoRepairCommandService {
 
     @Override
     public void handle(DeleteAutoRepairCommand command) {
-        if (!this.autoRepairRepository.existsById(Long.valueOf(command.autoRepairId()))){
+        if (!this.autoRepairRepository.existsById(command.autoRepairId())){
             throw new IllegalArgumentException("Auto repair id not found" + command.autoRepairId());
         }
         try {
-            this.autoRepairRepository.deleteById(Long.valueOf(command.autoRepairId()));
+            this.autoRepairRepository.deleteById(command.autoRepairId());
         } catch (Exception ex) {
             throw   new IllegalArgumentException("Error while deleting auto repair"+ ex.getMessage());
         }
@@ -74,10 +74,10 @@ public class AutoRepairCommandServiceImpl implements AutoRepairCommandService {
     @Override
     public void handle(AddServiceToAutoRepairServiceCatalogCommand command) {
         var service = serviceRepository.findById(command.serviceId())
-                .orElseThrow(() -> new NotFoundIdException(Service.class, command.serviceId().toString()));
+                .orElseThrow(() -> new NotFoundIdException(Service.class, command.serviceId()));
 
         var autoRepair = autoRepairRepository.findById(command.autoRepairId())
-                .orElseThrow(() -> new NotFoundIdException(AutoRepair.class, command.autoRepairId().toString()));
+                .orElseThrow(() -> new NotFoundIdException(AutoRepair.class, command.autoRepairId()));
 
         try {
             autoRepair.registerNewOffer(service, command.price());

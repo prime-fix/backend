@@ -34,7 +34,7 @@ public class VehicleAssembler {
      * @param request the UpdateVehicleRequest to convert
      * @return the corresponding UpdateVehicleCommand
      */
-    public static UpdateVehicleCommand toCommandFromRequest(String idVehicle, UpdateVehicleRequest request) {
+    public static UpdateVehicleCommand toCommandFromRequest(Long idVehicle, UpdateVehicleRequest request) {
         return new UpdateVehicleCommand(
                 idVehicle, request.color(), request.model(), request.idUser(),
                 new VehicleInformation(request.vehicleBrand(), request.vehiclePlate(), request.vehicleType()),

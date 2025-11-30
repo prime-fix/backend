@@ -39,9 +39,9 @@ public class PaymentCommandServiceImpl implements PaymentCommandService {
      * @return the ID of the newly created user
      */
     @Override
-    public String handle(CreatePaymentCommand command) {
+    public Long handle(CreatePaymentCommand command) {
 
-        var userAccountId = command.idUserAccount();
+        var userAccountId = command.userAccountId();
 
         var payment = new Payment(command);
 
@@ -51,7 +51,7 @@ public class PaymentCommandServiceImpl implements PaymentCommandService {
             throw new IllegalArgumentException(
                     "[CreatePaymentCommand] Error while saving payment: " + e.getMessage());
         }
-        return payment.getId().toString();
+        return payment.getId();
     }
 
     /**
@@ -64,13 +64,13 @@ public class PaymentCommandServiceImpl implements PaymentCommandService {
     public Optional<Payment> handle(UpdatePaymentCommand command) {
         var paymentId = command.paymentId();
 
-        if (!this.paymentRepository.existsById(Long.valueOf(paymentId))) {
+        if (!this.paymentRepository.existsById(paymentId)) {
             throw new NotFoundArgumentException(
                     String.format("Payment with the same id %s does not exist.", paymentId)
             );
         }
 
-        var paymentToUpdate = this.paymentRepository.findById(Long.valueOf(paymentId)).get();
+        var paymentToUpdate = this.paymentRepository.findById(paymentId).get();
         paymentToUpdate.updatePayment(command);
 
         try {
@@ -91,7 +91,7 @@ public class PaymentCommandServiceImpl implements PaymentCommandService {
     public void handle(DeletePaymentCommand command) {
         var paymentId = command.paymentId();
 
-        if (!this.paymentRepository.existsById(Long.valueOf(paymentId))) {
+        if (!this.paymentRepository.existsById(paymentId)) {
             throw new NotFoundArgumentException(
                     String.format("Payment with the same id %s does not exist.", paymentId));
         }
@@ -103,7 +103,7 @@ public class PaymentCommandServiceImpl implements PaymentCommandService {
         });
     */
         try {
-            this.paymentRepository.deleteById(Long.valueOf(paymentId));
+            this.paymentRepository.deleteById(paymentId);
         } catch (Exception e) {
             throw new IllegalArgumentException("Error while deleting service:" + e.getMessage());
         }

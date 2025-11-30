@@ -84,7 +84,7 @@ public class UserAccountController {
         var createUserAccountCommand = UserAccountAssembler.toCommandFromRequest(request);
         var userAccountId = this.userAccountCommandService.handle(createUserAccountCommand);
 
-        if (Objects.isNull(userAccountId) || userAccountId.isBlank()) {
+        if (Objects.isNull(userAccountId) || userAccountId.equals(0L)) {
             return ResponseEntity.badRequest().build();
         }
 
@@ -134,7 +134,7 @@ public class UserAccountController {
                                     schema = @Schema(implementation = UserAccountResponse.class))),
             })
     @GetMapping("/{id_user_account}")
-    public ResponseEntity<UserAccountResponse> getUserAccountById(@PathVariable String id_user_account) {
+    public ResponseEntity<UserAccountResponse> getUserAccountById(@PathVariable Long id_user_account) {
         var getUserAccountByIdQuery = new GetUserAccountByIdQuery(id_user_account);
         var optionalUserAccount = userAccountQueryService.handle(getUserAccountByIdQuery);
         if (optionalUserAccount.isEmpty()) {
@@ -147,7 +147,7 @@ public class UserAccountController {
     /**
      * Update an existing user account
      *
-     * @param id_user_account The unique ID of the user account to be updated
+     * @param user_account_id The unique ID of the user account to be updated
      * @param request         The request body containing updated user account data
      * @return ResponseEntity with the updated user account data
      */
@@ -169,10 +169,10 @@ public class UserAccountController {
                                     schema = @Schema(implementation = RuntimeException.class)))
             }
     )
-    @PutMapping("/{id_user_account}")
-    public ResponseEntity<UserAccountResponse> updateUserAccount(@PathVariable String id_user_account,
+    @PutMapping("/{user_account_id}")
+    public ResponseEntity<UserAccountResponse> updateUserAccount(@PathVariable Long user_account_id,
                                                                  @Valid @RequestBody UpdateUserAccountRequest request) {
-        var updateUserAccountCommand = UserAccountAssembler.toCommandFromRequest(id_user_account, request);
+        var updateUserAccountCommand = UserAccountAssembler.toCommandFromRequest(user_account_id, request);
         var optionalUserAccount = this.userAccountCommandService.handle(updateUserAccountCommand);
         if (optionalUserAccount.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -184,7 +184,7 @@ public class UserAccountController {
     /**
      * Delete a user account by its ID
      *
-     * @param id_user_account The unique ID of the user account to be deleted
+     * @param user_account_id The unique ID of the user account to be deleted
      * @return ResponseEntity with no content
      */
     @Operation(summary = "Delete a user account by its ID",
@@ -197,9 +197,9 @@ public class UserAccountController {
                                     schema = @Schema(implementation = RuntimeException.class)))
             }
     )
-    @DeleteMapping("/{id_user_account}")
-    public ResponseEntity<?> deleteUserAccount(@PathVariable String id_user_account) {
-        var deleteUserAccountCommand = new DeleteUserAccountCommand(id_user_account);
+    @DeleteMapping("/{user_account_id}")
+    public ResponseEntity<?> deleteUserAccount(@PathVariable Long user_account_id) {
+        var deleteUserAccountCommand = new DeleteUserAccountCommand(user_account_id);
         this.userAccountCommandService.handle(deleteUserAccountCommand);
         return ResponseEntity.noContent().build();
     }

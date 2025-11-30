@@ -17,7 +17,7 @@ import pe.edu.upc.prime.platform.payment.service.domain.model.commands.DeletePay
 import pe.edu.upc.prime.platform.payment.service.domain.model.queries.GetAllPaymentsQuery;
 import pe.edu.upc.prime.platform.payment.service.domain.model.queries.GetPaymentByIdQuery;
 import pe.edu.upc.prime.platform.payment.service.domain.model.queries.GetPaymentByIdUserAccountQuery;
-import pe.edu.upc.prime.platform.payment.service.domain.model.valueobjects.IdUserAccount;
+import pe.edu.upc.prime.platform.shared.domain.model.valueobjects.UserAccountId;
 import pe.edu.upc.prime.platform.payment.service.domain.services.PaymentCommandService;
 import pe.edu.upc.prime.platform.payment.service.domain.services.PaymentQueryService;
 import pe.edu.upc.prime.platform.payment.service.interfaces.rest.assemblers.PaymentAssembler;
@@ -71,7 +71,7 @@ public class PaymentsController {
         var createCommand = PaymentAssembler.toCommandFromRequest(request);
         var paymentId = this.paymentCommandService.handle(createCommand);
 
-        if (Objects.isNull(paymentId) || paymentId.isBlank()) {
+        if (Objects.isNull(paymentId) || paymentId.equals(0L)) {
             return ResponseEntity.badRequest().build();
         }
 
@@ -96,15 +96,15 @@ public class PaymentsController {
     })
     @GetMapping
     public ResponseEntity<List<PaymentResponse>> getAllPayments(
-            @RequestParam(required = false) String idUserAccount) {
+            @RequestParam(required = false) Long userAccountId) {
 
         List<Payment> payments;
 
-        if (Objects.isNull(idUserAccount)) {
+        if (Objects.isNull(userAccountId)) {
             var getAllPaymentsQuery = new GetAllPaymentsQuery();
             payments = paymentQueryService.handle(getAllPaymentsQuery);
         } else {
-            var getPaymentByIdUserAccountQuery = new GetPaymentByIdUserAccountQuery(new IdUserAccount(idUserAccount));
+            var getPaymentByIdUserAccountQuery = new GetPaymentByIdUserAccountQuery(new UserAccountId(userAccountId));
             payments = paymentQueryService.handle(getPaymentByIdUserAccountQuery);
         }
 
@@ -124,9 +124,9 @@ public class PaymentsController {
                             schema = @Schema(implementation = PaymentResponse.class))),
     })
 
-    @GetMapping("/{id_payment}")
-    public ResponseEntity<PaymentResponse> getPaymentById(@PathVariable String id_payment) {
-        var getPaymentByIdQuery = new GetPaymentByIdQuery(id_payment);
+    @GetMapping("/{payment_id}")
+    public ResponseEntity<PaymentResponse> getPaymentById(@PathVariable Long payment_id) {
+        var getPaymentByIdQuery = new GetPaymentByIdQuery(payment_id);
         var optionalPayment = paymentQueryService.handle(getPaymentByIdQuery);
 
         if (optionalPayment.isEmpty()) {
@@ -156,12 +156,12 @@ public class PaymentsController {
                                 schema = @Schema(implementation = RuntimeException.class)))
             }
     )
-    @PutMapping("/{id_payment}")
+    @PutMapping("/{payment_id}")
     public ResponseEntity<PaymentResponse> updatePayment(
-            @PathVariable String id_payment,
+            @PathVariable Long payment_id,
             @Valid @RequestBody UpdatePaymentRequest request) {
 
-        var updatePaymentCommand = PaymentAssembler.toCommandFromRequest(id_payment, request);
+        var updatePaymentCommand = PaymentAssembler.toCommandFromRequest(payment_id, request);
         var optionalPayment = this.paymentCommandService.handle(updatePaymentCommand);
         if (optionalPayment.isEmpty()) {
             return ResponseEntity.badRequest().build();
@@ -182,9 +182,9 @@ public class PaymentsController {
                                 schema = @Schema(implementation = RuntimeException.class)))
             }
     )
-    @DeleteMapping("/{id_payment}")
-    public ResponseEntity<?> deletePayment(@PathVariable String id_payment) {
-        var deletePaymentCommand = new DeletePaymentCommand(id_payment);
+    @DeleteMapping("/{payment_id}")
+    public ResponseEntity<?> deletePayment(@PathVariable Long payment_id) {
+        var deletePaymentCommand = new DeletePaymentCommand(payment_id);
         paymentCommandService.handle(deletePaymentCommand);
         return ResponseEntity.noContent().build();
     }

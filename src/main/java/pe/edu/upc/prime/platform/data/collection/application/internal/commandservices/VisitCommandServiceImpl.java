@@ -62,11 +62,11 @@ public class VisitCommandServiceImpl implements VisitCommandService {
      */
     @Override
     public void handle(DeleteVisitCommand command) {
-        if(!this.visitRepository.existsById(Long.valueOf(command.visitId()))){
+        if(!this.visitRepository.existsById(command.visitId())){
             throw new IllegalArgumentException("Error while deleting visit:"+ command.visitId());
         }
         try {
-            this.visitRepository.deleteById(Long.valueOf(command.visitId()));
+            this.visitRepository.deleteById(command.visitId());
         }catch (Exception e){
             throw new IllegalArgumentException("Error while deleting visit:"+ e.getMessage());
         }

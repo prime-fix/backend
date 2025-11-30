@@ -9,7 +9,7 @@ import java.util.Objects;
  * @param name The name of the visit
  * @param description The description of the Visit
  */
-public record UpdateServiceCommand(String serviceId, String name, String description) {
+public record UpdateServiceCommand(Long serviceId, String name, String description) {
 
     public UpdateServiceCommand{
         Objects.requireNonNull(serviceId, "[CreateServiceCommand] serviceId is required");

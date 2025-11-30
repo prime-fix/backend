@@ -37,9 +37,9 @@ public record CreatePaymentRequest(
         @NotNull @Pattern(regexp = "\\d{3}", message = "CCV must have exactly 3 digits")
         String ccv,
 
-        @JsonProperty("id_user_account")
-        @NotNull @NotBlank
-        String idUserAccount
+        @JsonProperty("user_account_id")
+        @NotNull
+        Long userAccountId
 ) {
 
 }

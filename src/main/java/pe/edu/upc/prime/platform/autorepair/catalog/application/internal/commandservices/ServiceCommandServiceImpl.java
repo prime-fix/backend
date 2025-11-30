@@ -42,10 +42,10 @@ public class ServiceCommandServiceImpl implements ServiceCommandService {
     @Override
     public Optional<Service> handle(UpdateServiceCommand command) {
         var serviceId = command.serviceId();
-        if(!this.serviceRepository.existsById(Long.valueOf(serviceId))){
+        if(!this.serviceRepository.existsById(serviceId)){
             throw new NotFoundIdException(Service.class, serviceId);
         }
-        var serviceUpdate = this.serviceRepository.findById(Long.valueOf(serviceId)).get();
+        var serviceUpdate = this.serviceRepository.findById(serviceId).get();
         serviceUpdate.updateService(command);
 
         try{
@@ -58,11 +58,11 @@ public class ServiceCommandServiceImpl implements ServiceCommandService {
 
     @Override
     public void handle(DeleteServiceCommand command) {
-        if(!this.serviceRepository.existsById(Long.valueOf(command.serviceId()))){
+        if(!this.serviceRepository.existsById(command.serviceId())){
             throw new IllegalArgumentException("Error while deleting service:"+ command.serviceId());
         }
         try {
-            this.serviceRepository.deleteById(Long.valueOf(command.serviceId()));
+            this.serviceRepository.deleteById(command.serviceId());
         }catch (Exception e) {
             throw new IllegalArgumentException("Error while deleting service:" + e.getMessage());
         }

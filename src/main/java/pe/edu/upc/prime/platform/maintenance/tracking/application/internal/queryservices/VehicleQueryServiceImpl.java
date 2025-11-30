@@ -50,8 +50,8 @@ public class VehicleQueryServiceImpl implements VehicleQueryService {
      */
     @Override
     public Optional<Vehicle> handle(GetVehicleByIdQuery query) {
-        return Optional.ofNullable(this.vehicleRepository.findById(Long.valueOf(query.idVehicle()))
-        .orElseThrow(() -> new NotFoundIdException(Vehicle.class, query.idVehicle())));
+        return Optional.ofNullable(this.vehicleRepository.findById(query.vehicleId())
+        .orElseThrow(() -> new NotFoundIdException(Vehicle.class, query.vehicleId())));
     }
 
     /**

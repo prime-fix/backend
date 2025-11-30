@@ -10,7 +10,7 @@ public interface PaymentCommandService {
      * @param command The command containing payment details.
      * @return The ID of the created Payment.
      */
-    String handle(CreatePaymentCommand command);
+    Long handle(CreatePaymentCommand command);
 
     /**
      * Handles updating an existing Payment.

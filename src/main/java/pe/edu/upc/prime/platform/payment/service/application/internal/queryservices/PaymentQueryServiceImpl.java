@@ -28,12 +28,12 @@ public class PaymentQueryServiceImpl implements PaymentQueryService {
 
     @Override
     public Optional<Payment> handle(GetPaymentByIdQuery query) {
-        return Optional.ofNullable(this.paymentRepository.findById(Long.valueOf(query.paymentId()))
+        return Optional.ofNullable(this.paymentRepository.findById(query.paymentId())
                 .orElseThrow(() -> new NotFoundIdException(Payment.class,query.paymentId())));
     }
 
     @Override
     public List<Payment> handle(GetPaymentByIdUserAccountQuery query) {
-        return paymentRepository.findByIdUserAccount(query.idUserAccount());
+        return paymentRepository.findByUserAccountId(query.idUserAccount());
     }
 }

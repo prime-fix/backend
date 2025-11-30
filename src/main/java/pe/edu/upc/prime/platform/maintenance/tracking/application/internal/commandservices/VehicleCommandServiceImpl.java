@@ -38,7 +38,7 @@ public class VehicleCommandServiceImpl implements VehicleCommandService {
      * @return the ID of the created vehicle
      */
     @Override
-    public String handle(CreateVehicleCommand command) {
+    public Long handle(CreateVehicleCommand command) {
         /*
         var idVehicle = command.idVehicle();
         var vehiclePlate = command.vehicleInformation().vehiclePlate();
@@ -60,7 +60,7 @@ public class VehicleCommandServiceImpl implements VehicleCommandService {
             throw new PersistenceException("[VehicleCommandServiceImpl] Error while saving vehicle: "
                     + e.getMessage());
         }
-        return vehicle.getId().toString();
+        return vehicle.getId();
     }
 
     /**
@@ -71,18 +71,18 @@ public class VehicleCommandServiceImpl implements VehicleCommandService {
      */
     @Override
     public Optional<Vehicle> handle(UpdateVehicleCommand command) {
-        var idVehicle = command.idVehicle();
+        var vehicleId = command.vehicleId();
         var vehiclePlate = command.vehicleInformation().vehiclePlate();
 
-        if (!this.vehicleRepository.existsById(Long.valueOf(idVehicle))) {
-            throw new NotFoundIdException(Vehicle.class, idVehicle);
+        if (!this.vehicleRepository.existsById(vehicleId)) {
+            throw new NotFoundIdException(Vehicle.class, vehicleId);
         }
-        if (this.vehicleRepository.existsByVehicleInformation_VehiclePlateAndIdIsNot(vehiclePlate, Long.valueOf(idVehicle))) {
+        if (this.vehicleRepository.existsByVehicleInformation_VehiclePlateAndIdIsNot(vehiclePlate, vehicleId)) {
             throw new IllegalArgumentException("[VehicleCommandServiceImpl] Another vehicle with the vehicle plate "
                     + vehiclePlate + " already exists");
         }
 
-        var vehicleToUpdate = this.vehicleRepository.findById(Long.valueOf(idVehicle)).get();
+        var vehicleToUpdate = this.vehicleRepository.findById(vehicleId).get();
         vehicleToUpdate.updateVehicle(command);
 
         try {
@@ -101,12 +101,12 @@ public class VehicleCommandServiceImpl implements VehicleCommandService {
      */
     @Override
     public void handle(DeleteVehicleCommand command) {
-        if (!this.vehicleRepository.existsById(Long.valueOf(command.idVehicle()))) {
-            throw new NotFoundIdException(Vehicle.class, command.idVehicle());
+        if (!this.vehicleRepository.existsById(command.vehicleId())) {
+            throw new NotFoundIdException(Vehicle.class, command.vehicleId());
         }
 
         try {
-            this.vehicleRepository.deleteById(Long.valueOf(command.idVehicle()));
+            this.vehicleRepository.deleteById(command.vehicleId());
         } catch (Exception e) {
             throw new PersistenceException("[VehicleCommandServiceImpl] Error while deleting vehicle: "
                     + e.getMessage());

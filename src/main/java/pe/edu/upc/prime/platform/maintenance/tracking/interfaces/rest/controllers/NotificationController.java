@@ -84,7 +84,7 @@ public class NotificationController {
         var createNotificationCommand = NotificationAssembler.toCommandFromRequest(request);
         var notificationId = this.notificationCommandService.handle(createNotificationCommand);
 
-        if (Objects.isNull(notificationId) || notificationId.isBlank()) {
+        if (Objects.isNull(notificationId) || notificationId.equals(0L)) {
             return ResponseEntity.badRequest().build();
         }
 
@@ -123,7 +123,7 @@ public class NotificationController {
     /**
      * Retrieve a notification by its ID.
      *
-     * @param id_notification the notification ID
+     * @param notification_id the notification ID
      * @return the response entity with the notification
      */
     @Operation(summary = "Retrieve a notification by its ID",
@@ -133,9 +133,9 @@ public class NotificationController {
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = NotificationResponse.class))),
             })
-    @GetMapping("/{id_notification}")
-    public ResponseEntity<NotificationResponse> getNotificationById(@PathVariable String id_notification) {
-        var getNotificationByIdQuery = new GetNotificationByIdQuery(id_notification);
+    @GetMapping("/{notification_id}")
+    public ResponseEntity<NotificationResponse> getNotificationById(@PathVariable Long notification_id) {
+        var getNotificationByIdQuery = new GetNotificationByIdQuery(notification_id);
         var optionalNotification = this.notificationQueryService.handle(getNotificationByIdQuery);
         if (optionalNotification.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -147,7 +147,7 @@ public class NotificationController {
     /**
      * Update an existing notification.
      *
-     * @param id_notification the notification ID
+     * @param notification_id the notification ID
      * @param request the update notification request
      * @return the response entity with the updated notification
      */
@@ -169,10 +169,10 @@ public class NotificationController {
                                     schema = @Schema(implementation = RuntimeException.class)))
             }
     )
-    @PutMapping("/{id_notification}")
-    public ResponseEntity<NotificationResponse> updateNotification(@PathVariable String id_notification,
+    @PutMapping("/{notification_id}")
+    public ResponseEntity<NotificationResponse> updateNotification(@PathVariable Long notification_id,
                                                                    @RequestBody UpdateNotificationRequest request) {
-        var updateNotificationCommand = NotificationAssembler.toCommandFromRequest(id_notification, request);
+        var updateNotificationCommand = NotificationAssembler.toCommandFromRequest(notification_id, request);
         var optionalNotification = this.notificationCommandService.handle(updateNotificationCommand);
         if (optionalNotification.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -184,7 +184,7 @@ public class NotificationController {
     /**
      * Delete a notification by its ID.
      *
-     * @param id_notification the notification ID
+     * @param notification_id the notification ID
      * @return the response entity indicating the result of the deletion
      */
     @Operation(summary = "Delete a notification by its ID",
@@ -197,9 +197,9 @@ public class NotificationController {
                                     schema = @Schema(implementation = RuntimeException.class)))
             }
     )
-    @DeleteMapping("/{id_notification}")
-    public ResponseEntity<?> deleteNotification(@PathVariable String id_notification) {
-        var deleteNotificationCommand = new DeleteNotificationCommand(id_notification);
+    @DeleteMapping("/{notification_id}")
+    public ResponseEntity<?> deleteNotification(@PathVariable Long notification_id) {
+        var deleteNotificationCommand = new DeleteNotificationCommand(notification_id);
         this.notificationCommandService.handle(deleteNotificationCommand);
         return ResponseEntity.noContent().build();
     }

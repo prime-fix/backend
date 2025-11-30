@@ -15,7 +15,7 @@ public class NotificationAssembler {
      * Converts a CreateNotificationRequest to a CreateNotificationCommand.
      *
      * @param request The create notification request.
-     * @return The corresponding create notification command.
+     * @return The corresponding to create notification command.
      */
     public static CreateNotificationCommand toCommandFromRequest(CreateNotificationRequest request) {
         return new CreateNotificationCommand(
@@ -27,13 +27,13 @@ public class NotificationAssembler {
     /**
      * Converts an UpdateNotificationRequest to an UpdateNotificationCommand.
      *
-     * @param idNotification The ID of the notification to update.
+     * @param notificationId The ID of the notification to update.
      * @param request The update notification request.
      * @return The corresponding update notification command.
      */
-    public static UpdateNotificationCommand toCommandFromRequest(String idNotification, UpdateNotificationRequest request) {
+    public static UpdateNotificationCommand toCommandFromRequest(Long notificationId, UpdateNotificationRequest request) {
         return new UpdateNotificationCommand(
-                idNotification, request.message(), request.read(),
+                notificationId, request.message(), request.read(),
                 request.idVehicle(), request.sent(), request.idDiagnostic()
         );
     }

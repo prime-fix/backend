@@ -51,18 +51,18 @@ public class RatingQueryServiceImpl implements RatingQueryService {
      */
     @Override
     public Optional<Rating> handle(GetRatingByIdQuery query) {
-        return Optional.ofNullable(this.ratingRepository.findById(Long.valueOf(query.ratingId()))
+        return Optional.ofNullable(this.ratingRepository.findById(query.ratingId())
                 .orElseThrow(() -> new NotFoundIdException(Rating.class,query.ratingId())));
     }
 
     /**
-     * Get a rating by its autorepair ID.
+     * Get a rating by its auto repair ID.
      *
-     * @param query the query containing the autorepair ID
+     * @param query the query containing the auto repair ID
      * @return an optional containing the rating if found
      */
     @Override
     public List<Rating> handle(GetRatingByIdAutoRepairQuery query) {
-        return ratingRepository.findByIdAutoRepair(query.idAutoRepair());
+        return ratingRepository.findByAutoRepairId(query.idAutoRepair());
     }
 }

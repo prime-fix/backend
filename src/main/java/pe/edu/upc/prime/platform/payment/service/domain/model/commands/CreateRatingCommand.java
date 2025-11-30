@@ -1,6 +1,7 @@
 package pe.edu.upc.prime.platform.payment.service.domain.model.commands;
 
-import pe.edu.upc.prime.platform.payment.service.domain.model.valueobjects.*;
+import pe.edu.upc.prime.platform.shared.domain.model.valueobjects.AutoRepairId;
+import pe.edu.upc.prime.platform.shared.domain.model.valueobjects.UserAccountId;
 
 import java.util.Objects;
 
@@ -17,8 +18,8 @@ public record CreateRatingCommand(
 
         int starRating,
         String comment,
-        IdAutoRepair idAutoRepair,
-        IdUserAccount idUserAccount
+        AutoRepairId idAutoRepair,
+        UserAccountId idUserAccount
 ) {
     public CreateRatingCommand {
         Objects.requireNonNull(idAutoRepair, "[CreateRatingCommand] idAutoRepair must not be null");

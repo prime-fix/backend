@@ -38,15 +38,7 @@ public class NotificationCommandServiceImpl implements NotificationCommandServic
      * @return the ID of the created notification
      */
     @Override
-    public String handle(CreateNotificationCommand command) {
-        /*
-        var idNotification = command.idNotification();
-
-        if (notificationRepository.existsById(idNotification)) {
-            throw new IllegalArgumentException("[NotificationCommandServiceImpl] Notification with ID "
-                    + idNotification + " already exists");
-        }
-        */
+    public Long handle(CreateNotificationCommand command) {
         var notification = new Notification(command);
         try {
             this.notificationRepository.save(notification);
@@ -54,7 +46,7 @@ public class NotificationCommandServiceImpl implements NotificationCommandServic
             throw new PersistenceException("[NotificationCommandServiceImpl] Error while saving notification: "
                     + e.getMessage());
         }
-        return notification.getId().toString();
+        return notification.getId();
     }
 
     /**
@@ -65,13 +57,13 @@ public class NotificationCommandServiceImpl implements NotificationCommandServic
      */
     @Override
     public Optional<Notification> handle(UpdateNotificationCommand command) {
-        var idNotification = command.idNotification();
+        var notificationId = command.notificationId();
 
-        if (!this.notificationRepository.existsById(Long.valueOf(idNotification))) {
-            throw new NotFoundIdException(Notification.class, idNotification);
+        if (!this.notificationRepository.existsById(notificationId)) {
+            throw new NotFoundIdException(Notification.class, notificationId);
         }
 
-        var notificationToUpdate = this.notificationRepository.findById(Long.valueOf(idNotification)).get();
+        var notificationToUpdate = this.notificationRepository.findById(notificationId).get();
         notificationToUpdate.updateNotification(command);
 
         try {
@@ -90,12 +82,12 @@ public class NotificationCommandServiceImpl implements NotificationCommandServic
      */
     @Override
     public void handle(DeleteNotificationCommand command) {
-        if (!this.notificationRepository.existsById(Long.valueOf(command.idNotification()))) {
-            throw new NotFoundIdException(Notification.class, command.idNotification());
+        if (!this.notificationRepository.existsById(command.notificationId())) {
+            throw new NotFoundIdException(Notification.class, command.notificationId());
         }
 
         try {
-            this.notificationRepository.deleteById(Long.valueOf(command.idNotification()));
+            this.notificationRepository.deleteById(command.notificationId());
         } catch (Exception e) {
             throw new PersistenceException("[NotificationCommandServiceImpl] Error while deleting notification: "
                     + e.getMessage());

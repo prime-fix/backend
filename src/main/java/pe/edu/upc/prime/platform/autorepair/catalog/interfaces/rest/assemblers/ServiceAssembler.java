@@ -18,7 +18,7 @@ public class ServiceAssembler {
 
 
 
-    public static UpdateServiceCommand toCommandFromRequest(String serviceId, UpdateServiceRequest request) {
+    public static UpdateServiceCommand toCommandFromRequest(Long serviceId, UpdateServiceRequest request) {
         return new UpdateServiceCommand(
                 serviceId,
                 request.name(),

@@ -9,10 +9,9 @@ import jakarta.validation.constraints.*;
  *
  * @param username the username for the new user account
  * @param email the email address associated with the new user account
- * @param idRole the role identifier assigned to the new user account
- * @param idUser the user identifier linked to the new user account
+ * @param roleId the role identifier assigned to the new user account
+ * @param userId the user identifier linked to the new user account
  * @param password the password for the new user account
- * @param isNew flag indicating if the account is new
  */
 public record CreateUserAccountRequest(
 
@@ -25,19 +24,19 @@ public record CreateUserAccountRequest(
         @Size(min = 1, max = 200)
         String email,
 
-        @JsonProperty("id_role")
-        @NotNull @NotBlank
-        String idRole,
+        @JsonProperty("role_id")
+        @NotNull
+        Long roleId,
 
-        @JsonProperty("id_user")
-        @NotNull @NotBlank
-        String idUser,
+        @JsonProperty("user_id")
+        @NotNull
+        Long userId,
+
+        @JsonProperty("membership_id")
+        @NotNull
+        Long membershipId,
 
         @NotNull @NotBlank
         @Size(min = 1, max = 100)
-        String password,
-
-        @Schema(name="is_new", defaultValue="false")
-        @JsonProperty("is_new")
-        boolean isNew) {
+        String password) {
 }

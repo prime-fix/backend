@@ -10,6 +10,6 @@ import pe.edu.upc.prime.platform.autorepair.catalog.domain.model.valueobjects.Us
  * @param technicians_count the technician count od the auto repair
  * @param RUC the RUC of the auto repair
  */
-public record UpdateAutoRepairCommand(String autoRepairId, String contact_email,
+public record UpdateAutoRepairCommand(Long autoRepairId, String contact_email,
                                       Integer technicians_count, String RUC, UserAccountId userAccountId) {
 }

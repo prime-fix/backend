@@ -12,7 +12,7 @@ public interface RatingCommandService {
      * @param command The command containing rating details.
      * @return The ID of the created Rating.
      */
-    String handle(CreateRatingCommand command);
+    Long handle(CreateRatingCommand command);
 
     /**
      * Handles updating an existing Rating.

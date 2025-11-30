@@ -2,6 +2,7 @@ package pe.edu.upc.prime.platform.autorepair.register.domain.services;
 
 import pe.edu.upc.prime.platform.autorepair.register.domain.model.aggregates.Technician;
 import pe.edu.upc.prime.platform.autorepair.register.domain.model.commands.CreateTechnicianCommand;
+import pe.edu.upc.prime.platform.autorepair.register.domain.model.commands.DeleteTechnicianCommand;
 import pe.edu.upc.prime.platform.autorepair.register.domain.model.commands.UpdateTechnicianCommand;
 
 import java.util.Optional;
@@ -32,5 +33,5 @@ public interface TechnicianCommandService {
      *
      * @param idTechnician The ID of the Technician to delete.
      */
-    void handleDelete(String idTechnician);
+    void handle(DeleteTechnicianCommand idTechnician);
 }

@@ -245,7 +245,7 @@ public class VisitsController {
             )),
     })
     @DeleteMapping("/{visitId}")
-    public ResponseEntity<?> deleteVisit(@PathVariable String visitId){
+    public ResponseEntity<?> deleteVisit(@PathVariable Long visitId){
         var deleteVisitCommand = new DeleteVisitCommand(visitId);
         this.visitCommandService.handle(deleteVisitCommand);
         return ResponseEntity.noContent().build();

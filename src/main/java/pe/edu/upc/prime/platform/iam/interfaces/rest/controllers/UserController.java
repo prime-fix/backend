@@ -81,9 +81,10 @@ public class UserController {
     @PostMapping
     public ResponseEntity<UserResponse> createUser(@RequestBody CreateUserRequest request) {
         var createUserCommand = UserAssembler.toCommandFromRequest(request);
-        var userId = this.userCommandService.handle(createUserCommand);
+        var optionalUser = this.userCommandService.handle(createUserCommand).get();
+        var userId = optionalUser.getId();
 
-        if (Objects.isNull(userId) || userId.isBlank()) {
+        if (Objects.isNull(userId) || userId.equals(0L)) {
             return ResponseEntity.badRequest().build();
         }
 
@@ -122,7 +123,7 @@ public class UserController {
     /**
      * Retrieve a user by its ID
      *
-     * @param id_user The unique ID of the user
+     * @param user_id The unique ID of the user
      * @return ResponseEntity with the user data
      */
     @Operation(summary = "Retrieve a user by its ID",
@@ -132,9 +133,9 @@ public class UserController {
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = UserResponse.class))),
             })
-    @GetMapping("/{id_user}")
-    public ResponseEntity<UserResponse> getUserById(@PathVariable String id_user) {
-        var getUserByIdQuery = new GetUserByIdQuery(id_user);
+    @GetMapping("/{user_id}")
+    public ResponseEntity<UserResponse> getUserById(@PathVariable Long user_id) {
+        var getUserByIdQuery = new GetUserByIdQuery(user_id);
         var optionalUser = userQueryService.handle(getUserByIdQuery);
         if (optionalUser.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -146,7 +147,7 @@ public class UserController {
     /**
      * Update an existing user
      *
-     * @param id_user The unique ID of the user to be updated
+     * @param user_id The unique ID of the user to be updated
      * @param request The request body containing updated user data
      * @return ResponseEntity with the updated user data
      */
@@ -168,10 +169,10 @@ public class UserController {
                                     schema = @Schema(implementation = RuntimeException.class)))
             }
     )
-    @PutMapping("/{id_user}")
-    public ResponseEntity<UserResponse> updateUser(@PathVariable String id_user,
+    @PutMapping("/{user_id}")
+    public ResponseEntity<UserResponse> updateUser(@PathVariable Long user_id,
                                                    @Valid @RequestBody UpdateUserRequest request) {
-        var updateUserCommand = UserAssembler.toCommandFromRequest(id_user, request);
+        var updateUserCommand = UserAssembler.toCommandFromRequest(user_id, request);
         var optionalUser = this.userCommandService.handle(updateUserCommand);
         if (optionalUser.isEmpty()) {
             return ResponseEntity.badRequest().build();
@@ -183,7 +184,7 @@ public class UserController {
     /**
      * Delete a user by its ID
      *
-     * @param id_user The unique ID of the user to be deleted
+     * @param user_id The unique ID of the user to be deleted
      * @return ResponseEntity with no content
      */
     @Operation(summary = "Delete a user by its ID",
@@ -196,9 +197,9 @@ public class UserController {
                                     schema = @Schema(implementation = RuntimeException.class)))
             }
     )
-    @DeleteMapping("/{id_user}")
-    public ResponseEntity<?> deleteUser(@PathVariable String id_user) {
-        var deleteUserCommand = new DeleteUserCommand(id_user);
+    @DeleteMapping("/{user_id}")
+    public ResponseEntity<?> deleteUser(@PathVariable Long user_id) {
+        var deleteUserCommand = new DeleteUserCommand(user_id);
         this.userCommandService.handle(deleteUserCommand);
         return ResponseEntity.noContent().build();
     }

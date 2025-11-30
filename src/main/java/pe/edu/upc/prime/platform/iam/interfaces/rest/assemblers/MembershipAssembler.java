@@ -1,6 +1,6 @@
 package pe.edu.upc.prime.platform.iam.interfaces.rest.assemblers;
 
-import pe.edu.upc.prime.platform.iam.domain.model.aggregates.Membership;
+import pe.edu.upc.prime.platform.iam.domain.model.entities.Membership;
 import pe.edu.upc.prime.platform.iam.domain.model.commands.CreateMembershipCommand;
 import pe.edu.upc.prime.platform.iam.domain.model.commands.UpdateMembershipCommand;
 import pe.edu.upc.prime.platform.iam.domain.model.valueobjects.MembershipDescription;
@@ -26,12 +26,12 @@ public class MembershipAssembler {
     /**
      * Converts an UpdateMembershipRequest to an UpdateMembershipCommand.
      *
-     * @param idMembership the ID of the membership to be updated
+     * @param membershipId the ID of the membership to be updated
      * @param request the UpdateMembershipRequest object
      * @return the corresponding UpdateMembershipCommand object
      */
-    public static UpdateMembershipCommand toCommandFromRequest(String idMembership,UpdateMembershipRequest request) {
-        return new UpdateMembershipCommand(idMembership,
+    public static UpdateMembershipCommand toCommandFromRequest(Long membershipId,UpdateMembershipRequest request) {
+        return new UpdateMembershipCommand(membershipId,
                 new MembershipDescription(request.description()), request.started(), request.over());
     }
 
@@ -42,7 +42,7 @@ public class MembershipAssembler {
      * @return the corresponding MembershipResponse object
      */
     public static MembershipResponse toResponseFromEntity(Membership entity) {
-        return new MembershipResponse(entity.getId().toString(), entity.getMembershipDescription().description(),
+        return new MembershipResponse(entity.getId(), entity.getMembershipDescription().description(),
                 entity.getStarted(), entity.getOver());
     }
 }

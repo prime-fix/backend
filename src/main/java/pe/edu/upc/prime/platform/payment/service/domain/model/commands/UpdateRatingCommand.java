@@ -1,6 +1,7 @@
 package pe.edu.upc.prime.platform.payment.service.domain.model.commands;
 
-import pe.edu.upc.prime.platform.payment.service.domain.model.valueobjects.*;
+import pe.edu.upc.prime.platform.shared.domain.model.valueobjects.AutoRepairId;
+import pe.edu.upc.prime.platform.shared.domain.model.valueobjects.UserAccountId;
 
 import java.util.Objects;
 
@@ -15,19 +16,19 @@ import java.util.Objects;
  */
 
 public record UpdateRatingCommand(
-        String ratingId,
+        Long ratingId,
         int starRating,
         String comment,
-        IdAutoRepair idAutoRepair,
-        IdUserAccount idUserAccount
+        AutoRepairId idAutoRepair,
+        UserAccountId idUserAccount
 ) {
     public UpdateRatingCommand {
         Objects.requireNonNull(ratingId, "[UpdateRatingCommand] ratingId must not be null");
         Objects.requireNonNull(idAutoRepair, "[UpdateRatingCommand] idAutoRepair must not be null");
         Objects.requireNonNull(idUserAccount, "[UpdateRatingCommand] idUserAccount must not be null");
 
-        if (ratingId.isBlank())
-            throw new IllegalArgumentException("[UpdateRatingCommand] ratingId cannot be blank");
+        if (ratingId <= 0)
+            throw new IllegalArgumentException("[UpdateRatingCommand] ratingId cannot be less than or equal to 0");
 
         if (starRating < 1 || starRating > 5)
             throw new IllegalArgumentException("[UpdateRatingCommand] starRating must be between 1 and 5");

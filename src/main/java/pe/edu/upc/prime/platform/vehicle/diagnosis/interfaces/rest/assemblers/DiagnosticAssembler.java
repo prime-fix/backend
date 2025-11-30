@@ -18,9 +18,9 @@ public class DiagnosticAssembler {
         );
     }
 
-    public static UpdateDiagnosisCommand toCommandFromRequest(String id, UpdateDiagnosticRequest request) {
+    public static UpdateDiagnosisCommand toCommandFromRequest(Long diagnosticId, UpdateDiagnosticRequest request) {
         return new UpdateDiagnosisCommand(
-                id,
+                diagnosticId,
                 request.diagnosis(),
                 request.price()
         );

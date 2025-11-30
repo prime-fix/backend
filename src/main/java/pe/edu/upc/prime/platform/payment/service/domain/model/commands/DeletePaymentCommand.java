@@ -5,5 +5,5 @@ package pe.edu.upc.prime.platform.payment.service.domain.model.commands;
  *
  * @param paymentId the ID of the payment to be deleted
  */
-public record DeletePaymentCommand(String paymentId) {
+public record DeletePaymentCommand(Long paymentId) {
 }

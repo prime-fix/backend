@@ -34,7 +34,7 @@ public class ServiceQueryServiceImpl implements ServiceQueryService {
 
     @Override
     public Optional<Service> handle(GetServiceByIdQuery query) {
-        return this.serviceRepository.findById(Long.valueOf(query.serviceId()));
+        return this.serviceRepository.findById(query.serviceId());
     }
 
     @Override

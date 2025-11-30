@@ -52,15 +52,15 @@ public class TechnicianScheduleController {
     @PostMapping
     public ResponseEntity<TechnicianScheduleResponse> createSchedule(@RequestBody CreateTechnicianScheduleRequest request) {
         // Validate Technician existence
-        Optional<Technician> technicianOpt = technicianRepository.findById(request.idTechnician());
+        Optional<Technician> technicianOpt = technicianRepository.findById(request.technicianId());
         if (technicianOpt.isEmpty()) {
-            throw new NotFoundIdException(Technician.class, request.idTechnician());
+            throw new NotFoundIdException(Technician.class, request.technicianId());
         }
 
         // Create command and handle
         CreateTechnicianScheduleCommand command =
                 TechnicianScheduleAssembler.toCommandFromRequest(request, technicianOpt.get());
-        String scheduleId = technicianScheduleCommandService.handle(command);
+        Long scheduleId = technicianScheduleCommandService.handle(command);
 
         // Retrieve persisted entity for response
         var schedule = technicianScheduleQueryService
@@ -92,7 +92,7 @@ public class TechnicianScheduleController {
     @ApiResponse(responseCode = "200", description = "Schedule retrieved successfully")
     @ApiResponse(responseCode = "404", description = "Schedule not found")
     @GetMapping("/{scheduleId}")
-    public ResponseEntity<TechnicianScheduleResponse> getScheduleById(@PathVariable String scheduleId) {
+    public ResponseEntity<TechnicianScheduleResponse> getScheduleById(@PathVariable Long scheduleId) {
         Optional<TechnicianSchedule> scheduleOpt =
                 technicianScheduleQueryService.handle(new GetTechnicianScheduleByIdQuery(scheduleId));
 
@@ -110,7 +110,7 @@ public class TechnicianScheduleController {
     @Operation(summary = "Get all schedules for a specific Technician")
     @ApiResponse(responseCode = "200", description = "Schedules retrieved successfully")
     @GetMapping("/technician/{technicianId}")
-    public ResponseEntity<List<TechnicianScheduleResponse>> getSchedulesByTechnicianId(@PathVariable String technicianId) {
+    public ResponseEntity<List<TechnicianScheduleResponse>> getSchedulesByTechnicianId(@PathVariable Long technicianId) {
         List<TechnicianSchedule> schedules =
                 technicianScheduleQueryService.handle(new GetSchedulesByTechnicianIdQuery(technicianId));
 
@@ -127,7 +127,7 @@ public class TechnicianScheduleController {
     @Operation(summary = "Update an existing Technician Schedule")
     @ApiResponse(responseCode = "200", description = "Schedule updated successfully")
     @PutMapping("/{scheduleId}")
-    public ResponseEntity<TechnicianScheduleResponse> updateSchedule(@PathVariable String scheduleId,
+    public ResponseEntity<TechnicianScheduleResponse> updateSchedule(@PathVariable Long scheduleId,
                                                                      @RequestBody UpdateTechnicianScheduleRequest request) {
         UpdateTechnicianScheduleCommand command =
                 TechnicianScheduleAssembler.toCommandFromRequest(scheduleId, request);
@@ -148,7 +148,7 @@ public class TechnicianScheduleController {
     @Operation(summary = "Delete Technician Schedule by ID")
     @ApiResponse(responseCode = "204", description = "Schedule deleted successfully")
     @DeleteMapping("/{scheduleId}")
-    public ResponseEntity<Void> deleteSchedule(@PathVariable String scheduleId) {
+    public ResponseEntity<Void> deleteSchedule(@PathVariable Long scheduleId) {
         technicianScheduleCommandService.handle(new DeleteTechnicianScheduleCommand(scheduleId));
         return ResponseEntity.noContent().build();
     }

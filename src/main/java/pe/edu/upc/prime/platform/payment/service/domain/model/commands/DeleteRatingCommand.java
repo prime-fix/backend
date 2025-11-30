@@ -5,5 +5,5 @@ package pe.edu.upc.prime.platform.payment.service.domain.model.commands;
  *
  * @param ratingId the ID of the rating to be deleted
  */
-public record DeleteRatingCommand(String ratingId) {
+public record DeleteRatingCommand(Long ratingId) {
 }

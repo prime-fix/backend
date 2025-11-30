@@ -9,6 +9,7 @@ import pe.edu.upc.prime.platform.payment.service.domain.model.commands.CreatePay
 import pe.edu.upc.prime.platform.payment.service.domain.model.commands.UpdatePaymentCommand;
 import pe.edu.upc.prime.platform.payment.service.domain.model.valueobjects.*;
 import pe.edu.upc.prime.platform.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
+import pe.edu.upc.prime.platform.shared.domain.model.valueobjects.UserAccountId;
 
 @Entity
 @Table(name="payments")
@@ -47,7 +48,7 @@ public class Payment extends AuditableAbstractAggregateRoot<Payment>{
             column = @Column(name = "id_user_account", nullable = false, length = 10)
     )
     @JsonProperty("id_user_account")
-    private IdUserAccount idUserAccount;
+    private UserAccountId userAccountId;
 
     /**
      * Default constructor for JPA.
@@ -66,7 +67,7 @@ public class Payment extends AuditableAbstractAggregateRoot<Payment>{
         this.month = command.month();
         this.year = command.year();
         this.ccv = command.ccv();
-        this.idUserAccount = command.idUserAccount();
+        this.userAccountId = command.userAccountId();
     }
     /** Update the profile with the specified details.
    *
@@ -79,12 +80,6 @@ public class Payment extends AuditableAbstractAggregateRoot<Payment>{
         this.year = command.year();
         this.ccv = command.ccv();
     }
-
-
-    public String getIdUserAccountValue() {
-        return idUserAccount != null ? idUserAccount.getIdUserAccount() : null;
-    }
-
 
     public String getMaskedCardNumber() {
         if (cardNumber == null || cardNumber.length() <= 4) {

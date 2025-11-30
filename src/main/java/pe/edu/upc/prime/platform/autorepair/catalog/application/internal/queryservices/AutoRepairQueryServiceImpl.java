@@ -31,7 +31,7 @@ public class AutoRepairQueryServiceImpl implements AutoRepairQueryService {
 
     @Override
     public Optional<AutoRepair> handle(GetAutoRepairByIdQuery query) {
-        return this.autoRepairRepository.findById(Long.valueOf(query.repairId()));
+        return this.autoRepairRepository.findById(query.repairId());
     }
 
     @Override

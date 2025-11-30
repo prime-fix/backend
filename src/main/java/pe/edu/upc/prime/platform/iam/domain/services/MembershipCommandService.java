@@ -1,6 +1,6 @@
 package pe.edu.upc.prime.platform.iam.domain.services;
 
-import pe.edu.upc.prime.platform.iam.domain.model.aggregates.Membership;
+import pe.edu.upc.prime.platform.iam.domain.model.entities.Membership;
 import pe.edu.upc.prime.platform.iam.domain.model.commands.CreateMembershipCommand;
 import pe.edu.upc.prime.platform.iam.domain.model.commands.DeleteMembershipCommand;
 import pe.edu.upc.prime.platform.iam.domain.model.commands.UpdateMembershipCommand;
@@ -17,7 +17,7 @@ public interface MembershipCommandService {
      * @param command the command containing the membership information
      * @return the ID of the newly created membership
      */
-    String handle(CreateMembershipCommand command);
+    Optional<Membership> handle(CreateMembershipCommand command);
 
     /**
      * Handles the update of a membership based on the provided command.

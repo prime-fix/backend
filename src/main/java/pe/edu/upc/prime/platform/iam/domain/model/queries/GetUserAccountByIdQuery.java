@@ -5,5 +5,5 @@ package pe.edu.upc.prime.platform.iam.domain.model.queries;
  *
  * @param idUserAccount the ID of the user account to retrieve
  */
-public record GetUserAccountByIdQuery(String idUserAccount) {
+public record GetUserAccountByIdQuery(Long idUserAccount) {
 }

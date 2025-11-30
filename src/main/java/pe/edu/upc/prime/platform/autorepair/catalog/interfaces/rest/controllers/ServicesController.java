@@ -178,7 +178,7 @@ public class ServicesController {
     })
 
     @PutMapping("/{serviceId}")
-    public ResponseEntity<ServiceResponse> updateService(@PathVariable String serviceId,
+    public ResponseEntity<ServiceResponse> updateService(@PathVariable Long serviceId,
     @Valid @RequestBody UpdateServiceRequest request){
 
         var updateServiceCommand = ServiceAssembler.toCommandFromRequest(serviceId, request);
@@ -225,7 +225,7 @@ public class ServicesController {
                     )),
     })
     @DeleteMapping("/{serviceId}")
-    public ResponseEntity<?> deleteService(@PathVariable String serviceId){
+    public ResponseEntity<?> deleteService(@PathVariable Long serviceId){
         var deleteServiceCommand = new DeleteServiceCommand(serviceId);
         this.serviceCommandService.handle(deleteServiceCommand);
         return ResponseEntity.noContent().build();

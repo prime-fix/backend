@@ -35,12 +35,12 @@ import java.util.Optional;
     public Optional<Diagnostic> handle(UpdateDiagnosisCommand command) {
         // Validate if the diagnosis already exists
         var diagnosticId = command.diagnosisId();
-        if (!this.diagnosisRepository.existsById(Long.valueOf(diagnosticId))) {
+        if (!this.diagnosisRepository.existsById(diagnosticId)) {
             throw new NotFoundIdException(Diagnostic.class, diagnosticId);
         }
 
         // Update the diagnosis
-        var diagnosisToUpdate = this.diagnosisRepository.findById(Long.valueOf(diagnosticId)).get();
+        var diagnosisToUpdate = this.diagnosisRepository.findById(diagnosticId).get();
         diagnosisToUpdate.updateDiagnostic(command);
 
         try {
@@ -55,13 +55,13 @@ import java.util.Optional;
     @Override
     public void handle(DeleteDiagnosisCommand command) {
         // If the profile does not exist, throw an exception
-        if (!this.diagnosisRepository.existsById(Long.valueOf(command.idDiagnostic()))) {
-            throw new NotFoundIdException(Diagnostic.class, command.idDiagnostic());
+        if (!this.diagnosisRepository.existsById(command.diagnosticId())) {
+            throw new NotFoundIdException(Diagnostic.class, command.diagnosticId());
         }
 
         // Try to delete the profile, if an error occurs, throw an exception
         try {
-            this.diagnosisRepository.deleteById(Long.valueOf(command.idDiagnostic()));
+            this.diagnosisRepository.deleteById(command.diagnosticId());
         } catch (Exception e) {
             throw new PersistenceException("[DiagnosisCommandServiceImpl] Error while deleting diagnosis: "
                     + e.getMessage());

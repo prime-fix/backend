@@ -60,9 +60,11 @@ public class MembershipController {
     @PostMapping
     public ResponseEntity<MembershipResponse> createMembership(@RequestBody CreateMembershipRequest request) {
         var createMembershipCommand = MembershipAssembler.toCommandFromRequest(request);
-        var membershipId = this.membershipCommandService.handle(createMembershipCommand);
+        var optionalMembership = this.membershipCommandService.handle(createMembershipCommand).get();
 
-        if (Objects.isNull(membershipId) || membershipId.isBlank()) {
+        var membershipId = optionalMembership.getId();
+
+        if (Objects.isNull(membershipId) || membershipId.equals(0L)) {
             return ResponseEntity.badRequest().build();
         }
 
@@ -101,9 +103,9 @@ public class MembershipController {
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = MembershipResponse.class))),
             })
-    @GetMapping("/{id_membership}")
-    public ResponseEntity<MembershipResponse> getMembershipById(@PathVariable String id_membership) {
-        var getMembershipByIdQuery = new GetMembershipByIdQuery(id_membership);
+    @GetMapping("/{membership_id}")
+    public ResponseEntity<MembershipResponse> getMembershipById(@PathVariable Long membership_id) {
+        var getMembershipByIdQuery = new GetMembershipByIdQuery(membership_id);
         var optionalMembership = this.membershipQueryService.handle(getMembershipByIdQuery);
         if (optionalMembership.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -130,10 +132,10 @@ public class MembershipController {
                                     schema = @Schema(implementation = RuntimeException.class)))
             }
     )
-    @PutMapping("/{id_membership}")
-    public ResponseEntity<MembershipResponse> updateMembership(@PathVariable String id_membership,
+    @PutMapping("/{membership_id}")
+    public ResponseEntity<MembershipResponse> updateMembership(@PathVariable Long membership_id,
                                                                @RequestBody UpdateMembershipRequest request) {
-        var updateMembershipCommand = MembershipAssembler.toCommandFromRequest(id_membership, request);
+        var updateMembershipCommand = MembershipAssembler.toCommandFromRequest(membership_id, request);
         var optionalMembership = this.membershipCommandService.handle(updateMembershipCommand);
         if (optionalMembership.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -152,9 +154,9 @@ public class MembershipController {
                                     schema = @Schema(implementation = RuntimeException.class)))
             }
     )
-    @DeleteMapping("/{id_membership}")
-    public ResponseEntity<?> deleteMembership(@PathVariable String id_membership) {
-        var deleteMembershipCommand = new DeleteMembershipCommand(id_membership);
+    @DeleteMapping("/{membership_id}")
+    public ResponseEntity<?> deleteMembership(@PathVariable Long membership_id) {
+        var deleteMembershipCommand = new DeleteMembershipCommand(membership_id);
         this.membershipCommandService.handle(deleteMembershipCommand);
         return ResponseEntity.noContent().build();
     }

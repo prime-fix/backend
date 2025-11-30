@@ -17,7 +17,7 @@ public interface NotificationCommandService {
      * @param command the command containing the notification information
      * @return the ID of the newly created notification
      */
-    String handle(CreateNotificationCommand command);
+    Long handle(CreateNotificationCommand command);
 
     /**
      * Handles the update of a notification based on the provided command.

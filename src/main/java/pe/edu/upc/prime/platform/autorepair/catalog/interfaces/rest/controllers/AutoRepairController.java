@@ -147,7 +147,7 @@ public class AutoRepairController {
     }
 
     @PutMapping("/{autoRepairId}")
-    public ResponseEntity<AutoRepairResponse> updateAutoRepair(@PathVariable String autoRepairId,
+    public ResponseEntity<AutoRepairResponse> updateAutoRepair(@PathVariable Long autoRepairId,
                                                                @Valid @RequestBody UpdateAutoRepairRequest request){
         var updateAutoRepairCommand = AutoRepairAssembler.toCommandFromRequest(autoRepairId,request);
         var optionalAutoRepair = this.autoRepairCommandService.handle(updateAutoRepairCommand);
@@ -161,7 +161,7 @@ public class AutoRepairController {
     }
 
     @DeleteMapping("/{autoRepairId}")
-    public ResponseEntity<?> deleteAutoRepair(@PathVariable String autoRepairId){
+    public ResponseEntity<?> deleteAutoRepair(@PathVariable Long autoRepairId){
         var deleteAutoRepairCommand = new DeleteAutoRepairCommand(autoRepairId);
         this.autoRepairCommandService.handle(deleteAutoRepairCommand);
         return ResponseEntity.noContent().build();

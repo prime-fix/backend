@@ -5,20 +5,22 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * UserAccountResponse
  *
- * @param idUserAccount the identifier of the user account
+ * @param id the identifier of the user account
  * @param username the username of the user account
  * @param email the email address associated with the user account
- * @param idRole the role identifier assigned to the user account
- * @param idUser the user identifier linked to the user account
+ * @param roleId the role identifier assigned to the user account
+ * @param userId the user identifier linked to the user account
+ * @param membershipId the membership identifier linked to the user account
  * @param password the password of the user account
  * @param isNew flag indicating if the account is new
  */
 public record UserAccountResponse(
-        @JsonProperty("id_user_account") String idUserAccount,
+        Long id,
         String username,
         String email,
-        @JsonProperty("id_role") String idRole,
-        @JsonProperty("id_user") String idUser,
+        @JsonProperty("role_id") Long roleId,
+        @JsonProperty("user_id") Long userId,
+        @JsonProperty("membership_id") Long membershipId,
         String password,
         @JsonProperty("is_new") boolean isNew) {
 }

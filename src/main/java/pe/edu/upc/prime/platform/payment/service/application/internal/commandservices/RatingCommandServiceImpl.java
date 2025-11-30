@@ -39,7 +39,7 @@ public class RatingCommandServiceImpl implements RatingCommandService {
      * @return the ID of the newly created rating
      */
     @Override
-    public String handle(CreateRatingCommand command) {
+    public Long handle(CreateRatingCommand command) {
         var rating = new Rating(command);
 
         try {
@@ -48,7 +48,7 @@ public class RatingCommandServiceImpl implements RatingCommandService {
             throw new PersistenceException(
                     "Error creating rating: " + e.getMessage());
         }
-        return rating.getId().toString();
+        return rating.getId();
 
     }
 
@@ -62,13 +62,13 @@ public class RatingCommandServiceImpl implements RatingCommandService {
     public Optional<Rating> handle(UpdateRatingCommand command) {
         var ratingId = command.ratingId();
 
-        if (!this.ratingRepository.existsById(Long.valueOf(ratingId))) {
+        if (!this.ratingRepository.existsById(ratingId)) {
             throw new NotFoundArgumentException(
                     String.format("Rating with the same id %s does not exist.", ratingId)
             );
         }
 
-        var ratingToUpdate = this.ratingRepository.findById(Long.valueOf(ratingId)).get();
+        var ratingToUpdate = this.ratingRepository.findById(ratingId).get();
         ratingToUpdate.updateRating(command);
 
         try {
@@ -86,7 +86,7 @@ public class RatingCommandServiceImpl implements RatingCommandService {
      */
     @Override
     public void handle(DeleteRatingCommand command) {
-        if (!this.ratingRepository.existsById(Long.valueOf(command.ratingId()))) {
+        if (!this.ratingRepository.existsById(command.ratingId())) {
             throw new NotFoundArgumentException(
                     String.format("Rating with the same id %s does not exist.", command.ratingId())
             );
@@ -97,7 +97,7 @@ public class RatingCommandServiceImpl implements RatingCommandService {
         });*/
 
         try {
-            this.ratingRepository.deleteById(Long.valueOf(command.ratingId()));
+            this.ratingRepository.deleteById(command.ratingId());
         }catch (Exception e) {
             throw new IllegalArgumentException("Error deleting rating: " + e.getMessage());
         }

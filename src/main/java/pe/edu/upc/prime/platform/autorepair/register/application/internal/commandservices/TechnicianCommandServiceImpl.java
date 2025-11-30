@@ -4,6 +4,7 @@ import jakarta.persistence.PersistenceException;
 import org.springframework.stereotype.Service;
 import pe.edu.upc.prime.platform.autorepair.register.domain.model.aggregates.Technician;
 import pe.edu.upc.prime.platform.autorepair.register.domain.model.commands.CreateTechnicianCommand;
+import pe.edu.upc.prime.platform.autorepair.register.domain.model.commands.DeleteTechnicianCommand;
 import pe.edu.upc.prime.platform.autorepair.register.domain.model.commands.UpdateTechnicianCommand;
 import pe.edu.upc.prime.platform.autorepair.register.domain.services.TechnicianCommandService;
 import pe.edu.upc.prime.platform.autorepair.register.infrastructure.persistence.jpa.repositories.TechnicianRepository;
@@ -60,13 +61,13 @@ public class TechnicianCommandServiceImpl implements TechnicianCommandService {
      * Deletes a Technician by ID.
      */
     @Override
-    public void handleDelete(String idTechnician) {
-        if (!technicianRepository.existsById(idTechnician)) {
-            throw new NotFoundIdException(Technician.class, idTechnician);
+    public void handle(DeleteTechnicianCommand command) {
+        if (!technicianRepository.existsById(command.technicianId())) {
+            throw new NotFoundIdException(Technician.class, command.technicianId());
         }
 
         try {
-            technicianRepository.deleteById(idTechnician);
+            technicianRepository.deleteById(command.technicianId());
         } catch (Exception e) {
             throw new PersistenceException(
                     "[DeleteTechnicianCommand] Error while deleting technician: " + e.getMessage());
