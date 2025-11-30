@@ -2,6 +2,7 @@ package pe.edu.upc.prime.platform.autorepair.register.interfaces.rest.controller
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pe.edu.upc.prime.platform.autorepair.register.domain.model.aggregates.Technician;
@@ -30,6 +31,7 @@ import java.util.stream.Collectors;
  */
 @RestController
 @RequestMapping("/api/v1/technician_schedules")
+@Tag(name = "Technician Schedules", description = "Technician Schedule Management Endpoints")
 public class TechnicianScheduleController {
 
     private final TechnicianScheduleCommandService technicianScheduleCommandService;
