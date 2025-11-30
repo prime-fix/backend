@@ -74,9 +74,7 @@ public class LocationController {
     @PostMapping
     public ResponseEntity<LocationResponse> createLocation(@RequestBody CreateLocationRequest request) {
         var createLocationCommand = LocationAssembler.toCommandFromRequest(request);
-        var optionalLocation = this.locationCommandService.handle(createLocationCommand).get();
-
-        var locationId = optionalLocation.getId();
+        var locationId = this.locationCommandService.handle(createLocationCommand);
 
         if (Objects.isNull(locationId) || locationId.equals(0L)) {
             return ResponseEntity.badRequest().build();

@@ -81,8 +81,7 @@ public class UserController {
     @PostMapping
     public ResponseEntity<UserResponse> createUser(@RequestBody CreateUserRequest request) {
         var createUserCommand = UserAssembler.toCommandFromRequest(request);
-        var optionalUser = this.userCommandService.handle(createUserCommand).get();
-        var userId = optionalUser.getId();
+        var userId = this.userCommandService.handle(createUserCommand);
 
         if (Objects.isNull(userId) || userId.equals(0L)) {
             return ResponseEntity.badRequest().build();

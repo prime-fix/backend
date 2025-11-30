@@ -48,7 +48,7 @@ public class UserCommandServiceImpl implements UserCommandService {
      * @return the ID of the newly created user
      */
     @Override
-    public Optional<User> handle(CreateUserCommand command) {
+    public Long handle(CreateUserCommand command) {
         var name = command.name();
         var lastName = command.lastName();
 
@@ -67,7 +67,7 @@ public class UserCommandServiceImpl implements UserCommandService {
 
         try {
             this.userRepository.save(user);
-            return Optional.of(user);
+            return user.getId();
         } catch (Exception e) {
             throw new PersistenceException("[UserCommandServiceImpl] Error while creating user: "
                     + e.getMessage());

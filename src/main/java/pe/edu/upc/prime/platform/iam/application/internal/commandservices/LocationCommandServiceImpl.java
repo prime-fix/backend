@@ -29,16 +29,15 @@ public class LocationCommandServiceImpl implements LocationCommandService {
 
 
     @Override
-    public Optional<Location> handle(CreateLocationCommand command) {
+    public Long handle(CreateLocationCommand command) {
         var location = new Location(command);
 
         try{
             this.locationRepository.save(location);
+            return location.getId();
         } catch (Exception e){
             throw new IllegalArgumentException("[LocationCommandServiceImpl] Error while saving location" + e.getMessage());
         }
-
-        return Optional.of(location);
     }
 
     @Override

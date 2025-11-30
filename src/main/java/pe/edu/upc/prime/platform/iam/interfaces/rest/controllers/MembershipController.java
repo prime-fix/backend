@@ -60,9 +60,7 @@ public class MembershipController {
     @PostMapping
     public ResponseEntity<MembershipResponse> createMembership(@RequestBody CreateMembershipRequest request) {
         var createMembershipCommand = MembershipAssembler.toCommandFromRequest(request);
-        var optionalMembership = this.membershipCommandService.handle(createMembershipCommand).get();
-
-        var membershipId = optionalMembership.getId();
+        var membershipId = this.membershipCommandService.handle(createMembershipCommand);
 
         if (Objects.isNull(membershipId) || membershipId.equals(0L)) {
             return ResponseEntity.badRequest().build();

@@ -17,7 +17,7 @@ public interface LocationCommandService {
      * @param command the command containing the location information
      * @return an Optional containing the created Location if successful, or empty if creation failed
      */
-    Optional<Location> handle(CreateLocationCommand command);
+    Long handle(CreateLocationCommand command);
 
     /**
      * Handle the update of a location based on the provided command

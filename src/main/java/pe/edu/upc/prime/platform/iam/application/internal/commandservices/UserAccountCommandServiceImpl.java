@@ -31,6 +31,11 @@ public class UserAccountCommandServiceImpl implements UserAccountCommandService 
     private final LocationCommandService locationCommandService;
 
     /**
+     * The location repository for accessing location data.
+     */
+    private final LocationRepository locationRepository;
+
+    /**
      * The membership command service for managing user memberships.
      */
     private final MembershipCommandService membershipCommandService;
@@ -78,6 +83,7 @@ public class UserAccountCommandServiceImpl implements UserAccountCommandService 
      */
     public UserAccountCommandServiceImpl(UserAccountRepository userAccountRepository,
                                          LocationCommandService locationCommandService,
+                                         LocationRepository locationRepository,
                                          MembershipCommandService membershipCommandService,
                                          MembershipRepository membershipRepository,
                                          UserCommandService userCommandService,
@@ -87,6 +93,7 @@ public class UserAccountCommandServiceImpl implements UserAccountCommandService 
                                          RoleRepository roleRepository) {
         this.userAccountRepository = userAccountRepository;
         this.locationCommandService = locationCommandService;
+        this.locationRepository = locationRepository;
         this.membershipCommandService = membershipCommandService;
         this.membershipRepository = membershipRepository;
         this.userCommandService = userCommandService;
@@ -106,14 +113,17 @@ public class UserAccountCommandServiceImpl implements UserAccountCommandService 
     @Override
     public Optional<ImmutablePair<UserAccount, String>> handle(SignInCommand command) {
         var userAccount = userAccountRepository.findByUsername(command.username());
+        // Check if user account exists
         if (userAccount.isEmpty()) {
             throw new IllegalArgumentException("[UserAccountCommandServiceImpl] User Account not found");
         }
 
+        // Validate password
         if (!hashingService.matches(command.password(), userAccount.get().getPassword())) {
             throw new IllegalArgumentException("[UserAccountCommandServiceImpl] Invalid password");
         }
 
+        // Generate token
         var token = tokenService.generateToken(userAccount.get().getUsername());
         return Optional.of(ImmutablePair.of(userAccount.get(), token));
     }
@@ -129,28 +139,37 @@ public class UserAccountCommandServiceImpl implements UserAccountCommandService 
     public Optional<UserAccount> handle(SignUpCommand command) {
         var roleId = command.roleId();
 
+        // Check if username already exists
         if (userAccountRepository.existsByUsername(command.username())) {
             throw new IllegalArgumentException("[UserAccountCommandServiceImpl] Username already exists");
         }
 
+        // Check if email already exists
         if (!roleRepository.existsById(roleId)) {
             throw new IllegalArgumentException("[UserAccountCommandServiceImpl] Role not found");
         }
 
+        // Find role entity
         var role = roleRepository.findById(roleId)
                 .orElseThrow(() -> new IllegalArgumentException("[UserAccountCommandServiceImpl] Role not found"));
 
-        var location = locationCommandService.handle(new CreateLocationCommand(command.locationInformation()))
+        // Create location entity and retrieve it
+        var location = locationRepository.findById(
+                locationCommandService.handle(new CreateLocationCommand(command.locationInformation())))
                 .orElseThrow(() -> new IllegalArgumentException("[UserAccountCommandServiceImpl] Location could not be created"));
 
-        var membership = membershipCommandService.handle(new CreateMembershipCommand(command.membershipDescription(),
-                command.started(), command.over()))
+        // Create membership entity and retrieve it
+        var membership = membershipRepository.findById(
+                membershipCommandService.handle(new CreateMembershipCommand(command.membershipDescription(),
+                        command.started(), command.over())))
                 .orElseThrow(() -> new IllegalArgumentException("[UserAccountCommandServiceImpl] Membership could not be created"));
 
-        var user = userCommandService.handle(new CreateUserCommand(command.name(), command.lastName(),
-                command.dni(), command.phoneNumber(), location.getId()))
+        // Create user entity and retrieve it
+        var user = userRepository.findById(userCommandService.handle(new CreateUserCommand(command.name(), command.lastName(),
+                command.dni(), command.phoneNumber(), location.getId())))
                 .orElseThrow(() -> new IllegalArgumentException("[UserAccountCommandServiceImpl] User could not be created"));
 
+        // Create user account entity
         var userAccount = new UserAccount(new CreateUserAccountCommand(command.username(), command.email(),
                 role.getId(), user.getId(), membership.getId(), hashingService.encode(command.password())), role, user, membership);
 
@@ -182,15 +201,19 @@ public class UserAccountCommandServiceImpl implements UserAccountCommandService 
             throw new IllegalArgumentException("[UserAccountCommandServiceImpl] Email already exists");
         }
 
+        // Retrieve role entity
         var role = roleRepository.findById(command.roleId())
                 .orElseThrow(() -> new IllegalArgumentException("[UserAccountCommandServiceImpl] Role not found"));
 
+        // Retrieve user entity
         var user = userRepository.findById(command.userId())
                 .orElseThrow(() -> new IllegalArgumentException("[UserAccountCommandServiceImpl] User not found"));
 
+        // Retrieve membership entity
         var membership = membershipRepository.findById(command.membershipId())
                 .orElseThrow(() -> new IllegalArgumentException("[UserAccountCommandServiceImpl] Membership not found"));
 
+        // Create user account entity
         var userAccount = new UserAccount(command, role, user, membership);
 
         try {
@@ -228,15 +251,19 @@ public class UserAccountCommandServiceImpl implements UserAccountCommandService 
 
         var userAccountToUpdate = userAccountRepository.findById(userAccountId).get();
 
+        // Retrieve role entity
         var role = roleRepository.findById(command.roleId())
                 .orElseThrow(() -> new IllegalArgumentException("[UserAccountCommandServiceImpl] Role not found"));
 
+        // Retrieve user entity
         var user = userRepository.findById(command.userId())
                 .orElseThrow(() -> new IllegalArgumentException("[UserAccountCommandServiceImpl] User not found"));
 
+        // Retrieve membership entity
         var membership = membershipRepository.findById(command.membershipId())
                 .orElseThrow(() -> new IllegalArgumentException("[UserAccountCommandServiceImpl] Membership not found"));
 
+        // Update user account entity
         userAccountToUpdate.updateUserAccount(command, role, user, membership);
 
         try {

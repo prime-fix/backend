@@ -17,7 +17,7 @@ public interface MembershipCommandService {
      * @param command the command containing the membership information
      * @return the ID of the newly created membership
      */
-    Optional<Membership> handle(CreateMembershipCommand command);
+    Long handle(CreateMembershipCommand command);
 
     /**
      * Handles the update of a membership based on the provided command.

@@ -38,16 +38,15 @@ public class MembershipCommandServiceImpl implements MembershipCommandService {
      * @return the ID of the newly created membership
      */
     @Override
-    public Optional<Membership> handle(CreateMembershipCommand command) {
+    public Long handle(CreateMembershipCommand command) {
 
         var membership = new Membership(command);
         try{
             this.membershipRepository.save(membership);
+            return membership.getId();
         } catch (Exception e){
             throw new IllegalStateException(e);
         }
-
-        return Optional.of(membership);
     }
 
 

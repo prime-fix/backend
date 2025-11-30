@@ -17,7 +17,7 @@ public interface UserCommandService {
      * @param command the command containing the user information
      * @return the ID of the newly created user
      */
-    Optional<User> handle(CreateUserCommand command);
+    Long handle(CreateUserCommand command);
 
     /**
      * Handles the update of a user based on the provided command.
