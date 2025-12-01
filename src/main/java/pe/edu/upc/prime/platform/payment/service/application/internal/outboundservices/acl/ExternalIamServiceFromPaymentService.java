@@ -22,6 +22,12 @@ public class ExternalIamServiceFromPaymentService {
         this.iamContextFacade = iamContextFacade;
     }
 
+    /**
+     * Check if a user account exists by its ID.
+     *
+     * @param userAccountId the ID of the user account to check
+     * @return true if the user account exists, false otherwise
+     */
     public boolean existsUserAccountById(Long userAccountId) {
         return this.iamContextFacade.existsUserAccountById(userAccountId);
     }

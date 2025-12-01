@@ -22,6 +22,12 @@ public class ExternalIamServiceFromMaintenanceTracking {
         this.iamContextFacade = iamContextFacade;
     }
 
+    /**
+     * Check if a user exists by their ID.
+     *
+     * @param userId the ID of the user to check
+     * @return true if the user exists, false otherwise
+     */
     public boolean existsUserById(Long userId) {
         return this.iamContextFacade.existsUserById(userId);
     }
