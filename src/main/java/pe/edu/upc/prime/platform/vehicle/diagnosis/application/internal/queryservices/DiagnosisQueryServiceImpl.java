@@ -30,7 +30,7 @@ public class DiagnosisQueryServiceImpl implements DiagnosisQueryService {
     @Override
     public List<Diagnostic> handle(GetAllDiagnosticsByVehicleIdQuery query) {
         //return this.diagnosisRepository.findAll();
-        return diagnosisRepository.findByVehicleId_VehicleId(query.vehicleId().vehicleId());
+        return diagnosisRepository.findByVehicleId(query.vehicleId());
     }
 
     /**
@@ -38,7 +38,7 @@ public class DiagnosisQueryServiceImpl implements DiagnosisQueryService {
      */
     @Override
     public Optional<Diagnostic> handle(GetDiagnosticByIdQuery query) {
-        return this.diagnosisRepository.findById(query.idDiagnostic());
+        return this.diagnosisRepository.findById(Long.valueOf(query.idDiagnostic()));
     }
 
     @Override

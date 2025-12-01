@@ -1,35 +1,34 @@
 package pe.edu.upc.prime.platform.payment.service.domain.model.commands;
 
 import pe.edu.upc.prime.platform.payment.service.domain.model.valueobjects.*;
+import pe.edu.upc.prime.platform.shared.domain.model.valueobjects.UserAccountId;
 
 import java.util.Objects;
 
 /**
  * Command to create a new Payment.
  *
- * @param idPayment identifier of the payment
  * @param cardNumber The card number used for payment.
  * @param cardType The type of the card (e.g. VISA, MASTERCARD).
  * @param month The expiration month of the card.
  * @param year The expiration year of the card.
  * @param ccv The CCV code of the card.
- * @param idUserAccount The identifier of the user account making the payment.
+ * @param userAccountId The identifier of the user account making the payment.
  */
 public record CreatePaymentCommand(
-        String idPayment,
+
         String cardNumber,
         CardType cardType,
         int month,
         int year,
         String ccv,
-        IdUserAccount idUserAccount
+        UserAccountId userAccountId
 ) {
     public CreatePaymentCommand {
-        Objects.requireNonNull(idPayment, "[CreatePaymentCommand] id must not be null");
         Objects.requireNonNull(cardNumber, "[CreatePaymentCommand] cardNumber must not be null");
         Objects.requireNonNull(cardType, "[CreatePaymentCommand] cardType must not be null");
         Objects.requireNonNull(ccv, "[CreatePaymentCommand] ccv must not be null");
-        Objects.requireNonNull(idUserAccount, "[CreatePaymentCommand] idUserAccount must not be null");
+        Objects.requireNonNull(userAccountId, "[CreatePaymentCommand] idUserAccount must not be null");
 
         if (cardNumber.isBlank())
             throw new IllegalArgumentException("[CreatePaymentCommand] cardNumber cannot be blank");

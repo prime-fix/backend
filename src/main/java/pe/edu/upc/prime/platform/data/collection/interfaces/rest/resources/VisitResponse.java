@@ -2,7 +2,7 @@ package pe.edu.upc.prime.platform.data.collection.interfaces.rest.resources;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * VisitResponse record to represent visit data in API responses.
@@ -17,11 +17,11 @@ public record VisitResponse(
         @JsonProperty("visit_id")
         String visitId, String failure ,
         @JsonProperty("vehicle_id")
-        String vehicleId,
-        Date timeVisit,
+        Long vehicleId,
+        LocalDateTime timeVisit,
         @JsonProperty("auto_repair_id")
-        String autoRepairId,
+        Long autoRepairId,
         @JsonProperty("service_id")
-        String serviceId
+        Long serviceId
 ) {
 }

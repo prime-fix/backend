@@ -15,7 +15,7 @@ public interface TechnicianScheduleCommandService {
      * @param command create command
      * @return id of created schedule
      */
-    String handle(CreateTechnicianScheduleCommand command);
+    Long handle(CreateTechnicianScheduleCommand command);
 
     /**
      * Update an existing TechnicianSchedule.

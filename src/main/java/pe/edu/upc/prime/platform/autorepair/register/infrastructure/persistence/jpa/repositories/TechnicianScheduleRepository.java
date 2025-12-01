@@ -13,7 +13,7 @@ import java.util.List;
  * and custom query methods for the TechnicianSchedule entity.</p>
  */
 @Repository
-public interface TechnicianScheduleRepository extends JpaRepository<TechnicianSchedule, String> {
+public interface TechnicianScheduleRepository extends JpaRepository<TechnicianSchedule, Long> {
 
     /**
      * Custom query method to find all schedules for a specific technician.
@@ -21,7 +21,7 @@ public interface TechnicianScheduleRepository extends JpaRepository<TechnicianSc
      * @param technicianId the ID of the technician
      * @return a list of schedules belonging to the specified technician
      */
-    List<TechnicianSchedule> findByTechnician_IdTechnician(String technicianId);
+    List<TechnicianSchedule> findByTechnician_Id(Long technicianId);
 
     /**
      * Custom query method to find all active schedules.
@@ -37,5 +37,6 @@ public interface TechnicianScheduleRepository extends JpaRepository<TechnicianSc
      * @param dayOfWeek the day of the week
      * @return true if the technician already has a schedule on the specified day, false otherwise
      */
-    boolean existsByTechnician_IdTechnicianAndDayOfWeek(String technicianId, String dayOfWeek);
+    boolean existsByTechnician_IdAndDayOfWeek(Long technicianId, String dayOfWeek);
+
 }

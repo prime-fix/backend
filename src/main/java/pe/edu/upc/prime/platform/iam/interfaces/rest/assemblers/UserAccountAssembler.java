@@ -19,9 +19,9 @@ public class UserAccountAssembler {
      * @return the corresponding CreateUserAccountCommand
      */
     public static CreateUserAccountCommand toCommandFromRequest(CreateUserAccountRequest request) {
-        return new CreateUserAccountCommand(request.idUserAccount(), request.username(),
-                request.email(), request.idRole(), request.idUser(),
-                request.password(), request.isNew());
+        return new CreateUserAccountCommand( request.username(),
+                request.email(), request.roleId(), request.userId(), request.membershipId(),
+                request.password());
     }
 
     /**
@@ -31,10 +31,10 @@ public class UserAccountAssembler {
      * @param request the UpdateUserAccountRequest to convert
      * @return the corresponding UpdateUserAccountCommand
      */
-    public static UpdateUserAccountCommand toCommandFromRequest(String userAccountId,
+    public static UpdateUserAccountCommand toCommandFromRequest(Long userAccountId,
                                                                 UpdateUserAccountRequest request) {
         return new UpdateUserAccountCommand(userAccountId, request.username(),
-                request.email(), request.idRole(), request.idUser(),
+                request.email(), request.roleId(), request.userId(), request.membershipId(),
                 request.password(), request.isNew());
     }
 
@@ -45,8 +45,8 @@ public class UserAccountAssembler {
      * @return the corresponding UserAccountResponse
      */
     public static UserAccountResponse toResponseFromEntity(UserAccount entity) {
-        return new UserAccountResponse(entity.getIdUserAccount(), entity.getUsername(),
-                entity.getEmail(), entity.getIdRole(),
-                entity.getIdUser(), entity.getPassword(), entity.isNew());
+        return new UserAccountResponse(entity.getId(), entity.getUsername(),
+                entity.getEmail(), entity.getRole().getId(),
+                entity.getUser().getId(), entity.getMembership().getId(),entity.getPassword(), entity.getIsNew());
     }
 }

@@ -3,50 +3,55 @@ package pe.edu.upc.prime.platform.payment.service.infrastructure.persistence.jpa
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import pe.edu.upc.prime.platform.payment.service.domain.model.aggregates.Rating;
-import pe.edu.upc.prime.platform.payment.service.domain.model.valueobjects.IdAutoRepair;
-import pe.edu.upc.prime.platform.payment.service.domain.model.valueobjects.IdUserAccount;
+import pe.edu.upc.prime.platform.shared.domain.model.valueobjects.AutoRepairId;
+import pe.edu.upc.prime.platform.shared.domain.model.valueobjects.UserAccountId;
 
 import java.util.List;
 
+/**
+ * Repository interface for managing Rating entities.
+ */
 @Repository
-public interface RatingRepository extends JpaRepository<Rating, String> {
-
-    /** Custom query method to check the existence of a rating by auto repair.
-     *
-     * @param idAutoRepair the rating to check for existence
-     * @return true if a rating with the given auto repair ID exists, false otherwise
-     */
-    boolean existsByIdAutoRepair(IdAutoRepair idAutoRepair);
-
-    /** Custom query method to check the existence of a rating by user account.
-     *
-     * @param idUserAccount the rating to check for existence
-     * @return true if a rating with the given user account ID exists, false otherwise
-     */
-    boolean existsByIdUserAccount(IdUserAccount idUserAccount);
+public interface RatingRepository extends JpaRepository<Rating, Long> {
 
     /**
-     * Check if a rating exists by its auto repair ID and user account ID.
+     * Check if a rating exists for a given auto repair ID.
      *
-     * @param idAutoRepair the username of the auto repair
-     * @param idUserAccount the ID of the user account to exclude
-     * @return true if the user account exists, false otherwise
+     * @param autoRepairId the auto repair ID
+     * @return true if a rating exists for the given auto repair ID, false otherwise
      */
-    boolean existsByIdAutoRepairAndIdUserAccount(IdAutoRepair idAutoRepair, IdUserAccount idUserAccount);
+    boolean existsByAutoRepairId(AutoRepairId autoRepairId);
 
-    /** Custom query method to find a rating by idUserAccount.
+    /**
+     * Check if a rating exists for a given user account ID.
      *
-     * @param idUserAccount the ID of the user account to search for
-     * @return a List containing the found Ratings if found, or empty if not found
+     * @param userAccountId the user account ID
+     * @return true if a rating exists for the given user account ID, false otherwise
      */
-    List<Rating> findByIdUserAccount(IdUserAccount idUserAccount);
+    boolean existsByUserAccountId(UserAccountId userAccountId);
 
-    /** Custom query method to find a rating by idAutoRepair.
+    /**
+     * Check if a rating exists for a given auto repair ID and user account ID.
      *
-     * @param idAutoRepair the ID of the auto repair to search for
-     * @return a List containing the found Ratings if found, or empty if not found
+     * @param autoRepairId the auto repair ID
+     * @param userAccountId the user account ID
+     * @return true if a rating exists for the given auto repair ID and user account ID, false otherwise
      */
-    List<Rating> findByIdAutoRepair(IdAutoRepair idAutoRepair);
+    boolean existsByAutoRepairIdAndUserAccountId(AutoRepairId autoRepairId, UserAccountId userAccountId);
 
+    /**
+     * Find ratings by user account ID.
+     *
+     * @param userAccountId the user account ID
+     * @return list of ratings associated with the given user account ID
+     */
+    List<Rating> findByUserAccountId(UserAccountId userAccountId);
 
+    /**
+     * Find ratings by auto repair ID.
+     *
+     * @param autoRepairId the auto repair ID
+     * @return list of ratings associated with the given auto repair ID
+     */
+    List<Rating> findByAutoRepairId(AutoRepairId autoRepairId);
 }

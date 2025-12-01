@@ -1,54 +1,56 @@
 package pe.edu.upc.prime.platform.data.collection.domain.model.aggregates;
 
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
 import pe.edu.upc.prime.platform.data.collection.domain.model.commands.CreateVisitCommand;
+import pe.edu.upc.prime.platform.data.collection.domain.model.commands.UpdateVisitCommand;
+import pe.edu.upc.prime.platform.data.collection.domain.model.valueobjects.ServiceId;
 import pe.edu.upc.prime.platform.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
+import pe.edu.upc.prime.platform.shared.domain.model.valueobjects.AutoRepairId;
+import pe.edu.upc.prime.platform.shared.domain.model.valueobjects.VehicleId;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
-/**
- * Represents a visit in the system
- */
 @Entity
 @Table(name="visits")
 public class Visit extends AuditableAbstractAggregateRoot<Visit>
 {
-    @Id
-    @Getter
-    @Column(name="visit_id", nullable = false, unique = true)
-    @JsonProperty("visit_id")
-    private String visitId;
 
     @Getter
     @Column(name="failure", nullable = false)
     private String failure;
 
     @Getter
-    @Column(name="vehicle_id", nullable = false)
-    private String vehicleId;
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "vehicleId", column = @Column(name = "vehicle_id", nullable = false))
+    })
+    private VehicleId vehicleId;
 
     @Getter
-    @Temporal(TemporalType.DATE)
     @Column(name = "time_visit", nullable = false)
-    private Date timeVisit;
+    private LocalDateTime timeVisit;
+
 
     @Getter
-    @Column(name = "auto_repair_id", nullable = false)
-    private String autoRepairId;
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "autoRepairId", column = @Column(name = "auto_repair_id", nullable = false))
+    })private AutoRepairId autoRepairId;
+
 
     @Getter
-    @Column(name = "service_id", nullable = false)
-    private String serviceId;
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "serviceId", column = @Column(name = "service_id", nullable = false))
+    })private ServiceId serviceId;
 
     /**
      *  Update the profile with the specified detail
      * @param command the UpdateVisitCommand containing the new visit details
      */
     public Visit(CreateVisitCommand command){
-        this.visitId= command.visitId();
         this.failure=command.failure();
         this.vehicleId= command.vehicleId();
         this.timeVisit=command.timeVisit();
@@ -60,7 +62,7 @@ public class Visit extends AuditableAbstractAggregateRoot<Visit>
      *Update the visit instance from a CreateVisitCommand
      * @param command createVisitCommand containing visit details.
      */
-    public void updateVisit(CreateVisitCommand command){
+    public void updateVisit(UpdateVisitCommand command){
         this.failure=command.failure();
         this.vehicleId= command.vehicleId();
         this.timeVisit=command.timeVisit();

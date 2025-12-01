@@ -3,8 +3,8 @@ package pe.edu.upc.prime.platform.payment.service.interfaces.rest.assemblers;
 import pe.edu.upc.prime.platform.payment.service.domain.model.aggregates.Rating;
 import pe.edu.upc.prime.platform.payment.service.domain.model.commands.CreateRatingCommand;
 import pe.edu.upc.prime.platform.payment.service.domain.model.commands.UpdateRatingCommand;
-import pe.edu.upc.prime.platform.payment.service.domain.model.valueobjects.IdAutoRepair;
-import pe.edu.upc.prime.platform.payment.service.domain.model.valueobjects.IdUserAccount;
+import pe.edu.upc.prime.platform.shared.domain.model.valueobjects.AutoRepairId;
+import pe.edu.upc.prime.platform.shared.domain.model.valueobjects.UserAccountId;
 import pe.edu.upc.prime.platform.payment.service.interfaces.rest.resources.CreateRatingRequest;
 import pe.edu.upc.prime.platform.payment.service.interfaces.rest.resources.RatingResponse;
 import pe.edu.upc.prime.platform.payment.service.interfaces.rest.resources.UpdateRatingRequest;
@@ -13,32 +13,30 @@ public class RatingAssembler {
 
     public static CreateRatingCommand toCommandFromRequest(CreateRatingRequest request) {
         return new CreateRatingCommand(
-                request.idRating(),
                 request.starRating(),
                 request.comment(),
-                new IdAutoRepair(request.idAutoRepair()),
-                new IdUserAccount(request.idUserAccount())
+                new AutoRepairId(request.autoRepairId()),
+                new UserAccountId(request.userAccountId())
         );
     }
 
-    public static UpdateRatingCommand toCommandFromRequest(String ratingId, UpdateRatingRequest request) {
+    public static UpdateRatingCommand toCommandFromRequest(Long ratingId, UpdateRatingRequest request) {
         return new UpdateRatingCommand(
                 ratingId,
                 request.starRating(),
                 request.comment(),
-                new IdAutoRepair(request.idAutoRepair()),
-                new IdUserAccount(request.idUserAccount())
+                new AutoRepairId(request.autoRepairId()),
+                new UserAccountId(request.userAccountId())
         );
     }
 
     public static RatingResponse toResponseFromEntity(Rating entity) {
         return new RatingResponse(
-                entity.getIdRating(),
+                entity.getId(),
                 entity.getStarRating(),
                 entity.getComment(),
-
-                entity.getIdAutoRepairValue(),
-                entity.getIdUserAccountValue()
+                entity.getAutoRepairId().value(),
+                entity.getUserAccountId().value()
         );
     }
 }

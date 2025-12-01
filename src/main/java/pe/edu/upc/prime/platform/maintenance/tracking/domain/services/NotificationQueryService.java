@@ -1,6 +1,7 @@
 package pe.edu.upc.prime.platform.maintenance.tracking.domain.services;
 
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.aggregates.Notification;
+import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.queries.ExistsNotificationByIdQuery;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.queries.GetAllNotificationsQuery;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.queries.GetNotificationByIdQuery;
 
@@ -26,4 +27,12 @@ public interface NotificationQueryService {
      * @return an optional notification matching the ID
      */
     Optional<Notification> handle(GetNotificationByIdQuery query);
+
+    /**
+     * Handle the query to check if a notification exists by its ID.
+     *
+     * @param query the query containing the notification ID
+     * @return true if the notification exists, false otherwise
+     */
+    boolean handle(ExistsNotificationByIdQuery query);
 }

@@ -19,12 +19,12 @@ public record UpdateRatingRequest(
         @Size(max = 250, message = "Comment cannot exceed 250 characters")
         String comment,
 
-        @JsonProperty("id_auto_repair")
+        @JsonProperty("auto_repair_id")
         @NotNull @NotBlank
-        String idAutoRepair,
+        Long autoRepairId,
 
-        @JsonProperty("id_user_account")
+        @JsonProperty("user_account_id")
         @NotNull @NotBlank
-        String idUserAccount
+        Long userAccountId
 ) {
 }

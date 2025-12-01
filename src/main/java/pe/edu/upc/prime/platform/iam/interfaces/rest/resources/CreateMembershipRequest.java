@@ -11,15 +11,11 @@ import java.time.LocalDate;
 /**
  * Request to create a membership.
  *
- * @param idMembership the identifier of the membership to be created
  * @param description the description of the membership to be created
  * @param started the start date of the membership to be created
  * @param over the end date of the membership to be created
  */
 public record CreateMembershipRequest(
-        @NotNull @NotBlank
-        @JsonProperty("id_membership")
-        String idMembership,
         @NotNull @NotBlank
         String description,
         @NotNull

@@ -7,18 +7,13 @@ import jakarta.validation.constraints.Min;
 import lombok.Getter;
 import pe.edu.upc.prime.platform.payment.service.domain.model.commands.CreateRatingCommand;
 import pe.edu.upc.prime.platform.payment.service.domain.model.commands.UpdateRatingCommand;
-import pe.edu.upc.prime.platform.payment.service.domain.model.valueobjects.*;
 import pe.edu.upc.prime.platform.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
+import pe.edu.upc.prime.platform.shared.domain.model.valueobjects.AutoRepairId;
+import pe.edu.upc.prime.platform.shared.domain.model.valueobjects.UserAccountId;
 
 @Entity
 @Table(name = "ratings")
 public class Rating extends AuditableAbstractAggregateRoot<Rating> {
-
-    @Id
-    @Getter
-    @Column(name="id_rating", nullable = false, unique = true)
-    @JsonProperty("id_rating")
-    private String idRating;
 
     @Getter
     @Min(1)
@@ -35,19 +30,19 @@ public class Rating extends AuditableAbstractAggregateRoot<Rating> {
     @Embedded
     @AttributeOverride(
             name = "id_auto_repair",
-            column = @Column(name = "id_auto_repair", nullable = false, length = 10)
+            column = @Column(name = "auto_repair_id", nullable = false, length = 10)
     )
     @JsonProperty("id_auto_repair")
-    private IdAutoRepair idAutoRepair;
+    private AutoRepairId autoRepairId;
 
     @Getter
     @Embedded
     @AttributeOverride(
             name = "id_user_account",
-            column = @Column(name = "id_user_account", nullable = false, length = 10)
+            column = @Column(name = "user_account_id", nullable = false, length = 10)
     )
     @JsonProperty("id_user_account")
-    private IdUserAccount idUserAccount;
+    private UserAccountId userAccountId;
 
     /**
      * Default constructor for JPA.
@@ -61,11 +56,10 @@ public class Rating extends AuditableAbstractAggregateRoot<Rating> {
      * @param command createProfileCommand containing rating details
      */
     public Rating(CreateRatingCommand command) {
-        this.idRating = command.idRating();
         this.starRating = command.starRating();
         this.comment = command.comment();
-        this.idAutoRepair = command.idAutoRepair();
-        this.idUserAccount = command.idUserAccount();
+        this.autoRepairId = command.idAutoRepair();
+        this.userAccountId = command.idUserAccount();
     }
     /** Update the rating with the specified details.
      *
@@ -74,15 +68,7 @@ public class Rating extends AuditableAbstractAggregateRoot<Rating> {
     public void updateRating(UpdateRatingCommand command) {
         this.starRating = command.starRating();
         this.comment = command.comment();
-        this.idAutoRepair = command.idAutoRepair();
-        this.idUserAccount = command.idUserAccount();
-    }
-
-    public String getIdAutoRepairValue() {
-        return idAutoRepair != null ? idAutoRepair.getIdAutoRepair() : null;
-    }
-
-    public String getIdUserAccountValue() {
-        return idUserAccount != null ? idUserAccount.getIdUserAccount() : null;
+        this.autoRepairId = command.idAutoRepair();
+        this.userAccountId = command.idUserAccount();
     }
 }

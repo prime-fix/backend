@@ -39,16 +39,16 @@ public class RatingCommandServiceImpl implements RatingCommandService {
      * @return the ID of the newly created rating
      */
     @Override
-    public String handle(CreateRatingCommand command) {
+    public Long handle(CreateRatingCommand command) {
         var rating = new Rating(command);
 
         try {
             ratingRepository.save(rating);
-            return rating.getIdRating();
         } catch (Exception e) {
             throw new PersistenceException(
                     "Error creating rating: " + e.getMessage());
         }
+        return rating.getId();
 
     }
 
@@ -92,8 +92,14 @@ public class RatingCommandServiceImpl implements RatingCommandService {
             );
         }
 
-        this.ratingRepository.findById(command.ratingId()).ifPresent(optionalRating -> {
+        /*this.ratingRepository.findById(command.ratingId()).ifPresent(optionalRating -> {
             this.ratingRepository.deleteById(optionalRating.getIdRating());
-        });
+        });*/
+
+        try {
+            this.ratingRepository.deleteById(command.ratingId());
+        }catch (Exception e) {
+            throw new IllegalArgumentException("Error deleting rating: " + e.getMessage());
+        }
     }
 }

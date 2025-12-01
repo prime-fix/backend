@@ -1,6 +1,7 @@
 package pe.edu.upc.prime.platform.payment.service.domain.model.commands;
 
 import pe.edu.upc.prime.platform.payment.service.domain.model.valueobjects.*;
+import pe.edu.upc.prime.platform.shared.domain.model.valueobjects.UserAccountId;
 
 import java.util.Objects;
 
@@ -17,13 +18,13 @@ import java.util.Objects;
  */
 
 public record UpdatePaymentCommand(
-        String paymentId,
+        Long paymentId,
         String cardNumber,
         CardType cardType,
         int month,
         int year,
         String ccv,
-        IdUserAccount idUserAccount
+        UserAccountId idUserAccount
 ) {
     public UpdatePaymentCommand {
         Objects.requireNonNull(paymentId, "[UpdatePaymentCommand] paymentId must not be null");
@@ -32,8 +33,8 @@ public record UpdatePaymentCommand(
         Objects.requireNonNull(ccv, "[UpdatePaymentCommand] ccv must not be null");
         Objects.requireNonNull(idUserAccount, "[UpdatePaymentCommand] idUserAccount must not be null");
 
-        if (paymentId.isBlank())
-            throw new IllegalArgumentException("[UpdatePaymentCommand] paymentId cannot be blank");
+        if (paymentId <= 0)
+            throw new IllegalArgumentException("[UpdatePaymentCommand] paymentId cannot be less than or equal to zero");
 
         if (cardNumber.isBlank())
             throw new IllegalArgumentException("[UpdatePaymentCommand] cardNumber cannot be blank");

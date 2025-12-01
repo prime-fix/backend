@@ -1,6 +1,7 @@
 package pe.edu.upc.prime.platform.iam.domain.services;
 
 import pe.edu.upc.prime.platform.iam.domain.model.aggregates.User;
+import pe.edu.upc.prime.platform.iam.domain.model.queries.ExistsUserByIdQuery;
 import pe.edu.upc.prime.platform.iam.domain.model.queries.GetAllUsersQuery;
 import pe.edu.upc.prime.platform.iam.domain.model.queries.GetUserByIdQuery;
 
@@ -28,4 +29,11 @@ public interface UserQueryService {
      */
     Optional<User> handle(GetUserByIdQuery query);
 
+    /**
+     * Handle the query to check if a user exists by its ID.
+     *
+     * @param query the query containing the user ID
+     * @return true if the user exists, false otherwise
+     */
+    boolean handle(ExistsUserByIdQuery query);
 }

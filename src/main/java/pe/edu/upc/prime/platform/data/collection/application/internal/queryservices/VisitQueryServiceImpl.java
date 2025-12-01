@@ -32,17 +32,17 @@ public class VisitQueryServiceImpl implements VisitQueryService {
 
     @Override
     public Optional<Visit> handle(GetVisitByIdQuery query) {
-        return this.visitRepository.findById(Long.valueOf(query.visitId()));
+        return this.visitRepository.findById(query.visitId());
     }
 
     @Override
     public List<Visit> handle(GetVisitByVehicleIdQuery query) {
-        return this.visitRepository.findByVehicleId(query.vehicleId());
+        return this.visitRepository.findByVehicleId_VehicleId(query.vehicleId());
     }
 
     @Override
     public List<Visit> handle(GetVisitByAutoRepairIdQuery query) {
-        return this.visitRepository.findByAutoRepairId(query.autoRepairId());
+        return this.visitRepository.findByAutoRepairId_AutoRepairId(query.autoRepairId());
     }
 
 

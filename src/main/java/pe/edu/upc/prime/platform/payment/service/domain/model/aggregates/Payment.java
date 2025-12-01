@@ -9,16 +9,12 @@ import pe.edu.upc.prime.platform.payment.service.domain.model.commands.CreatePay
 import pe.edu.upc.prime.platform.payment.service.domain.model.commands.UpdatePaymentCommand;
 import pe.edu.upc.prime.platform.payment.service.domain.model.valueobjects.*;
 import pe.edu.upc.prime.platform.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
+import pe.edu.upc.prime.platform.shared.domain.model.valueobjects.UserAccountId;
 
 @Entity
 @Table(name="payments")
 public class Payment extends AuditableAbstractAggregateRoot<Payment>{
 
-    @Id
-    @Getter
-    @Column(name = "id_payment", nullable = false, unique = true)
-    @JsonProperty("id_payment")
-    private String idPayment;
 
     @Getter
     @Column(name = "card_number", nullable = false, length = 20)
@@ -52,7 +48,7 @@ public class Payment extends AuditableAbstractAggregateRoot<Payment>{
             column = @Column(name = "id_user_account", nullable = false, length = 10)
     )
     @JsonProperty("id_user_account")
-    private IdUserAccount idUserAccount;
+    private UserAccountId userAccountId;
 
     /**
      * Default constructor for JPA.
@@ -66,13 +62,12 @@ public class Payment extends AuditableAbstractAggregateRoot<Payment>{
       * @param command createPaymentCommand containing payment details
       */
     public Payment(CreatePaymentCommand command) {
-        this.idPayment = command.idPayment();
         this.cardNumber = command.cardNumber();
         this.cardType = command.cardType();
         this.month = command.month();
         this.year = command.year();
         this.ccv = command.ccv();
-        this.idUserAccount = command.idUserAccount();
+        this.userAccountId = command.userAccountId();
     }
     /** Update the profile with the specified details.
    *
@@ -85,12 +80,6 @@ public class Payment extends AuditableAbstractAggregateRoot<Payment>{
         this.year = command.year();
         this.ccv = command.ccv();
     }
-
-
-    public String getIdUserAccountValue() {
-        return idUserAccount != null ? idUserAccount.getIdUserAccount() : null;
-    }
-
 
     public String getMaskedCardNumber() {
         if (cardNumber == null || cardNumber.length() <= 4) {

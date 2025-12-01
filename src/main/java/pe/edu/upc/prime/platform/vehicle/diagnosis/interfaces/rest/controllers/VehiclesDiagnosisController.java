@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pe.edu.upc.prime.platform.shared.domain.model.valueobjects.VehicleId;
 import pe.edu.upc.prime.platform.shared.interfaces.rest.resources.BadRequestResponse;
 import pe.edu.upc.prime.platform.shared.interfaces.rest.resources.NotFoundResponse;
 import pe.edu.upc.prime.platform.shared.interfaces.rest.resources.ServiceUnavailableResponse;
@@ -19,13 +20,12 @@ import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.commands.DeleteD
 import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.queries.GetAllDiagnosticsByVehicleIdQuery;
 import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.queries.GetAllDiagnosticsQuery;
 import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.queries.GetDiagnosticByIdQuery;
-import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.valueobjects.VehicleId;
 import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.services.DiagnosisCommandService;
 import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.services.DiagnosisQueryService;
 import pe.edu.upc.prime.platform.vehicle.diagnosis.interfaces.rest.assemblers.DiagnosticAssembler;
-import pe.edu.upc.prime.platform.vehicle.diagnosis.interfaces.rest.resource.CreateDiagnosticRequest;
-import pe.edu.upc.prime.platform.vehicle.diagnosis.interfaces.rest.resource.DiagnosticResponse;
-import pe.edu.upc.prime.platform.vehicle.diagnosis.interfaces.rest.resource.UpdateDiagnosticRequest;
+import pe.edu.upc.prime.platform.vehicle.diagnosis.interfaces.rest.resources.CreateDiagnosticRequest;
+import pe.edu.upc.prime.platform.vehicle.diagnosis.interfaces.rest.resources.DiagnosticResponse;
+import pe.edu.upc.prime.platform.vehicle.diagnosis.interfaces.rest.resources.UpdateDiagnosticRequest;
 
 import java.util.List;
 import java.util.Objects;
@@ -117,9 +117,9 @@ public class VehiclesDiagnosisController {
             description = "Retrieves all diagnostic or filters by vehicleId if provided"
     )
     @GetMapping("/{vehicleId}")
-    public ResponseEntity<List<DiagnosticResponse>> getAllDiagnosticsByVehicleId(@PathVariable String vehicleId) {
+    public ResponseEntity<List<DiagnosticResponse>> getAllDiagnosticsByVehicleId(@PathVariable Long vehicleId) {
 
-        if (vehicleId == null || vehicleId.isBlank()) {
+        if (vehicleId == null || vehicleId.equals(0L)) {
             return ResponseEntity.ok(List.of());
         }
 
@@ -158,7 +158,7 @@ public class VehiclesDiagnosisController {
     /**
      * Endpoint to update an existing diagnostic.
      *
-     * @param idDiagnostic the ID of the diagnostic to be updated
+     * @param diagnosticId the ID of the diagnostic to be updated
      * @param request  the updated diagnostic data
      * @return a ResponseEntity containing the updated diagnostic resource or a bad request status
      *     if the update fails
@@ -189,12 +189,12 @@ public class VehiclesDiagnosisController {
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = ServiceUnavailableResponse.class)))
     })
-    @PutMapping("/{idDiagnostic}")
+    @PutMapping("/{diagnosticId}")
     public ResponseEntity<DiagnosticResponse> updateDiagnostic(
-            @PathVariable String idDiagnostic,
+            @PathVariable Long diagnosticId,
             @Valid @RequestBody UpdateDiagnosticRequest request) {
 
-        var updateDiagnosticCommand = DiagnosticAssembler.toCommandFromRequest(idDiagnostic, request);
+        var updateDiagnosticCommand = DiagnosticAssembler.toCommandFromRequest(diagnosticId, request);
         var optionalDiagnostic = this.diagnosisCommandService.handle(updateDiagnosticCommand);
 
         if (optionalDiagnostic.isEmpty()) {
@@ -207,7 +207,7 @@ public class VehiclesDiagnosisController {
     /**
      * Endpoint to delete a diagnostic by its ID.
      *
-     * @param idDiagnostic the ID of the diagnostic to be deleted
+     * @param diagnostic_id the ID of the diagnostic to be deleted
      * @return a ResponseEntity with no content if deletion is successful
      */
     @Operation(summary = "Delete a diagnostic by its ID",
@@ -219,9 +219,9 @@ public class VehiclesDiagnosisController {
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = NotFoundResponse.class))),
     })
-    @DeleteMapping("/{idDiagnostic}")
-    public ResponseEntity<?> deleteDiagnostic(@PathVariable String idDiagnostic) {
-        var deleteDiagnosticCommand = new DeleteDiagnosisCommand(idDiagnostic);
+    @DeleteMapping("/{diagnostic_id}")
+    public ResponseEntity<?> deleteDiagnostic(@PathVariable Long diagnostic_id) {
+        var deleteDiagnosticCommand = new DeleteDiagnosisCommand(diagnostic_id);
         this.diagnosisCommandService.handle(deleteDiagnosticCommand);
         return ResponseEntity.noContent().build();
     }

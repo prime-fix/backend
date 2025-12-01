@@ -5,7 +5,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -86,7 +85,7 @@ public class VehicleController {
         var createVehicleCommand = VehicleAssembler.toCommandFromRequest(request);
         var vehicleId = this.vehicleCommandService.handle(createVehicleCommand);
 
-        if (Objects.isNull(vehicleId) || vehicleId.isBlank()) {
+        if (Objects.isNull(vehicleId) || vehicleId.equals(0L)) {
             return ResponseEntity.badRequest().build();
         }
 
@@ -134,7 +133,7 @@ public class VehicleController {
     /**
      * Retrieve a vehicle by its ID.
      *
-     * @param id_vehicle the unique ID of the vehicle
+     * @param vehicle_id the unique ID of the vehicle
      * @return ResponseEntity with the vehicle data
      */
     @Operation(summary = "Retrieve a vehicle by its ID",
@@ -144,9 +143,9 @@ public class VehicleController {
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = VehicleResponse.class))),
             })
-    @GetMapping("/{id_vehicle}")
-    public ResponseEntity<VehicleResponse> getVehicleById(@PathVariable String id_vehicle) {
-        var getVehicleByIdQuery = new GetVehicleByIdQuery(id_vehicle);
+    @GetMapping("/{vehicle_id}")
+    public ResponseEntity<VehicleResponse> getVehicleById(@PathVariable Long vehicle_id) {
+        var getVehicleByIdQuery = new GetVehicleByIdQuery(vehicle_id);
         var optionalVehicle = vehicleQueryService.handle(getVehicleByIdQuery);
         if (optionalVehicle.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -158,7 +157,7 @@ public class VehicleController {
     /**
      * Update an existing vehicle.
      *
-     * @param id_vehicle the unique ID of the vehicle to update
+     * @param vehicle_id the unique ID of the vehicle to update
      * @param request the vehicle update request data
      * @return ResponseEntity with the updated vehicle data
      */
@@ -180,10 +179,10 @@ public class VehicleController {
                                     schema = @Schema(implementation = RuntimeException.class)))
             }
     )
-    @PutMapping("/{id_vehicle}")
-    public ResponseEntity<VehicleResponse> updateVehicle(@PathVariable String id_vehicle,
+    @PutMapping("/{vehicle_id}")
+    public ResponseEntity<VehicleResponse> updateVehicle(@PathVariable Long vehicle_id,
                                                          @RequestBody UpdateVehicleRequest request) {
-        var updateVehicleCommand = VehicleAssembler.toCommandFromRequest(id_vehicle, request);
+        var updateVehicleCommand = VehicleAssembler.toCommandFromRequest(vehicle_id, request);
         var optionalVehicle = this.vehicleCommandService.handle(updateVehicleCommand);
         if (optionalVehicle.isEmpty()) {
             return ResponseEntity.badRequest().build();
@@ -195,7 +194,7 @@ public class VehicleController {
     /**
      * Delete a vehicle by its ID.
      *
-     * @param id_vehicle the unique ID of the vehicle to delete
+     * @param vehicle_id the unique ID of the vehicle to delete
      * @return ResponseEntity with no content
      */
     @Operation(summary = "Delete a vehicle by its ID",
@@ -208,9 +207,9 @@ public class VehicleController {
                                     schema = @Schema(implementation = RuntimeException.class)))
             }
     )
-    @DeleteMapping("/{id_vehicle}")
-    public ResponseEntity<?> deleteVehicle(@PathVariable String id_vehicle) {
-        var deleteVehicleCommand = new DeleteVehicleCommand(id_vehicle);
+    @DeleteMapping("/{vehicle_id}")
+    public ResponseEntity<?> deleteVehicle(@PathVariable Long vehicle_id) {
+        var deleteVehicleCommand = new DeleteVehicleCommand(vehicle_id);
         this.vehicleCommandService.handle(deleteVehicleCommand);
         return ResponseEntity.noContent().build();
     }

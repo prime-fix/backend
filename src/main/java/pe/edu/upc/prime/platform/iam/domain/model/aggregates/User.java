@@ -7,15 +7,12 @@ import pe.edu.upc.prime.platform.iam.domain.model.commands.CreateUserCommand;
 import pe.edu.upc.prime.platform.iam.domain.model.commands.UpdateUserCommand;
 import pe.edu.upc.prime.platform.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
 
+/**
+ * User aggregate root entity.
+ */
 @Entity
 @Table(name = "users")
 public class User extends AuditableAbstractAggregateRoot<User> {
-
-    @Id
-    @Getter
-    @Column(name="id_user", nullable = false, unique = true)
-    @JsonProperty("id_user")
-    private String idUser;
 
     @Getter
     @Column(name = "name", nullable = false, length = 100)
@@ -36,9 +33,9 @@ public class User extends AuditableAbstractAggregateRoot<User> {
     private String phoneNumber;
 
     @Getter
-    @Column(name="id_location", nullable = false)
-    @JsonProperty("id_location")
-    private String idLocation;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "location_id")
+    private Location location;
 
     /**
      * Default constructor for JPA.
@@ -51,13 +48,12 @@ public class User extends AuditableAbstractAggregateRoot<User> {
      *
      * @param command the command containing user details
      */
-    public User(CreateUserCommand command) {
-        this.idUser = command.idUser();
+    public User(CreateUserCommand command, Location location) {
         this.name = command.name();
         this.lastName = command.lastName();
         this.dni = command.dni();
         this.phoneNumber = command.phoneNumber();
-        this.idLocation = command.idLocation();
+        this.location = location;
     }
 
     /**
@@ -65,12 +61,12 @@ public class User extends AuditableAbstractAggregateRoot<User> {
      *
      * @param command the command containing updated user details
      */
-    public void updateUser(UpdateUserCommand command) {
+    public void updateUser(UpdateUserCommand command, Location location) {
         this.name = command.name();
         this.lastName = command.lastName();
         this.dni = command.dni();
         this.phoneNumber = command.phoneNumber();
-        this.idLocation = command.idLocation();
+        this.location = location;
     }
 
 }

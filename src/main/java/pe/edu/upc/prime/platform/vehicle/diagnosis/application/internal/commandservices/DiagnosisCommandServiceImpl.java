@@ -13,7 +13,7 @@ import pe.edu.upc.prime.platform.vehicle.diagnosis.infrastructure.persistence.jp
 import java.util.Optional;
 
 @Service
-public class DiagnosisCommandServiceImpl implements DiagnosisCommandService {
+    public class DiagnosisCommandServiceImpl implements DiagnosisCommandService {
     private final DiagnosisRepository diagnosisRepository;
     public DiagnosisCommandServiceImpl(DiagnosisRepository diagnosisRepository) {
         this.diagnosisRepository = diagnosisRepository;
@@ -28,7 +28,7 @@ public class DiagnosisCommandServiceImpl implements DiagnosisCommandService {
             throw new PersistenceException("[DiagnosisCommandServiceImpl] Error while saving diagnostic: "
                     + e.getMessage());
         }
-        return diagnostic.getIdDiagnostic();
+        return diagnostic.getId().toString();
     }
 
     @Override
@@ -55,13 +55,13 @@ public class DiagnosisCommandServiceImpl implements DiagnosisCommandService {
     @Override
     public void handle(DeleteDiagnosisCommand command) {
         // If the profile does not exist, throw an exception
-        if (!this.diagnosisRepository.existsById(command.idDiagnostic())) {
-            throw new NotFoundIdException(Diagnostic.class, command.idDiagnostic());
+        if (!this.diagnosisRepository.existsById(command.diagnosticId())) {
+            throw new NotFoundIdException(Diagnostic.class, command.diagnosticId());
         }
 
         // Try to delete the profile, if an error occurs, throw an exception
         try {
-            this.diagnosisRepository.deleteById(command.idDiagnostic());
+            this.diagnosisRepository.deleteById(command.diagnosticId());
         } catch (Exception e) {
             throw new PersistenceException("[DiagnosisCommandServiceImpl] Error while deleting diagnosis: "
                     + e.getMessage());

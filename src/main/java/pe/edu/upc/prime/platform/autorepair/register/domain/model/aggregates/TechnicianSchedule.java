@@ -17,14 +17,9 @@ import java.util.Objects;
 @Table(name = "technician_schedules")
 public class TechnicianSchedule extends AuditableAbstractAggregateRoot<TechnicianSchedule> {
 
-    @Id
-    @Getter
-    @Column(name = "id_technician_schedule", nullable = false, unique = true)
-    @JsonProperty("id_technician_schedule")
-    private String idTechnicianSchedule;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "id_technician", referencedColumnName = "id_technician")
+    @JoinColumn(name = "technician_id")
     @Getter
     private Technician technician;
 
@@ -53,9 +48,6 @@ public class TechnicianSchedule extends AuditableAbstractAggregateRoot<Technicia
      * Constructor for CreateTechnicianScheduleCommand.
      */
     public TechnicianSchedule(CreateTechnicianScheduleCommand command, Technician technician) {
-        if (Objects.isNull(command.idTechnicianSchedule()) || command.idTechnicianSchedule().isBlank()) {
-            throw new IllegalArgumentException("[TechnicianSchedule] idTechnicianSchedule cannot be null or blank");
-        }
 
         if (Objects.isNull(technician)) {
             throw new IllegalArgumentException("[TechnicianSchedule] Technician cannot be null");
@@ -77,7 +69,6 @@ public class TechnicianSchedule extends AuditableAbstractAggregateRoot<Technicia
             throw new IllegalArgumentException("[TechnicianSchedule] Active status cannot be null");
         }
 
-        this.idTechnicianSchedule = command.idTechnicianSchedule();
         this.technician = technician;
         this.dayOfWeek = command.dayOfWeek();
         this.startTime = command.startTime();

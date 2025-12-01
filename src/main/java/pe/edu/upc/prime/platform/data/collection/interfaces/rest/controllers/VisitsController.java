@@ -8,7 +8,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.persistence.Column;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +16,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import pe.edu.upc.prime.platform.data.collection.domain.model.aggregates.Visit;
+import org.springframework.web.client.HttpServerErrorException;
 import pe.edu.upc.prime.platform.data.collection.domain.model.commands.DeleteVisitCommand;
 import pe.edu.upc.prime.platform.data.collection.domain.model.queries.*;
 import pe.edu.upc.prime.platform.data.collection.domain.services.VisitCommandService;
@@ -28,11 +27,10 @@ import pe.edu.upc.prime.platform.data.collection.interfaces.rest.resources.Visit
 import pe.edu.upc.prime.platform.shared.interfaces.rest.resources.BadRequestResponse;
 import pe.edu.upc.prime.platform.shared.interfaces.rest.resources.InternalServerErrorResponse;
 import pe.edu.upc.prime.platform.shared.interfaces.rest.resources.NotFoundResponse;
+import pe.edu.upc.prime.platform.autorepair.catalog.interfaces.rest.controllers.ServicesController;
 
-import java.awt.*;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -81,11 +79,11 @@ public class VisitsController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
             content = @Content(
                 mediaType = MediaType.APPLICATION_JSON_VALUE,
-                schema = @Schema(implementation = InternalServerErrorResponse.class))),
+                schema = @Schema(implementation = InternalError.class))),
             @ApiResponse(responseCode = "503", description = "Service unavailable",
             content = @Content(
                 mediaType = MediaType.APPLICATION_JSON_VALUE,
-                schema = @Schema(implementation = InternalServerErrorResponse.class)
+                schema = @Schema(implementation = HttpServerErrorException.InternalServerError.class)
             ))
     })
     @PostMapping
@@ -93,7 +91,7 @@ public class VisitsController {
         var createVisitCommand = VisitAssembler.toCommandFromRequest(request);
         var visitId = this.visitCommandService.handle(createVisitCommand);
 
-        if (Objects.isNull(visitId) || visitId.isBlank()) {
+        if (Objects.isNull(visitId) || visitId.equals(0L)) {
             return ResponseEntity.badRequest().build();
         }
 
@@ -139,7 +137,7 @@ public class VisitsController {
      * @return a ResponseEntity containing a list of visit resources associated with the specified auto repair ID
      */
     @GetMapping("/auto-repair/{autoRepairId}")
-    public ResponseEntity<List<VisitResponse>> getVisitsByAutoRepairId(@PathVariable String autoRepairId) {
+    public ResponseEntity<List<VisitResponse>> getVisitsByAutoRepairId(@PathVariable Long autoRepairId) {
         var query = new GetVisitByAutoRepairIdQuery(autoRepairId);
         var visits = visitQueryService.handle(query);
 
@@ -176,7 +174,7 @@ public class VisitsController {
             )),
     })
     @GetMapping("/{visitId}")
-    public ResponseEntity<VisitResponse> getVisitById(@PathVariable String visitId){
+    public ResponseEntity<VisitResponse> getVisitById(@PathVariable Long visitId){
         var getVisitByIdQuery = new GetVisitByIdQuery(visitId);
         var optionalVisit = visitQueryService.handle(getVisitByIdQuery);
         if(optionalVisit.isEmpty()){
@@ -212,7 +210,7 @@ public class VisitsController {
                             schema = @Schema(implementation = BadRequestResponse.class))),
     })
     @GetMapping("/vehicle/{vehicleId}")
-    public ResponseEntity<List<VisitResponse>> getVisitByVehicleId(@RequestParam String vehicleId){
+    public ResponseEntity<List<VisitResponse>> getVisitByVehicleId(@RequestParam Long vehicleId){
         var query = new GetVisitByVehicleIdQuery(vehicleId);
         var visits = this.visitQueryService.handle(query);
 
@@ -247,7 +245,7 @@ public class VisitsController {
             )),
     })
     @DeleteMapping("/{visitId}")
-    public ResponseEntity<?> deleteVisit(@PathVariable String visitId){
+    public ResponseEntity<?> deleteVisit(@PathVariable Long visitId){
         var deleteVisitCommand = new DeleteVisitCommand(visitId);
         this.visitCommandService.handle(deleteVisitCommand);
         return ResponseEntity.noContent().build();

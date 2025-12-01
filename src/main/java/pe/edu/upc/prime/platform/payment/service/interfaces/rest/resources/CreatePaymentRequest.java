@@ -6,7 +6,6 @@ import jakarta.validation.constraints.*;
 /**
  * Request to create a new Payment.
  *
- * @param idPayment     The identifier of the payment to be created
  * @param cardNumber    The card number used for the payment.
  * @param cardType      The type of card (VISA, MASTERCARD, AMEX).
  * @param month         The expiration month of the card.
@@ -15,9 +14,6 @@ import jakarta.validation.constraints.*;
  * @param idUserAccount The ID of the user account linked to the payment.
  */
 public record CreatePaymentRequest(
-        @JsonProperty("id_payment")
-        @NotNull @NotBlank
-        String idPayment,
 
         @JsonProperty("card_number")
         @NotNull @NotBlank
@@ -41,9 +37,9 @@ public record CreatePaymentRequest(
         @NotNull @Pattern(regexp = "\\d{3}", message = "CCV must have exactly 3 digits")
         String ccv,
 
-        @JsonProperty("id_user_account")
-        @NotNull @NotBlank
-        String idUserAccount
+        @JsonProperty("user_account_id")
+        @NotNull
+        Long userAccountId
 ) {
 
 }

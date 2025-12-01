@@ -7,6 +7,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pe.edu.upc.prime.platform.autorepair.register.domain.model.aggregates.Technician;
+import pe.edu.upc.prime.platform.autorepair.register.domain.model.commands.DeleteTechnicianCommand;
+import pe.edu.upc.prime.platform.autorepair.register.domain.model.queries.GetAllTechniciansQuery;
+import pe.edu.upc.prime.platform.autorepair.register.domain.model.queries.GetTechnicianByIdQuery;
 import pe.edu.upc.prime.platform.autorepair.register.domain.services.TechnicianCommandService;
 import pe.edu.upc.prime.platform.autorepair.register.domain.services.TechnicianQueryService;
 import pe.edu.upc.prime.platform.autorepair.register.interfaces.rest.assemblers.TechnicianAssembler;
@@ -47,7 +50,7 @@ public class TechnicianController {
     @ApiResponse(responseCode = "200", description = "List of Technicians retrieved successfully")
     @GetMapping
     public ResponseEntity<List<TechnicianResponse>> getAllTechnicians() {
-        List<Technician> technicians = technicianQueryService.handleGetAll();
+        List<Technician> technicians = technicianQueryService.handle(new GetAllTechniciansQuery());
         var responses = technicians.stream()
                 .map(TechnicianAssembler::toResponseFromEntity)
                 .collect(Collectors.toList());
@@ -59,8 +62,8 @@ public class TechnicianController {
     @ApiResponse(responseCode = "200", description = "Technician retrieved successfully")
     @ApiResponse(responseCode = "404", description = "Technician not found")
     @GetMapping("/{technicianId}")
-    public ResponseEntity<TechnicianResponse> getTechnicianById(@PathVariable String technicianId) {
-        var technicianOpt = technicianQueryService.handleGetById(technicianId);
+    public ResponseEntity<TechnicianResponse> getTechnicianById(@PathVariable Long technicianId) {
+        var technicianOpt = technicianQueryService.handle(new GetTechnicianByIdQuery(technicianId));
         if (technicianOpt.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
@@ -72,7 +75,7 @@ public class TechnicianController {
     @Operation(summary = "Update an existing Technician")
     @ApiResponse(responseCode = "200", description = "Technician updated successfully")
     @PutMapping("/{technicianId}")
-    public ResponseEntity<TechnicianResponse> updateTechnician(@PathVariable String technicianId,
+    public ResponseEntity<TechnicianResponse> updateTechnician(@PathVariable Long technicianId,
                                                                @RequestBody UpdateTechnicianRequest request) {
         var command = TechnicianAssembler.toCommandFromRequest(technicianId, request);
         var updatedTechnician = technicianCommandService.handle(command);
@@ -84,8 +87,8 @@ public class TechnicianController {
     @Operation(summary = "Delete Technician by ID")
     @ApiResponse(responseCode = "204", description = "Technician deleted successfully")
     @DeleteMapping("/{technicianId}")
-    public ResponseEntity<Void> deleteTechnician(@PathVariable String technicianId) {
-        technicianCommandService.handleDelete(technicianId);
+    public ResponseEntity<Void> deleteTechnician(@PathVariable Long technicianId) {
+        technicianCommandService.handle(new DeleteTechnicianCommand(technicianId));
         return ResponseEntity.noContent().build();
     }
 }

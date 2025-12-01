@@ -22,7 +22,6 @@ public class TechnicianScheduleAssembler {
             Technician technician) {
 
         return new CreateTechnicianScheduleCommand(
-                request.idTechnicianSchedule(),
                 technician,
                 request.dayOfWeek(),
                 request.startTime(),
@@ -35,11 +34,11 @@ public class TechnicianScheduleAssembler {
      * Converts an UpdateTechnicianScheduleRequest into an UpdateTechnicianScheduleCommand.
      */
     public static UpdateTechnicianScheduleCommand toCommandFromRequest(
-            String idTechnicianSchedule,
+            Long technicianScheduleId,
             UpdateTechnicianScheduleRequest request) {
 
         return new UpdateTechnicianScheduleCommand(
-                idTechnicianSchedule,
+                technicianScheduleId,
                 request.dayOfWeek(),
                 request.startTime(),
                 request.endTime(),
@@ -52,8 +51,8 @@ public class TechnicianScheduleAssembler {
      */
     public static TechnicianScheduleResponse toResponseFromEntity(TechnicianSchedule entity) {
         return new TechnicianScheduleResponse(
-                entity.getIdTechnicianSchedule(),
-                entity.getTechnician().getIdTechnician(),
+                entity.getId().toString(),
+                entity.getTechnician().getId().toString(),
                 entity.getDayOfWeek(),
                 entity.getStartTime(),
                 entity.getEndTime(),

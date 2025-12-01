@@ -7,6 +7,8 @@ import pe.edu.upc.prime.platform.maintenance.tracking.interfaces.rest.resources.
 import pe.edu.upc.prime.platform.maintenance.tracking.interfaces.rest.resources.NotificationResponse;
 import pe.edu.upc.prime.platform.maintenance.tracking.interfaces.rest.resources.UpdateNotificationRequest;
 
+import java.time.LocalDate;
+
 /**
  * Assembler for converting between Notification-related requests, commands, and responses.
  */
@@ -15,26 +17,26 @@ public class NotificationAssembler {
      * Converts a CreateNotificationRequest to a CreateNotificationCommand.
      *
      * @param request The create notification request.
-     * @return The corresponding create notification command.
+     * @return The corresponding to create notification command.
      */
     public static CreateNotificationCommand toCommandFromRequest(CreateNotificationRequest request) {
         return new CreateNotificationCommand(
-                request.idNotification(), request.message(), request.read(),
-                request.idVehicle(), request.sent(), request.idDiagnostic()
+                 request.message(), request.read(),
+                request.vehicleId(), request.sent()
         );
     }
 
     /**
      * Converts an UpdateNotificationRequest to an UpdateNotificationCommand.
      *
-     * @param idNotification The ID of the notification to update.
+     * @param notificationId The ID of the notification to update.
      * @param request The update notification request.
      * @return The corresponding update notification command.
      */
-    public static UpdateNotificationCommand toCommandFromRequest(String idNotification, UpdateNotificationRequest request) {
+    public static UpdateNotificationCommand toCommandFromRequest(Long notificationId, UpdateNotificationRequest request) {
         return new UpdateNotificationCommand(
-                idNotification, request.message(), request.read(),
-                request.idVehicle(), request.sent(), request.idDiagnostic()
+                notificationId, request.message(), request.read(),
+                request.vehicleId(), request.sent()
         );
     }
 
@@ -45,8 +47,37 @@ public class NotificationAssembler {
      * @return The corresponding notification response.
      */
     public static NotificationResponse toResponseFromEntity(Notification entity) {
-        return new NotificationResponse(entity.getIdNotification(), entity.getMessage(),
-                entity.isRead(), entity.getIdVehicle(), entity.getSent(),
-                entity.getIdDiagnostic());
+        return new NotificationResponse(entity.getId(), entity.getMessage(),
+                entity.getRead(), entity.getVehicle().getId(), entity.getSent());
     }
+
+    /**
+     * Converts raw values to a CreateNotificationCommand.
+     *
+     * @param message the notification message
+     * @param read the read status
+     * @param vehicleId the associated vehicle ID
+     * @param sent the date the notification was sent
+     * @return the corresponding CreateNotificationCommand
+     */
+    public static CreateNotificationCommand toCommandFromValues(String message, Boolean read,
+                                                                Long vehicleId, LocalDate sent) {
+        return new CreateNotificationCommand(message, read, vehicleId, sent);
+    }
+
+    /**
+     * Converts raw values to an UpdateNotificationCommand.
+     *
+     * @param notificationId the ID of the notification to update
+     * @param message the notification message
+     * @param read the read status
+     * @param vehicleId the associated vehicle ID
+     * @param sent the date the notification was sent
+     * @return the corresponding UpdateNotificationCommand
+     */
+    public static UpdateNotificationCommand toCommandFromValues(Long notificationId, String message,
+                                                                Boolean read, Long vehicleId, LocalDate sent) {
+        return new UpdateNotificationCommand(notificationId, message, read, vehicleId, sent);
+    }
+
 }

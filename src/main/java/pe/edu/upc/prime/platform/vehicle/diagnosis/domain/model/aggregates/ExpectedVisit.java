@@ -9,14 +9,7 @@ import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.valueobjects.Vis
 @Entity
 @Table(name = "expected_visit")
 public class ExpectedVisit extends AuditableAbstractAggregateRoot<ExpectedVisit> {
-    /*
-    * Represents the unique identifier for the Expected entity.
-    * @param idExpected the unique identifier for the Expected
-    */
-    @Id
-    @Getter
-    @Column(name = "id_expected", nullable = false, unique = true)
-    private String idExpected;
+
 
     /*
     * Represents the date of the expected visit.
@@ -44,7 +37,6 @@ public class ExpectedVisit extends AuditableAbstractAggregateRoot<ExpectedVisit>
     public ExpectedVisit() {  }
 
     public ExpectedVisit(String idExpected, String stateVisit, VisitId visitId, Boolean isScheduled) {
-        this.idExpected = idExpected;
         this.stateVisit = stateVisit;
         this.visitId = visitId;
         this.idScheduled = isScheduled;

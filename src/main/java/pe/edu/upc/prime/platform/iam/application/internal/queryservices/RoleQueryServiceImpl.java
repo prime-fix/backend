@@ -1,9 +1,9 @@
 package pe.edu.upc.prime.platform.iam.application.internal.queryservices;
 
 import org.springframework.stereotype.Service;
-import pe.edu.upc.prime.platform.iam.domain.model.aggregates.Role;
+import pe.edu.upc.prime.platform.iam.domain.model.entities.Role;
 import pe.edu.upc.prime.platform.iam.domain.model.queries.GetAllRolesQuery;
-import pe.edu.upc.prime.platform.iam.domain.model.queries.GetRoleByIdQuery;
+import pe.edu.upc.prime.platform.iam.domain.model.queries.GetRoleByNameQuery;
 import pe.edu.upc.prime.platform.iam.domain.services.RoleQueryService;
 import pe.edu.upc.prime.platform.iam.infrastructure.persistence.jpa.repositories.RoleRepository;
 import pe.edu.upc.prime.platform.shared.domain.exceptions.NotFoundIdException;
@@ -42,14 +42,14 @@ public class RoleQueryServiceImpl implements RoleQueryService {
     }
 
     /**
-     * Get a role by its ID.
+     * Get a role by name.
      *
-     * @param query the query containing the role ID
-     * @return an optional containing the role if found
+     * @param query the query to get a role by name
+     * @return an Optional containing the role if found, or empty if not found
      */
     @Override
-    public Optional<Role> handle(GetRoleByIdQuery query) {
-        return Optional.ofNullable(this.roleRepository.findById(query.idRole())
-        .orElseThrow(() -> new NotFoundIdException(Role.class, query.idRole())));
+    public Optional<Role> handle(GetRoleByNameQuery query) {
+        return roleRepository.findByName(query.name());
     }
+
 }

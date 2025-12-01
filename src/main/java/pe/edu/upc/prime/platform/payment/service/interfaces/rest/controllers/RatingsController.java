@@ -67,7 +67,7 @@ public class RatingsController {
         var createCommand = RatingAssembler.toCommandFromRequest(request);
         var ratingId = this.ratingCommandService.handle(createCommand);
 
-        if (Objects.isNull(ratingId) || ratingId.isBlank()) {
+        if (Objects.isNull(ratingId) || ratingId.equals(0L)) {
             return ResponseEntity.badRequest().build();
         }
 
@@ -111,9 +111,9 @@ public class RatingsController {
                         content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                                 schema = @Schema(implementation = RatingResponse.class))),
     })
-    @GetMapping("/{id_rating}")
-    public ResponseEntity<RatingResponse> getRatingById(@PathVariable String id_rating) {
-        var getRatingByIdQuery = new GetRatingByIdQuery(id_rating);
+    @GetMapping("/{rating_id}")
+    public ResponseEntity<RatingResponse> getRatingById(@PathVariable Long rating_id) {
+        var getRatingByIdQuery = new GetRatingByIdQuery(rating_id);
         var optionalRating = ratingQueryService.handle(getRatingByIdQuery);
 
         if (optionalRating.isEmpty()) {
@@ -144,7 +144,7 @@ public class RatingsController {
     )
     @PutMapping("/{id_rating}")
     public ResponseEntity<RatingResponse> updateRating(
-            @PathVariable String id_rating,
+            @PathVariable Long id_rating,
             @Valid @RequestBody UpdateRatingRequest request) {
 
         var updateCommand = RatingAssembler.toCommandFromRequest(id_rating, request);
@@ -167,9 +167,9 @@ public class RatingsController {
                                     schema = @Schema(implementation = RuntimeException.class)))
             }
     )
-    @DeleteMapping("/{id_rating}")
-    public ResponseEntity<?> deleteRating(@PathVariable String id_rating) {
-        var deleteRatingCommand = new DeleteRatingCommand(id_rating);
+    @DeleteMapping("/{rating_id}")
+    public ResponseEntity<?> deleteRating(@PathVariable Long rating_id) {
+        var deleteRatingCommand = new DeleteRatingCommand(rating_id);
         this.ratingCommandService.handle(deleteRatingCommand);
         return ResponseEntity.noContent().build();
     }

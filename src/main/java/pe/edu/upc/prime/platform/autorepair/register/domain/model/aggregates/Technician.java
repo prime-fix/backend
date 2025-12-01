@@ -5,8 +5,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import pe.edu.upc.prime.platform.autorepair.register.domain.model.commands.CreateTechnicianCommand;
 import pe.edu.upc.prime.platform.autorepair.register.domain.model.commands.UpdateTechnicianCommand;
-import pe.edu.upc.prime.platform.autorepair.register.domain.model.valueobjects.IdAutoRepair;
 import pe.edu.upc.prime.platform.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
+import pe.edu.upc.prime.platform.shared.domain.model.valueobjects.AutoRepairId;
 
 /**
  * Aggregate root representing a Technician within the AutoRepair context.
@@ -15,11 +15,6 @@ import pe.edu.upc.prime.platform.shared.domain.model.aggregates.AuditableAbstrac
 @Table(name = "technicians")
 public class Technician extends AuditableAbstractAggregateRoot<Technician> {
 
-    @Id
-    @Getter
-    @Column(name = "id_technician", nullable = false, unique = true)
-    @JsonProperty("id_technician")
-    private String idTechnician;
 
     @Getter
     @Column(name = "name", nullable = false, length = 100)
@@ -32,11 +27,11 @@ public class Technician extends AuditableAbstractAggregateRoot<Technician> {
     @Getter
     @Embedded
     @AttributeOverride(
-            name = "idAutoRepair",
-            column = @Column(name = "id_auto_repair", nullable = false)
+            name = "AutoRepairId",
+            column = @Column(name = "auto_repair_id", nullable = false)
     )
     @JsonProperty("id_auto_repair")
-    private IdAutoRepair idAutoRepair;
+    private AutoRepairId autoRepairId;
 
     /**
      * Default constructor for JPA.
@@ -49,10 +44,9 @@ public class Technician extends AuditableAbstractAggregateRoot<Technician> {
      * @param command createTechnicianCommand containing technician details
      */
     public Technician(CreateTechnicianCommand command) {
-        this.idTechnician = command.idTechnician();
         this.name = command.name();
         this.lastName = command.lastName();
-        this.idAutoRepair = command.idAutoRepair();
+        this.autoRepairId = command.autoRepairId();
     }
 
     /**
@@ -63,14 +57,5 @@ public class Technician extends AuditableAbstractAggregateRoot<Technician> {
     public void updateTechnician(UpdateTechnicianCommand command) {
         this.name = command.name();
         this.lastName = command.lastName();
-    }
-
-    /**
-     * Returns the raw IdAutoRepair value as a Long.
-     *
-     * @return the numeric value of IdAutoRepair
-     */
-    public Long getIdAutoRepairValue() {
-        return idAutoRepair != null ? idAutoRepair.getIdAutoRepair() : null;
     }
 }

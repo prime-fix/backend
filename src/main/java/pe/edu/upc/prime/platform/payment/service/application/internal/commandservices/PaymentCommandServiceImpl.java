@@ -39,19 +39,19 @@ public class PaymentCommandServiceImpl implements PaymentCommandService {
      * @return the ID of the newly created user
      */
     @Override
-    public String handle(CreatePaymentCommand command) {
+    public Long handle(CreatePaymentCommand command) {
 
-        var userAccountId = command.idUserAccount();
+        var userAccountId = command.userAccountId();
 
         var payment = new Payment(command);
 
         try {
             this.paymentRepository.save(payment);
-            return payment.getIdPayment();
         } catch (Exception e) {
             throw new IllegalArgumentException(
                     "[CreatePaymentCommand] Error while saving payment: " + e.getMessage());
         }
+        return payment.getId();
     }
 
     /**
@@ -96,8 +96,16 @@ public class PaymentCommandServiceImpl implements PaymentCommandService {
                     String.format("Payment with the same id %s does not exist.", paymentId));
         }
 
-        this.paymentRepository.findById(paymentId).ifPresent(optionalPayment -> {
+       /* this.paymentRepository.findById(paymentId).ifPresent(optionalPayment -> {
             this.paymentRepository.deleteById(optionalPayment.getIdPayment());
+
+
         });
+    */
+        try {
+            this.paymentRepository.deleteById(paymentId);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Error while deleting service:" + e.getMessage());
+        }
     }
 }

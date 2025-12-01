@@ -6,8 +6,5 @@ public class VisitNotFoundException extends RuntimeException{
         super(String.format("Visit with id %s does not exist", visitId));
     }
 
-    public VisitNotFoundException(Long visitId, Throwable cause){
-        super(String.format("Visit with id %s does not exist", visitId), cause);
-    }
 
 }

@@ -34,6 +34,6 @@ public class PaymentQueryServiceImpl implements PaymentQueryService {
 
     @Override
     public List<Payment> handle(GetPaymentByIdUserAccountQuery query) {
-        return paymentRepository.findByIdUserAccount(query.idUserAccount());
+        return paymentRepository.findByUserAccountId(query.idUserAccount());
     }
 }

@@ -12,8 +12,9 @@ import jakarta.validation.constraints.Size;
  *
  * @param username the user account's new username to be updated
  * @param email the email address associated with the user account to be updated
- * @param idRole the role identifier assigned to the user account to be updated
- * @param idUser the user identifier linked to the user account to be updated
+ * @param roleId the role identifier assigned to the user account to be updated
+ * @param userId the user identifier linked to the user account to be updated
+ * @param membershipId the membership identifier associated with the user account to be updated
  * @param password the new password for the user account to be updated
  * @param isNew flag indicating if the account is new
  */
@@ -28,12 +29,16 @@ public record UpdateUserAccountRequest(
         String email,
 
         @JsonProperty("id_role")
-        @NotNull @NotBlank
-        String idRole,
+        @NotNull
+        Long roleId,
 
         @JsonProperty("id_user")
-        @NotNull @NotBlank
-        String idUser,
+        @NotNull
+        Long userId,
+
+        @JsonProperty("membership_id")
+        @NotNull
+        Long membershipId,
 
         @NotNull @NotBlank
         @Size(min = 1, max = 100)

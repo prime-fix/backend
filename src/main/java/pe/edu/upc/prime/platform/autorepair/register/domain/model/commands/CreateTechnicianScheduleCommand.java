@@ -7,7 +7,6 @@ import java.time.LocalDateTime;
  * Command to create a new Technician Schedule.
  */
 public record CreateTechnicianScheduleCommand(
-        String idTechnicianSchedule,
         Technician technician,
         String dayOfWeek,
         LocalDateTime startTime,
@@ -15,9 +14,6 @@ public record CreateTechnicianScheduleCommand(
         Boolean isActive
 ) {
     public CreateTechnicianScheduleCommand {
-        if (idTechnicianSchedule == null || idTechnicianSchedule.isBlank()) {
-            throw new IllegalArgumentException("[CreateTechnicianScheduleCommand] Id cannot be null or blank");
-        }
         if (technician == null) {
             throw new IllegalArgumentException("[CreateTechnicianScheduleCommand] Technician cannot be null");
         }

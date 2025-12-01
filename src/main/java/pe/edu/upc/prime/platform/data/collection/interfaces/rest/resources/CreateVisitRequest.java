@@ -1,14 +1,14 @@
 package pe.edu.upc.prime.platform.data.collection.interfaces.rest.resources;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * Request record for creating a new visit.
- * @param visitId  the ID of the visit
  * @param vehicleId the ID of the vehicle
  * @param serviceId the ID of the service
  * @param failure the failure description
@@ -17,31 +17,27 @@ import java.util.Date;
  */
 public record CreateVisitRequest(
 
-        @NotBlank
-        @NotNull
-        @JsonProperty("visit_id")
-        String visitId,
 
         @NotNull
-        @NotBlank
+        @Min(0)
         @JsonProperty("vehicle_id")
-        String vehicleId,
+        Long vehicleId,
 
         @NotNull
         @NotBlank
         @JsonProperty("service_id")
-        String serviceId,
+        Long serviceId,
 
         @NotNull
         @NotBlank
         String failure,
 
         @NotNull
-        @NotBlank
-        Date timeVisit,
+        @JsonProperty("timeVisit")
+        LocalDateTime timeVisit,
 
         @NotNull
-        @NotBlank
+        @Min(0)
         @JsonProperty("auto_repair_id")
-        String autoRepairId) {
+        Long autoRepairId) {
 }

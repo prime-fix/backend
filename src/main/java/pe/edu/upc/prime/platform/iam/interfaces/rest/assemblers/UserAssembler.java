@@ -19,8 +19,8 @@ public class UserAssembler {
      * @return the corresponding CreateUserCommand
      */
     public static CreateUserCommand toCommandFromRequest(CreateUserRequest request) {
-        return new CreateUserCommand(request.idUser(), request.name(),
-                request.lastName(), request.dni(), request.phoneNumber(), request.idLocation());
+        return new CreateUserCommand( request.name(),
+                request.lastName(), request.dni(), request.phoneNumber(), request.locationId());
     }
 
     /**
@@ -30,10 +30,10 @@ public class UserAssembler {
      * @param request the UpdateUserRequest to convert
      * @return the corresponding UpdateUserCommand
      */
-    public static UpdateUserCommand toCommandFromRequest(String userId,
+    public static UpdateUserCommand toCommandFromRequest(Long userId,
                                                             UpdateUserRequest request) {
         return new UpdateUserCommand(userId, request.name(),
-                request.lastName(), request.dni(), request.phoneNumber(), request.idLocation());
+                request.lastName(), request.dni(), request.phoneNumber(), request.locationId());
     }
 
     /**
@@ -44,8 +44,8 @@ public class UserAssembler {
      */
     public static UserResponse toResponseFromEntity(User entity) {
 
-        return new UserResponse(entity.getIdUser(), entity.getName(),
+        return new UserResponse(entity.getId(), entity.getName(),
                 entity.getLastName(), entity.getDni(),
-                entity.getPhoneNumber(), entity.getIdLocation());
+                entity.getPhoneNumber(), entity.getLocation().getId());
     }
 }

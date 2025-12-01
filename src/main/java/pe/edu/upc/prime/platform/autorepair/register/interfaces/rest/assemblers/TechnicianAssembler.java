@@ -3,10 +3,10 @@ package pe.edu.upc.prime.platform.autorepair.register.interfaces.rest.assemblers
 import pe.edu.upc.prime.platform.autorepair.register.domain.model.aggregates.Technician;
 import pe.edu.upc.prime.platform.autorepair.register.domain.model.commands.CreateTechnicianCommand;
 import pe.edu.upc.prime.platform.autorepair.register.domain.model.commands.UpdateTechnicianCommand;
-import pe.edu.upc.prime.platform.autorepair.register.domain.model.valueobjects.IdAutoRepair;
 import pe.edu.upc.prime.platform.autorepair.register.interfaces.rest.resources.CreateTechnicianRequest;
 import pe.edu.upc.prime.platform.autorepair.register.interfaces.rest.resources.UpdateTechnicianRequest;
 import pe.edu.upc.prime.platform.autorepair.register.interfaces.rest.resources.TechnicianResponse;
+import pe.edu.upc.prime.platform.shared.domain.model.valueobjects.AutoRepairId;
 
 /**
  * Assembler for converting between Technician-related requests, commands, and responses.
@@ -21,10 +21,9 @@ public class TechnicianAssembler {
      */
     public static CreateTechnicianCommand toCommandFromRequest(CreateTechnicianRequest request) {
         return new CreateTechnicianCommand(
-                request.idTechnician(),
                 request.name(),
                 request.lastName(),
-                new IdAutoRepair(request.idAutoRepair())
+                new AutoRepairId(request.idAutoRepair())
         );
     }
 
@@ -35,12 +34,12 @@ public class TechnicianAssembler {
      * @param request The update technician request.
      * @return The corresponding UpdateTechnicianCommand.
      */
-    public static UpdateTechnicianCommand toCommandFromRequest(String idTechnician, UpdateTechnicianRequest request) {
+    public static UpdateTechnicianCommand toCommandFromRequest(Long idTechnician, UpdateTechnicianRequest request) {
         return new UpdateTechnicianCommand(
                 idTechnician,
                 request.name(),
                 request.lastName(),
-                new IdAutoRepair(request.idAutoRepair())
+                new AutoRepairId(request.idAutoRepair())
         );
     }
 
@@ -52,10 +51,10 @@ public class TechnicianAssembler {
      */
     public static TechnicianResponse toResponseFromEntity(Technician entity) {
         return new TechnicianResponse(
-                entity.getIdTechnician(),
+                entity.getId().toString(),
                 entity.getName(),
                 entity.getLastName(),
-                entity.getIdAutoRepairValue()
+                entity.getAutoRepairId().value()
         );
     }
 }
