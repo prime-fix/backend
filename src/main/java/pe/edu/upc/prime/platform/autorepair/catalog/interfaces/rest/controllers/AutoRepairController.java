@@ -1,22 +1,15 @@
 package pe.edu.upc.prime.platform.autorepair.catalog.interfaces.rest.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpServerErrorException;
-import pe.edu.upc.prime.platform.shared.interfaces.rest.resources.BadRequestResponse;
-import pe.edu.upc.prime.platform.shared.interfaces.rest.resources.NotFoundResponse;
 import pe.edu.upc.prime.platform.autorepair.catalog.domain.model.commands.DeleteAutoRepairCommand;
 import pe.edu.upc.prime.platform.autorepair.catalog.domain.model.queries.GetAllAutoRepairsQuery;
 import pe.edu.upc.prime.platform.autorepair.catalog.domain.model.queries.GetAutoRepairByIdQuery;
@@ -153,6 +146,13 @@ public class AutoRepairController {
         return ResponseEntity.ok(autoRepairResponse);
     }
 
+    /**
+     * Updates an existing Auto Repair
+     *
+     * @param auto_repair_id the ID of the auto repair to update
+     * @param request the UpdateAutoRepairRequest containing updated auto repair details
+     * @return a ResponseEntity with the updated AutoRepairResponse
+     */
     @Operation(summary = "Update an existing auto repair",
             description = "Update an existing auto repair with the provided data",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(

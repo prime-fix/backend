@@ -10,6 +10,9 @@ import pe.edu.upc.prime.platform.autorepair.catalog.domain.model.queries.GetServ
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * AutoRepair interface for handling auto repair - related queries
+ */
 public interface AutoRepairQueryService {
 
     /**

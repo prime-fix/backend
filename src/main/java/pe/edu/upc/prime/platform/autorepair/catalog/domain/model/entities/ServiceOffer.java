@@ -9,6 +9,9 @@ import pe.edu.upc.prime.platform.autorepair.catalog.domain.model.aggregates.Serv
 
 import java.math.BigDecimal;
 
+/**
+ * Entity representing a service offer made by an auto repair
+ */
 @Entity
 @Table(name = "service_offers")
 public class ServiceOffer extends AuditableModel {
@@ -35,14 +38,29 @@ public class ServiceOffer extends AuditableModel {
     private BigDecimal price;
 
 
+    /**
+     * Default constructor for JPA
+     */
     public ServiceOffer(){}
 
+    /**
+     * Constructor with parameters
+     *
+     * @param autoRepair the auto repair offering the service
+     * @param service the service being offered
+     * @param price the price of the service
+     */
     public ServiceOffer(AutoRepair autoRepair, Service service, BigDecimal price) {
         this.autoRepair = autoRepair;
         this.service = service;
         this.price = price;
     }
 
+    /**
+     * Update the price of the service offer
+     *
+     * @param price the new price to set
+     */
     public void updatePrice(BigDecimal price){
         this.price = price;
     }

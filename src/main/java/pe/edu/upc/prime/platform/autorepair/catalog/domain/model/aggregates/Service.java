@@ -36,7 +36,7 @@ public class Service extends AuditableAbstractAggregateRoot<Service> {
     }
 
     /**
-     *Update the service with the specified details
+     * Update the service with the specified details
      * @param command the UpdateServiceCommand containing the new profile details
      */
     public void updateService(UpdateServiceCommand command) {
@@ -45,8 +45,7 @@ public class Service extends AuditableAbstractAggregateRoot<Service> {
     }
 
     /**
-     *Default constructor for JPA
-     *
+     * Default constructor for JPA
      */
     public Service() {}
 }

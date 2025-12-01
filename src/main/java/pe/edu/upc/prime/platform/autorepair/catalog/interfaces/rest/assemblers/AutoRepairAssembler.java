@@ -40,8 +40,8 @@ public class AutoRepairAssembler {
     public static UpdateAutoRepairCommand toCommandFromRequest(Long autoRepairId, UpdateAutoRepairRequest request) {
         return new UpdateAutoRepairCommand(
                 autoRepairId,
-                request.contact_email(),
-                request.technician_count(),
+                request.contactEmail(),
+                request.technicianCount(),
                 request.ruc(),
                 new UserAccountId(request.userAccountId())
         );

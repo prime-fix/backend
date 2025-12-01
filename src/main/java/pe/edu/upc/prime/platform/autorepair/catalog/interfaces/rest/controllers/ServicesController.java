@@ -43,12 +43,18 @@ import java.util.stream.Collectors;
 @RequestMapping(value = "/api/v1/services", produces= MediaType.APPLICATION_JSON_VALUE)
 @Tag(name="Services", description="Endpoints for managing services")
 public class ServicesController {
-
+    /**
+     * Service for handling service queries.
+     */
     private final ServiceQueryService serviceQueryService;
+    /**
+     * Service for handling service commands.
+     */
     private final ServiceCommandService serviceCommandService;
 
     /**
      * Constructor for ServicesController.
+     *
      * @param serviceCommandService the service for handling service commands
      * @param serviceQueryService the service for handling service queries
      */
@@ -60,6 +66,7 @@ public class ServicesController {
 
     /**
      * Endpoint to create a new service.
+     *
      * @param request the service data to be created
      * @return a ResponseEntity containing the created service resource or a bas request status if creations fails
      */
@@ -112,6 +119,7 @@ public class ServicesController {
 
     /**
      * Endpoint to retrieve all services.
+     *
      * @return a ResponseEntity containing a list of all service resources
      */
     @Operation(summary = "Retrieves all services",
@@ -135,6 +143,7 @@ public class ServicesController {
 
     /**
      * Endpoint to update an existing service.
+     *
      * @param serviceId the ID of the service to be updated
      * @param request the updated service data
      * @return a ResponseEntity containing the updated service resource or a not found status if the service does not exist
@@ -176,7 +185,6 @@ public class ServicesController {
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = ServiceUnavailableResponse.class)))
     })
-
     @PutMapping("/{serviceId}")
     public ResponseEntity<ServiceResponse> updateService(@PathVariable Long serviceId,
     @Valid @RequestBody UpdateServiceRequest request){
