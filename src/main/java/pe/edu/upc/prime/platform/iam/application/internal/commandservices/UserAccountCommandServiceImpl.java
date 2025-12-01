@@ -75,8 +75,11 @@ public class UserAccountCommandServiceImpl implements UserAccountCommandService 
      *
      * @param userAccountRepository the user account repository
      * @param locationCommandService the location command service
+     * @param locationRepository the location repository
      * @param membershipCommandService the membership command service
+     * @param membershipRepository the membership repository
      * @param userCommandService the user command service
+     * @param userRepository the user repository
      * @param hashingService the hashing service
      * @param tokenService the token service
      * @param roleRepository the role repository

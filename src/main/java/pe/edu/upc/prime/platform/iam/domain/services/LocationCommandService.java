@@ -21,6 +21,7 @@ public interface LocationCommandService {
 
     /**
      * Handle the update of a location based on the provided command
+     *
      * @param command the command containing the updated location information
      * @return an Optional containing the update Location if successful, or empty if not found
      */
@@ -28,6 +29,7 @@ public interface LocationCommandService {
 
     /**
      * Handle the delection of a Location based on the provided command
+     *
      * @param command the command containing the ID of the location to be related
      */
     void handle(DeleteLocationCommand command);

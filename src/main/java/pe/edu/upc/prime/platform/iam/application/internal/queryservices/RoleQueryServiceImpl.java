@@ -6,7 +6,6 @@ import pe.edu.upc.prime.platform.iam.domain.model.queries.GetAllRolesQuery;
 import pe.edu.upc.prime.platform.iam.domain.model.queries.GetRoleByNameQuery;
 import pe.edu.upc.prime.platform.iam.domain.services.RoleQueryService;
 import pe.edu.upc.prime.platform.iam.infrastructure.persistence.jpa.repositories.RoleRepository;
-import pe.edu.upc.prime.platform.shared.domain.exceptions.NotFoundIdException;
 
 import java.util.List;
 import java.util.Optional;

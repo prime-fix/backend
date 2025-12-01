@@ -3,7 +3,7 @@ package pe.edu.upc.prime.platform.iam.interfaces.rest.resources;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * UserAccountResponse
+ * Response representing a user account.
  *
  * @param id the identifier of the user account
  * @param username the username of the user account

@@ -1,9 +1,7 @@
 package pe.edu.upc.prime.platform.iam.interfaces.rest.resources;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 /**
- * Response DTO for Role entity.
+ * Response representing a role.
  *
  * @param id the unique identifier of the role
  * @param name the name of the role

@@ -8,7 +8,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 /**
- * UpdateUserAccountRequest
+ * Request to update a user account.
  *
  * @param username the user account's new username to be updated
  * @param email the email address associated with the user account to be updated
