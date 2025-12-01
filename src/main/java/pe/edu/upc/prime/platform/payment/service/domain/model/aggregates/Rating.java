@@ -11,16 +11,17 @@ import pe.edu.upc.prime.platform.shared.domain.model.aggregates.AuditableAbstrac
 import pe.edu.upc.prime.platform.shared.domain.model.valueobjects.AutoRepairId;
 import pe.edu.upc.prime.platform.shared.domain.model.valueobjects.UserAccountId;
 
+/**
+ * Rating aggregate root entity.
+ */
 @Entity
 @Table(name = "ratings")
 public class Rating extends AuditableAbstractAggregateRoot<Rating> {
-
     @Getter
     @Min(1)
     @Max(5)
     @Column(name = "star_rating", nullable = false)
-    @JsonProperty("star_rating")
-    private int starRating;
+    private Integer starRating;
 
     @Getter
     @Column(name = "comment", length = 250)
@@ -29,19 +30,17 @@ public class Rating extends AuditableAbstractAggregateRoot<Rating> {
     @Getter
     @Embedded
     @AttributeOverride(
-            name = "id_auto_repair",
+            name = "autoRepairId",
             column = @Column(name = "auto_repair_id", nullable = false, length = 10)
     )
-    @JsonProperty("id_auto_repair")
     private AutoRepairId autoRepairId;
 
     @Getter
     @Embedded
     @AttributeOverride(
-            name = "id_user_account",
+            name = "userAccountId",
             column = @Column(name = "user_account_id", nullable = false, length = 10)
     )
-    @JsonProperty("id_user_account")
     private UserAccountId userAccountId;
 
     /**
@@ -58,8 +57,8 @@ public class Rating extends AuditableAbstractAggregateRoot<Rating> {
     public Rating(CreateRatingCommand command) {
         this.starRating = command.starRating();
         this.comment = command.comment();
-        this.autoRepairId = command.idAutoRepair();
-        this.userAccountId = command.idUserAccount();
+        this.autoRepairId = command.autoRepairId();
+        this.userAccountId = command.userAccountId();
     }
     /** Update the rating with the specified details.
      *
@@ -68,7 +67,7 @@ public class Rating extends AuditableAbstractAggregateRoot<Rating> {
     public void updateRating(UpdateRatingCommand command) {
         this.starRating = command.starRating();
         this.comment = command.comment();
-        this.autoRepairId = command.idAutoRepair();
-        this.userAccountId = command.idUserAccount();
+        this.autoRepairId = command.autoRepairId();
+        this.userAccountId = command.userAccountId();
     }
 }

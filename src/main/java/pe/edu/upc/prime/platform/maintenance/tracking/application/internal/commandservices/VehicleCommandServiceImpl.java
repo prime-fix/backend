@@ -2,7 +2,7 @@ package pe.edu.upc.prime.platform.maintenance.tracking.application.internal.comm
 
 import jakarta.persistence.PersistenceException;
 import org.springframework.stereotype.Service;
-import pe.edu.upc.prime.platform.maintenance.tracking.application.internal.outboundservices.acl.ExternalIamService;
+import pe.edu.upc.prime.platform.maintenance.tracking.application.internal.outboundservices.acl.ExternalIamServiceFromMaintenanceTracking;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.aggregates.Vehicle;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.commands.CreateVehicleCommand;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.commands.DeleteVehicleCommand;
@@ -27,7 +27,7 @@ public class VehicleCommandServiceImpl implements VehicleCommandService {
     /**
      * The external IAM service.
      */
-    private final ExternalIamService externalIamService;
+    private final ExternalIamServiceFromMaintenanceTracking externalIamServiceFromMaintenanceTracking;
 
     /**
      * Constructor for VehicleCommandServiceImpl.
@@ -35,9 +35,9 @@ public class VehicleCommandServiceImpl implements VehicleCommandService {
      * @param vehicleRepository the vehicle repository
      */
     public VehicleCommandServiceImpl(VehicleRepository vehicleRepository,
-                                     ExternalIamService externalIamService) {
+                                     ExternalIamServiceFromMaintenanceTracking externalIamServiceFromMaintenanceTracking) {
         this.vehicleRepository = vehicleRepository;
-        this.externalIamService = externalIamService;
+        this.externalIamServiceFromMaintenanceTracking = externalIamServiceFromMaintenanceTracking;
     }
 
     /**
@@ -57,7 +57,7 @@ public class VehicleCommandServiceImpl implements VehicleCommandService {
         }
 
         // Validate if user ID exists in external IAM service
-        if (!this.externalIamService.existsUserById(command.userId().userId())) {
+        if (!this.externalIamServiceFromMaintenanceTracking.existsUserById(command.userId().userId())) {
             throw new NotFoundArgumentException(
                     String.format("[VehicleCommandServiceImpl User ID: %s not found in the external IAM service",
                             command.userId().userId()));
@@ -97,7 +97,7 @@ public class VehicleCommandServiceImpl implements VehicleCommandService {
         }
 
         // Validate if user ID exists in external IAM service
-        if (!this.externalIamService.existsUserById(command.userId().userId())) {
+        if (!this.externalIamServiceFromMaintenanceTracking.existsUserById(command.userId().userId())) {
             throw new NotFoundArgumentException(
                     String.format("[VehicleCommandServiceImpl User ID: %s not found in the external IAM service",
                             command.userId().userId()));

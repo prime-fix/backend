@@ -12,7 +12,7 @@ import java.util.Objects;
 public record UserAccountId(Long userAccountId) {
     public UserAccountId {
         if (Objects.isNull(userAccountId) || userAccountId <= 0 ) {
-            throw new IllegalArgumentException("[userAccountId] IdUserAccount cannot be null or negative");
+            throw new IllegalArgumentException("[userAccountId] user account id cannot be null or negative");
         }
     }
 

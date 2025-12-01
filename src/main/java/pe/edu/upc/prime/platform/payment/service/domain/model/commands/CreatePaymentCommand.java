@@ -16,17 +16,18 @@ import java.util.Objects;
  * @param userAccountId The identifier of the user account making the payment.
  */
 public record CreatePaymentCommand(
-
         String cardNumber,
         CardType cardType,
-        int month,
-        int year,
-        String ccv,
+        Integer month,
+        Integer year,
+        Integer ccv,
         UserAccountId userAccountId
 ) {
     public CreatePaymentCommand {
         Objects.requireNonNull(cardNumber, "[CreatePaymentCommand] cardNumber must not be null");
         Objects.requireNonNull(cardType, "[CreatePaymentCommand] cardType must not be null");
+        Objects.requireNonNull(month, "[CreatePaymentCommand] month must not be null");
+        Objects.requireNonNull(year, "[CreatePaymentCommand] year must not be null");
         Objects.requireNonNull(ccv, "[CreatePaymentCommand] ccv must not be null");
         Objects.requireNonNull(userAccountId, "[CreatePaymentCommand] idUserAccount must not be null");
 
@@ -39,8 +40,7 @@ public record CreatePaymentCommand(
             throw new IllegalArgumentException("[CreatePaymentCommand] month must be between 1 and 12");
         if (year < 2000)
             throw new IllegalArgumentException("[CreatePaymentCommand] year must be greater than 2000");
-
-        if (!ccv.matches("^\\d{3}$"))
-            throw new IllegalArgumentException("[CreatePaymentCommand] ccv must have exactly 3 digits");
+        if (ccv < 100 || ccv > 999)
+            throw new IllegalArgumentException("[CreatePaymentCommand] ccv must be between 100 and 9999");
     }
 }

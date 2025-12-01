@@ -1,7 +1,6 @@
 package pe.edu.upc.prime.platform.maintenance.tracking.interfaces.acl;
 
 import org.springframework.stereotype.Service;
-import pe.edu.upc.prime.platform.maintenance.tracking.application.internal.outboundservices.acl.ExternalIamService;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.queries.ExistsNotificationByIdQuery;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.queries.ExistsVehicleByIdQuery;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.services.NotificationCommandService;

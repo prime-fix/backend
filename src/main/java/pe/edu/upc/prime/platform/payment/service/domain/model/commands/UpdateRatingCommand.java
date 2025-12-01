@@ -11,21 +11,23 @@ import java.util.Objects;
  * @param ratingId The ID of the rating to update.
  * @param starRating The new star rating (1–5).
  * @param comment The new comment.
- * @param idAutoRepair The auto repair associated with this rating.
- * @param idUserAccount The user account that made the rating.
+ * @param autoRepairId The auto repair associated with this rating.
+ * @param userAccountId The user account that made the rating.
  */
 
 public record UpdateRatingCommand(
         Long ratingId,
-        int starRating,
+        Integer starRating,
         String comment,
-        AutoRepairId idAutoRepair,
-        UserAccountId idUserAccount
+        AutoRepairId autoRepairId,
+        UserAccountId userAccountId
 ) {
     public UpdateRatingCommand {
         Objects.requireNonNull(ratingId, "[UpdateRatingCommand] ratingId must not be null");
-        Objects.requireNonNull(idAutoRepair, "[UpdateRatingCommand] idAutoRepair must not be null");
-        Objects.requireNonNull(idUserAccount, "[UpdateRatingCommand] idUserAccount must not be null");
+        Objects.requireNonNull(starRating, "[CreateRatingCommand] starRating must not be null");
+        Objects.requireNonNull(comment, "[CreateRatingCommand] comment must not be null");
+        Objects.requireNonNull(autoRepairId, "[UpdateRatingCommand] idAutoRepair must not be null");
+        Objects.requireNonNull(userAccountId, "[UpdateRatingCommand] idUserAccount must not be null");
 
         if (ratingId <= 0)
             throw new IllegalArgumentException("[UpdateRatingCommand] ratingId cannot be less than or equal to 0");
@@ -33,7 +35,7 @@ public record UpdateRatingCommand(
         if (starRating < 1 || starRating > 5)
             throw new IllegalArgumentException("[UpdateRatingCommand] starRating must be between 1 and 5");
 
-        if (comment != null && comment.length() > 250)
+        if (comment.length() > 250)
             throw new IllegalArgumentException("[UpdateRatingCommand] comment cannot exceed 250 characters");
     }
 }

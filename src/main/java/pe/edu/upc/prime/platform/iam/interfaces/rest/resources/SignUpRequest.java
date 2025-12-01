@@ -2,10 +2,7 @@ package pe.edu.upc.prime.platform.iam.interfaces.rest.resources;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 import pe.edu.upc.prime.platform.shared.utils.Util;
 
 import java.time.LocalDate;
@@ -84,10 +81,12 @@ public record SignUpRequest(
 
         @NotNull @NotBlank
         @JsonProperty("card_number")
+        @Size(min = 13, max = 19, message = "Card number must be between 13 and 19 digits")
         String cardNumber,
 
-        @NotNull
+        @NotNull @NotBlank
         @JsonProperty("card_type")
+        @Pattern(regexp = "VISA|MASTERCARD|AMEX", message = "Card type must be VISA, MASTERCARD or AMEX")
         String cardType,
 
         @NotNull
@@ -95,8 +94,10 @@ public record SignUpRequest(
         Integer month,
 
         @NotNull
+        @Min(2000)
         Integer year,
 
         @NotNull
+        @Min(100) @Max(9999)
         Integer cvv) {
 }

@@ -4,6 +4,7 @@ import jakarta.persistence.PersistenceException;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pe.edu.upc.prime.platform.iam.application.internal.outboundservices.acl.ExternalPaymentServiceFromIam;
 import pe.edu.upc.prime.platform.iam.application.internal.outboundservices.hashing.HashingService;
 import pe.edu.upc.prime.platform.iam.application.internal.outboundservices.tokens.TokenService;
 import pe.edu.upc.prime.platform.iam.domain.model.aggregates.UserAccount;
@@ -15,7 +16,7 @@ import pe.edu.upc.prime.platform.shared.domain.exceptions.NotFoundIdException;
 import java.util.Optional;
 
 /**
- * Implementation of the UserCommandService interface.
+ * Implementation of the UserAccountCommandService interface for handling user account commands.
  */
 @Service
 public class UserAccountCommandServiceImpl implements UserAccountCommandService {
@@ -71,6 +72,11 @@ public class UserAccountCommandServiceImpl implements UserAccountCommandService 
     private final RoleRepository roleRepository;
 
     /**
+     * The external payment service for payment-related operations.
+     */
+    private final ExternalPaymentServiceFromIam externalPaymentServiceFromIam;
+
+    /**
      * Constructor for UserAccountCommandServiceImpl.
      *
      * @param userAccountRepository the user account repository
@@ -83,6 +89,7 @@ public class UserAccountCommandServiceImpl implements UserAccountCommandService 
      * @param hashingService the hashing service
      * @param tokenService the token service
      * @param roleRepository the role repository
+     * @param externalPaymentService the external payment service
      */
     public UserAccountCommandServiceImpl(UserAccountRepository userAccountRepository,
                                          LocationCommandService locationCommandService,
@@ -93,7 +100,8 @@ public class UserAccountCommandServiceImpl implements UserAccountCommandService 
                                          UserRepository userRepository,
                                          HashingService hashingService,
                                          TokenService tokenService,
-                                         RoleRepository roleRepository) {
+                                         RoleRepository roleRepository,
+                                         ExternalPaymentServiceFromIam externalPaymentServiceFromIam) {
         this.userAccountRepository = userAccountRepository;
         this.locationCommandService = locationCommandService;
         this.locationRepository = locationRepository;
@@ -104,6 +112,7 @@ public class UserAccountCommandServiceImpl implements UserAccountCommandService 
         this.hashingService = hashingService;
         this.tokenService = tokenService;
         this.roleRepository = roleRepository;
+        this.externalPaymentServiceFromIam = externalPaymentServiceFromIam;
     }
 
     /**
@@ -134,7 +143,7 @@ public class UserAccountCommandServiceImpl implements UserAccountCommandService 
     /**
      * Handles the sign-up command by creating a new user account along with associated entities.
      *
-     * @param command the command containing the user account information
+     * @param command the command containing the user account information for sign-up
      * @return an optional of the newly created user account
      */
     @Transactional
@@ -176,8 +185,21 @@ public class UserAccountCommandServiceImpl implements UserAccountCommandService 
         var userAccount = new UserAccount(new CreateUserAccountCommand(command.username(), command.email(),
                 role.getId(), user.getId(), membership.getId(), hashingService.encode(command.password())), role, user, membership);
 
+
         try {
+            // Save user account entity to obtain its ID and validate from Payment Service its creation
             userAccountRepository.save(userAccount);
+
+            // Create payment entity via external service
+            var paymentId = externalPaymentServiceFromIam.createPayment(command.cardNumber(), command.cardType(), command.month(), command.year(), command.cvv(),
+                    userAccount.getId());
+
+            // Validate payment creation
+            if (paymentId.equals(0L)) {
+                throw new IllegalArgumentException("[UserAccountCommandServiceImpl] Payment could not be created");
+            }
+
+            // Return the created user account
             return userAccountRepository.findByUsername(command.username());
         } catch (Exception e) {
             throw new PersistenceException("[UserAccountCommandServiceImpl] Error while saving User Account: "

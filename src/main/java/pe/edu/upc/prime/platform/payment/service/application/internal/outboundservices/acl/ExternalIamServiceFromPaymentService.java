@@ -1,4 +1,4 @@
-package pe.edu.upc.prime.platform.maintenance.tracking.application.internal.outboundservices.acl;
+package pe.edu.upc.prime.platform.payment.service.application.internal.outboundservices.acl;
 
 import org.springframework.stereotype.Service;
 import pe.edu.upc.prime.platform.iam.interfaces.acl.IamContextFacade;
@@ -7,7 +7,7 @@ import pe.edu.upc.prime.platform.iam.interfaces.acl.IamContextFacade;
  * Service class for interacting with external IAM services via IamContextFacade.
  */
 @Service
-public class ExternalIamService {
+public class ExternalIamServiceFromPaymentService {
     /**
      * The IamContextFacade for IAM operations.
      */
@@ -18,11 +18,11 @@ public class ExternalIamService {
      *
      * @param iamContextFacade the IamContextFacade to be used for IAM operations
      */
-    public ExternalIamService(IamContextFacade iamContextFacade) {
+    public ExternalIamServiceFromPaymentService(IamContextFacade iamContextFacade) {
         this.iamContextFacade = iamContextFacade;
     }
 
-    public boolean existsUserById(Long userId) {
-        return this.iamContextFacade.existsUserById(userId);
+    public boolean existsUserAccountById(Long userAccountId) {
+        return this.iamContextFacade.existsUserAccountById(userAccountId);
     }
 }
