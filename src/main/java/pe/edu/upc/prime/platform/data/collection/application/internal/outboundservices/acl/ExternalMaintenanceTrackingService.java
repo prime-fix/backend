@@ -1,4 +1,4 @@
-package pe.edu.upc.prime.platform.payment.service.application.internal.outboundservices.acl;
+package pe.edu.upc.prime.platform.data.collection.application.internal.outboundservices.acl;
 
 import org.springframework.stereotype.Service;
 import pe.edu.upc.prime.platform.maintenance.tracking.interfaces.acl.MaintenanceTrackingFacade;
