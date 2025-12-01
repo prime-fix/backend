@@ -10,6 +10,12 @@ import java.util.Objects;
  */
 public record CreateServiceCommand( String name, String description) {
 
+    /**
+     * Constructor with validation.
+     *
+     * @param name the name of the Service
+     * @param description the description of the Service
+     */
     public CreateServiceCommand{
         Objects.requireNonNull(name, "[CreateServiceCommand] name is required");
         Objects.requireNonNull(description, "[CreateServiceCommand] description is required");

@@ -34,6 +34,7 @@ public class PaymentCommandServiceImpl implements PaymentCommandService {
      * Constructor for PaymentCommandServiceImpl.
      *
      * @param paymentRepository the repository to access user data
+     * @param externalIamServiceFromPaymentService service for interacting with external IAM services
      */
     public PaymentCommandServiceImpl(PaymentRepository paymentRepository,
                                      ExternalIamServiceFromPaymentService externalIamServiceFromPaymentService) {
@@ -49,16 +50,15 @@ public class PaymentCommandServiceImpl implements PaymentCommandService {
      */
     @Override
     public Long handle(CreatePaymentCommand command) {
-
-        // Create a new Payment aggregate using the command data
-        var payment = new Payment(command);
-
         // Validate if user account ID exists in external IAM service
         if (!this.externalIamServiceFromPaymentService.existsUserAccountById(command.userAccountId().userAccountId())) {
             throw new NotFoundArgumentException(
                     String.format("[PaymentCommandServiceImpl User Account ID: %s not found in the external IAM service",
                             command.userAccountId().userAccountId()));
         }
+
+        // Create a new Payment aggregate using the command data
+        var payment = new Payment(command);
 
         // Save the new payment to the repository
         try {
@@ -85,6 +85,7 @@ public class PaymentCommandServiceImpl implements PaymentCommandService {
             throw new NotFoundIdException(Payment.class, paymentId);
         }
 
+        // Validate if user account ID exists in external IAM service
         if (!this.externalIamServiceFromPaymentService.existsUserAccountById(command.userAccountId().userAccountId())) {
             throw new NotFoundArgumentException(
                     String.format("[PaymentCommandServiceImpl] User Account ID: %s not found in the external IAM service",

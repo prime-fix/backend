@@ -61,9 +61,9 @@ public class TechnicianController {
     @Operation(summary = "Get Technician by ID")
     @ApiResponse(responseCode = "200", description = "Technician retrieved successfully")
     @ApiResponse(responseCode = "404", description = "Technician not found")
-    @GetMapping("/{technicianId}")
-    public ResponseEntity<TechnicianResponse> getTechnicianById(@PathVariable Long technicianId) {
-        var technicianOpt = technicianQueryService.handle(new GetTechnicianByIdQuery(technicianId));
+    @GetMapping("/{technician_id}")
+    public ResponseEntity<TechnicianResponse> getTechnicianById(@PathVariable Long technician_id) {
+        var technicianOpt = technicianQueryService.handle(new GetTechnicianByIdQuery(technician_id));
         if (technicianOpt.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
@@ -74,10 +74,10 @@ public class TechnicianController {
     // UPDATE
     @Operation(summary = "Update an existing Technician")
     @ApiResponse(responseCode = "200", description = "Technician updated successfully")
-    @PutMapping("/{technicianId}")
-    public ResponseEntity<TechnicianResponse> updateTechnician(@PathVariable Long technicianId,
+    @PutMapping("/{technician_id}")
+    public ResponseEntity<TechnicianResponse> updateTechnician(@PathVariable Long technician_id,
                                                                @RequestBody UpdateTechnicianRequest request) {
-        var command = TechnicianAssembler.toCommandFromRequest(technicianId, request);
+        var command = TechnicianAssembler.toCommandFromRequest(technician_id, request);
         var updatedTechnician = technicianCommandService.handle(command);
         var response = TechnicianAssembler.toResponseFromEntity(updatedTechnician);
         return ResponseEntity.ok(response);
@@ -86,9 +86,9 @@ public class TechnicianController {
     // DELETE
     @Operation(summary = "Delete Technician by ID")
     @ApiResponse(responseCode = "204", description = "Technician deleted successfully")
-    @DeleteMapping("/{technicianId}")
-    public ResponseEntity<Void> deleteTechnician(@PathVariable Long technicianId) {
-        technicianCommandService.handle(new DeleteTechnicianCommand(technicianId));
+    @DeleteMapping("/{technician_id}")
+    public ResponseEntity<Void> deleteTechnician(@PathVariable Long technician_id) {
+        technicianCommandService.handle(new DeleteTechnicianCommand(technician_id));
         return ResponseEntity.noContent().build();
     }
 }

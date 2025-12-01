@@ -1,7 +1,7 @@
 package pe.edu.upc.prime.platform.data.collection.application.internal.outboundservices.acl;
 
 import org.springframework.stereotype.Service;
-import pe.edu.upc.prime.platform.maintenance.tracking.interfaces.acl.MaintenanceTrackingFacade;
+import pe.edu.upc.prime.platform.maintenance.tracking.interfaces.acl.MaintenanceTrackingContextFacade;
 
 /**
  * Service class for interacting with external maintenance tracking services via MaintenanceTrackingFacade.
@@ -11,15 +11,15 @@ public class ExternalMaintenanceTrackingService {
     /**
      * Constructor for ExternalMaintenanceTrackingService.
      */
-    private final MaintenanceTrackingFacade maintenanceTrackingFacade;
+    private final MaintenanceTrackingContextFacade maintenanceTrackingContextFacade;
 
     /**
      * Constructor for ExternalMaintenanceTrackingService.
      *
-     * @param maintenanceTrackingFacade the MaintenanceTrackingFacade to be used for maintenance tracking operations
+     * @param maintenanceTrackingContextFacade the MaintenanceTrackingFacade to be used for maintenance tracking operations
      */
-    public ExternalMaintenanceTrackingService(MaintenanceTrackingFacade maintenanceTrackingFacade) {
-        this.maintenanceTrackingFacade = maintenanceTrackingFacade;
+    public ExternalMaintenanceTrackingService(MaintenanceTrackingContextFacade maintenanceTrackingContextFacade) {
+        this.maintenanceTrackingContextFacade = maintenanceTrackingContextFacade;
     }
 
     /**
@@ -29,6 +29,6 @@ public class ExternalMaintenanceTrackingService {
      * @return true if the maintenance record exists, false otherwise
      */
     public boolean existsVehicleById(Long recordId) {
-        return this.maintenanceTrackingFacade.existsVehicleById(recordId);
+        return this.maintenanceTrackingContextFacade.existsVehicleById(recordId);
     }
 }

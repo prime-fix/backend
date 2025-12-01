@@ -33,6 +33,7 @@ public class VehicleCommandServiceImpl implements VehicleCommandService {
      * Constructor for VehicleCommandServiceImpl.
      *
      * @param vehicleRepository the vehicle repository
+     * @param externalIamServiceFromMaintenanceTracking the external IAM service
      */
     public VehicleCommandServiceImpl(VehicleRepository vehicleRepository,
                                      ExternalIamServiceFromMaintenanceTracking externalIamServiceFromMaintenanceTracking) {

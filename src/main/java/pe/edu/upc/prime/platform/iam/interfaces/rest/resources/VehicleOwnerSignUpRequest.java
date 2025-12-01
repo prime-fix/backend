@@ -30,7 +30,7 @@ import java.time.LocalDate;
  * @param year the expiration year of the card
  * @param cvv the CVV of the card
  */
-public record SignUpRequest(
+public record VehicleOwnerSignUpRequest(
         @NotNull @NotBlank
         String name,
 
@@ -50,10 +50,6 @@ public record SignUpRequest(
 
         @NotNull @NotBlank
         String email,
-
-        @NotNull
-        @JsonProperty("role_id")
-        Long roleId,
 
         @NotNull @NotBlank
         String password,

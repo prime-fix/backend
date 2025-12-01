@@ -11,8 +11,15 @@ import java.util.Objects;
  */
 public record UpdateServiceCommand(Long serviceId, String name, String description) {
 
+    /**
+     * Constructor with validation.
+     *
+     * @param serviceId the ID of the service to update
+     * @param name the name of the visit
+     * @param description the description of the Visit
+     */
     public UpdateServiceCommand{
-        Objects.requireNonNull(serviceId, "[CreateServiceCommand] serviceId is required");
+        Objects.requireNonNull(serviceId, "[CreateServiceCommand] service id is required");
         Objects.requireNonNull(name, "[CreateServiceCommand] name is required");
         Objects.requireNonNull(description, "[CreateServiceCommand] description is required");
     }

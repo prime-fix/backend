@@ -2,7 +2,7 @@ package pe.edu.upc.prime.platform.iam.application.internal.outboundservices.acl;
 
 import org.springframework.stereotype.Service;
 import pe.edu.upc.prime.platform.payment.service.domain.model.valueobjects.CardType;
-import pe.edu.upc.prime.platform.payment.service.interfaces.acl.PaymentServiceFacade;
+import pe.edu.upc.prime.platform.payment.service.interfaces.acl.PaymentServiceContextFacade;
 
 /**
  * Service to interact with the Payment Service from the IAM context.
@@ -10,17 +10,17 @@ import pe.edu.upc.prime.platform.payment.service.interfaces.acl.PaymentServiceFa
 @Service
 public class ExternalPaymentServiceFromIam {
     /**
-     *
+     * Context Facade for Payment Service operations
      */
-    private final PaymentServiceFacade paymentServiceFacade;
+    private final PaymentServiceContextFacade paymentServiceContextFacade;
 
     /**
      * Constructor for ExternalPaymentServiceFromIam.
      *
-     * @param paymentServiceFacade the payment service facade
+     * @param paymentServiceContextFacade the payment service facade
      */
-    public ExternalPaymentServiceFromIam(PaymentServiceFacade paymentServiceFacade) {
-        this.paymentServiceFacade = paymentServiceFacade;
+    public ExternalPaymentServiceFromIam(PaymentServiceContextFacade paymentServiceContextFacade) {
+        this.paymentServiceContextFacade = paymentServiceContextFacade;
     }
 
     /**
@@ -30,7 +30,7 @@ public class ExternalPaymentServiceFromIam {
      * @return true if the payment exists, false otherwise
      */
     public boolean existsPaymentById(Long paymentId) {
-        return this.paymentServiceFacade.existsPaymentById(paymentId);
+        return this.paymentServiceContextFacade.existsPaymentById(paymentId);
     }
 
     /**
@@ -47,7 +47,7 @@ public class ExternalPaymentServiceFromIam {
     public Long createPayment(String cardNumber, CardType cardType,
                               Integer month, Integer year,
                               Integer ccv, Long userAccountId) {
-        return this.paymentServiceFacade.createPayment(
+        return this.paymentServiceContextFacade.createPayment(
                 cardNumber, cardType, month, year, ccv, userAccountId
         );
     }

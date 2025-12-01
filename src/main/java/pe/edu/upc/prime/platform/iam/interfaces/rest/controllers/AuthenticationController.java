@@ -11,10 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import pe.edu.upc.prime.platform.iam.domain.services.UserAccountCommandService;
 import pe.edu.upc.prime.platform.iam.interfaces.rest.assemblers.AuthenticationAssembler;
 import pe.edu.upc.prime.platform.iam.interfaces.rest.assemblers.UserAccountAssembler;
-import pe.edu.upc.prime.platform.iam.interfaces.rest.resources.AuthenticatedUserAccountResponse;
-import pe.edu.upc.prime.platform.iam.interfaces.rest.resources.SignInRequest;
-import pe.edu.upc.prime.platform.iam.interfaces.rest.resources.SignUpRequest;
-import pe.edu.upc.prime.platform.iam.interfaces.rest.resources.UserAccountResponse;
+import pe.edu.upc.prime.platform.iam.interfaces.rest.resources.*;
 
 @RestController
 @RequestMapping(value = "/api/v1/authentication", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -60,15 +57,32 @@ public class AuthenticationController {
     }
 
     /**
-     * Handle sign-up requests.
+     * Handle sign-up requests for vehicle owners.
      *
      * @param request the sign-up request
      * @return the created user account response
      */
-    @PostMapping("/sign-up")
-    public ResponseEntity<UserAccountResponse> signUp(@RequestBody SignUpRequest request) {
+    @PostMapping("/sign-up/vehicle-owner")
+    public ResponseEntity<UserAccountResponse> signUp(@RequestBody VehicleOwnerSignUpRequest request) {
         var signUpCommand = AuthenticationAssembler
-                .toCommandFromRequestSignUp(request);
+                .toCommandFromRequestSignUpVehicleOwner(request);
+        var userAccount = userAccountCommandService.handle(signUpCommand);
+        if (userAccount.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        var userAccountResponse = UserAccountAssembler.toResponseFromEntity(userAccount.get());
+        return new ResponseEntity<>(userAccountResponse, HttpStatus.CREATED);
+    }
+
+    /**
+     * Handle sign-up requests for auto repair.
+     *
+     * @param request the sign-up request
+     * @return the created user account response
+     */
+    @PostMapping("/sign-up/auto-repair")
+    public ResponseEntity<UserAccountResponse> signUp(@RequestBody AutoRepairSignUpRequest request) {
+        var signUpCommand = AuthenticationAssembler.toCommandFromRequestSignUpAutoRepair(request);
         var userAccount = userAccountCommandService.handle(signUpCommand);
         if (userAccount.isEmpty()) {
             return ResponseEntity.badRequest().build();

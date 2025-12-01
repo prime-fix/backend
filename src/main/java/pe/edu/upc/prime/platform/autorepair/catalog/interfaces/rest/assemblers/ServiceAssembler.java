@@ -7,8 +7,16 @@ import pe.edu.upc.prime.platform.autorepair.catalog.interfaces.rest.resources.Cr
 import pe.edu.upc.prime.platform.autorepair.catalog.interfaces.rest.resources.ServiceResponse;
 import pe.edu.upc.prime.platform.autorepair.catalog.interfaces.rest.resources.UpdateServiceRequest;
 
+/**
+ * Assembler for converting between Service-related requests, commands, and responses.
+ */
 public class ServiceAssembler {
-
+    /**
+     * Converts a CreateServiceRequest to a CreateServiceCommand.
+     *
+     * @param request the CreateServiceRequest to convert
+     * @return the corresponding CreateServiceCommand
+     */
     public static CreateServiceCommand toCommandFromRequest(CreateServiceRequest request) {
         return new CreateServiceCommand(
                 request.name(),
@@ -16,8 +24,13 @@ public class ServiceAssembler {
         );
     }
 
-
-
+    /**
+     * Converts an UpdateServiceRequest to an UpdateServiceCommand.
+     *
+     * @param serviceId the ID of the service to update
+     * @param request the UpdateServiceRequest to convert
+     * @return the corresponding UpdateServiceCommand
+     */
     public static UpdateServiceCommand toCommandFromRequest(Long serviceId, UpdateServiceRequest request) {
         return new UpdateServiceCommand(
                 serviceId,
@@ -26,6 +39,12 @@ public class ServiceAssembler {
         );
     }
 
+    /**
+     * Converts a Service entity to a ServiceResponse.
+     *
+     * @param entity the Service entity to convert
+     * @return the corresponding ServiceResponse
+     */
     public static ServiceResponse toResponseFromEntity(Service entity){
         return new ServiceResponse(
                 entity.getId().toString(),

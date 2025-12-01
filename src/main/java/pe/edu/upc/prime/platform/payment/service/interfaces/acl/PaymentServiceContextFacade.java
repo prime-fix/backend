@@ -13,7 +13,7 @@ import java.util.Objects;
  * Facade for payment operations, providing methods to manage payments.
  */
 @Service
-public class PaymentServiceFacade {
+public class PaymentServiceContextFacade {
     /**
      * The payment command service for handling payment-related commands.
      */
@@ -29,8 +29,8 @@ public class PaymentServiceFacade {
      * @param paymentCommandService the service for handling payment commands
      * @param paymentQueryService the service for handling payment queries
      */
-    public PaymentServiceFacade(PaymentCommandService paymentCommandService,
-                                PaymentQueryService paymentQueryService) {
+    public PaymentServiceContextFacade(PaymentCommandService paymentCommandService,
+                                       PaymentQueryService paymentQueryService) {
         this.paymentCommandService = paymentCommandService;
         this.paymentQueryService = paymentQueryService;
     }

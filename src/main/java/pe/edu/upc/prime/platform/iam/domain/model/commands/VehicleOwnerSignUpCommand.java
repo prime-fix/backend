@@ -7,7 +7,7 @@ import pe.edu.upc.prime.platform.payment.service.domain.model.valueobjects.CardT
 import java.time.LocalDate;
 
 /**
- * Command to sign up a new user in the system.
+ * Command to sign up a new vehicle owner in the system.
  * This command encapsulates all the necessary information required to create a Location, User, UserAccount, Membership, and Payment.
  *
  * @param name the first name of the user
@@ -16,7 +16,6 @@ import java.time.LocalDate;
  * @param phoneNumber the phone number of the user
  * @param username the desired username for the user account
  * @param email the email address of the user
- * @param roleId the role identifier for the user
  * @param password the password for the user account
  * @param locationInformation the location information of the user
  * @param membershipDescription the membership description for the user
@@ -28,21 +27,20 @@ import java.time.LocalDate;
  * @param year the expiration year of the card
  * @param cvv the CVV code of the card
  */
-public record SignUpCommand(String name,
-                            String lastName,
-                            String dni,
-                            String phoneNumber,
-                            String username,
-                            String email,
-                            Long roleId,
-                            String password,
-                            LocationInformation locationInformation,
-                            MembershipDescription membershipDescription,
-                            LocalDate started,
-                            LocalDate over,
-                            String cardNumber,
-                            CardType cardType,
-                            Integer month,
-                            Integer year,
-                            Integer cvv) {
+public record VehicleOwnerSignUpCommand(String name,
+                                        String lastName,
+                                        String dni,
+                                        String phoneNumber,
+                                        String username,
+                                        String email,
+                                        String password,
+                                        LocationInformation locationInformation,
+                                        MembershipDescription membershipDescription,
+                                        LocalDate started,
+                                        LocalDate over,
+                                        String cardNumber,
+                                        CardType cardType,
+                                        Integer month,
+                                        Integer year,
+                                        Integer cvv) {
 }

@@ -5,6 +5,12 @@ import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
 
+/**
+ * Request record for registering a service offer.
+ *
+ * @param serviceId the ID of the service
+ * @param price the price of the service offer
+ */
 public record RegisterServiceOfferRequest(
         @NotNull
         @JsonProperty("service_id")
@@ -12,7 +18,5 @@ public record RegisterServiceOfferRequest(
 
 
         @NotNull
-        BigDecimal price
-
-) {
+        BigDecimal price) {
 }

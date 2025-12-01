@@ -12,7 +12,6 @@ import java.util.Optional;
  */
 @Repository
 public interface RoleRepository extends JpaRepository<Role, Long> {
-
     /**
      * Find a role by its name.
      *

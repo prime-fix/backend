@@ -3,10 +3,14 @@ package pe.edu.upc.prime.platform.autorepair.register.interfaces.rest.resources;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * REST request for updating a Technician.
+ * Request to update a technician.
+ *
+ * @param name the technician's first name
+ * @param lastName the technician's last name
+ * @param autoRepairId the ID of the associated auto repair shop
  */
 public record UpdateTechnicianRequest(
-        @JsonProperty("name") String name,
+        String name,
         @JsonProperty("last_name") String lastName,
-        @JsonProperty("id_auto_repair") Long idAutoRepair
+        @JsonProperty("auto_repair_id") Long autoRepairId
 ) { }

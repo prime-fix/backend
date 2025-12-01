@@ -17,7 +17,7 @@ import java.util.Objects;
  * Facade for maintenance tracking operations, providing methods to manage vehicles and notifications.
  */
 @Service
-public class MaintenanceTrackingFacade {
+public class MaintenanceTrackingContextFacade {
     /**
      * The vehicle command service for handling vehicle-related commands.
      */
@@ -43,10 +43,10 @@ public class MaintenanceTrackingFacade {
      * @param notificationCommandService the service for handling notification commands
      * @param notificationQueryService  the service for handling notification queries
      */
-    public MaintenanceTrackingFacade(VehicleCommandService vehicleCommandService,
-                                     VehicleQueryService vehicleQueryService,
-                                     NotificationCommandService notificationCommandService,
-                                     NotificationQueryService notificationQueryService) {
+    public MaintenanceTrackingContextFacade(VehicleCommandService vehicleCommandService,
+                                            VehicleQueryService vehicleQueryService,
+                                            NotificationCommandService notificationCommandService,
+                                            NotificationQueryService notificationQueryService) {
         this.vehicleCommandService = vehicleCommandService;
         this.vehicleQueryService = vehicleQueryService;
         this.notificationCommandService = notificationCommandService;

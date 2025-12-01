@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Response record for service information.
+ *
  * @param serviceId the ID of the service
  * @param name the name of the service
  * @param description  the description of the service
