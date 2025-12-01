@@ -2,6 +2,7 @@ package pe.edu.upc.prime.platform.iam.application.internal.queryservices;
 
 import org.springframework.stereotype.Service;
 import pe.edu.upc.prime.platform.iam.domain.model.aggregates.User;
+import pe.edu.upc.prime.platform.iam.domain.model.queries.ExistsUserByIdQuery;
 import pe.edu.upc.prime.platform.iam.domain.model.queries.GetAllUsersQuery;
 import pe.edu.upc.prime.platform.iam.domain.model.queries.GetUserByIdQuery;
 import pe.edu.upc.prime.platform.iam.domain.services.UserQueryService;
@@ -48,5 +49,16 @@ public class UserQueryServiceImpl implements UserQueryService {
     public Optional<User> handle(GetUserByIdQuery query) {
         return Optional.ofNullable(this.userRepository.findById(query.userId())
                 .orElseThrow(() -> new NotFoundIdException(User.class, query.userId())));
+    }
+
+    /**
+     * Handle the ExistsUserByIdQuery.
+     *
+     * @param query the query containing the user ID
+     * @return true if the user exists, false otherwise
+     */
+    @Override
+    public boolean handle(ExistsUserByIdQuery query) {
+        return this.userRepository.existsById(query.userId());
     }
 }

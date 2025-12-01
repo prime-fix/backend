@@ -2,6 +2,7 @@ package pe.edu.upc.prime.platform.maintenance.tracking.application.internal.quer
 
 import org.springframework.stereotype.Service;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.aggregates.Notification;
+import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.queries.ExistsNotificationByIdQuery;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.queries.GetAllNotificationsQuery;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.queries.GetNotificationByIdQuery;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.services.NotificationQueryService;
@@ -51,5 +52,16 @@ public class NotificationQueryServiceImpl implements NotificationQueryService {
     public Optional<Notification> handle(GetNotificationByIdQuery query) {
         return Optional.ofNullable(this.notificationRepository.findById(query.notificationId())
         .orElseThrow(() -> new NotFoundIdException(Notification.class, query.notificationId())));
+    }
+
+    /**
+     * Handles the ExistsNotificationByIdQuery to check if a notification exists by its ID.
+     *
+     * @param query the query containing the notification ID
+     * @return true if the notification exists, false otherwise
+     */
+    @Override
+    public boolean handle(ExistsNotificationByIdQuery query) {
+        return this.notificationRepository.existsById(query.notificationId());
     }
 }

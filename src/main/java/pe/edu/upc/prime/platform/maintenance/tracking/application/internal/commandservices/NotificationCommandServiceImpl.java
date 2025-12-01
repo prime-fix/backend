@@ -3,11 +3,13 @@ package pe.edu.upc.prime.platform.maintenance.tracking.application.internal.comm
 import jakarta.persistence.PersistenceException;
 import org.springframework.stereotype.Service;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.aggregates.Notification;
+import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.aggregates.Vehicle;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.commands.CreateNotificationCommand;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.commands.DeleteNotificationCommand;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.commands.UpdateNotificationCommand;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.services.NotificationCommandService;
 import pe.edu.upc.prime.platform.maintenance.tracking.infrastructure.persistence.jpa.repositories.NotificationRepository;
+import pe.edu.upc.prime.platform.maintenance.tracking.infrastructure.persistence.jpa.repositories.VehicleRepository;
 import pe.edu.upc.prime.platform.shared.domain.exceptions.NotFoundIdException;
 
 import java.util.Optional;
@@ -23,12 +25,20 @@ public class NotificationCommandServiceImpl implements NotificationCommandServic
     private final NotificationRepository notificationRepository;
 
     /**
+     * Repository for managing Vehicle entities.
+     */
+    private final VehicleRepository vehicleRepository;
+
+    /**
      * Constructor for NotificationCommandServiceImpl.
      *
      * @param notificationRepository The repository for managing Notification entities.
+     * @param vehicleRepository The repository for managing Vehicle entities.
      */
-    public NotificationCommandServiceImpl(NotificationRepository notificationRepository) {
+    public NotificationCommandServiceImpl(NotificationRepository notificationRepository,
+                                          VehicleRepository vehicleRepository) {
         this.notificationRepository = notificationRepository;
+        this.vehicleRepository = vehicleRepository;
     }
 
     /**
@@ -39,7 +49,11 @@ public class NotificationCommandServiceImpl implements NotificationCommandServic
      */
     @Override
     public Long handle(CreateNotificationCommand command) {
-        var notification = new Notification(command);
+        // Fetch the associated vehicle
+        var vehicle = this.vehicleRepository.findById(command.vehicleId())
+                .orElseThrow(() -> new NotFoundIdException(Vehicle.class, command.vehicleId()));
+
+        var notification = new Notification(command, vehicle);
         try {
             this.notificationRepository.save(notification);
         } catch (Exception e) {
@@ -57,6 +71,10 @@ public class NotificationCommandServiceImpl implements NotificationCommandServic
      */
     @Override
     public Optional<Notification> handle(UpdateNotificationCommand command) {
+        // Fetch the associated vehicle
+        var vehicle = this.vehicleRepository.findById(command.vehicleId())
+                .orElseThrow(() -> new NotFoundIdException(Vehicle.class, command.vehicleId()));
+
         var notificationId = command.notificationId();
 
         if (!this.notificationRepository.existsById(notificationId)) {
@@ -64,7 +82,7 @@ public class NotificationCommandServiceImpl implements NotificationCommandServic
         }
 
         var notificationToUpdate = this.notificationRepository.findById(notificationId).get();
-        notificationToUpdate.updateNotification(command);
+        notificationToUpdate.updateNotification(command, vehicle);
 
         try {
             this.notificationRepository.save(notificationToUpdate);

@@ -13,26 +13,21 @@ import java.time.LocalDate;
  *
  * @param message the notification message to be updated
  * @param read indicates whether the notification has been read
- * @param idVehicle the identifier of the associated vehicle
+ * @param vehicleId the identifier of the associated vehicle
  * @param sent the date the notification was sent
- * @param idDiagnostic the identifier of the associated diagnostic
  */
 public record UpdateNotificationRequest(
         @NotNull @NotBlank
         String message,
 
-        boolean read,
+        @NotNull
+        Boolean read,
 
         @NotNull @NotBlank
-        @JsonProperty("id_vehicle")
-        String idVehicle,
+        @JsonProperty("vehicle_id")
+        Long vehicleId,
 
         @NotNull
         @JsonFormat(pattern = Util.DATE_FORMAT_PATTERN)
-        LocalDate sent,
-
-        @NotNull @NotBlank
-        @JsonProperty("id_diagnostic")
-        String idDiagnostic
-) {
+        LocalDate sent) {
 }

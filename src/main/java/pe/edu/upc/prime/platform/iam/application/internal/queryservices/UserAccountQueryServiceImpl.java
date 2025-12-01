@@ -2,6 +2,7 @@ package pe.edu.upc.prime.platform.iam.application.internal.queryservices;
 
 import org.springframework.stereotype.Service;
 import pe.edu.upc.prime.platform.iam.domain.model.aggregates.UserAccount;
+import pe.edu.upc.prime.platform.iam.domain.model.queries.ExistsUserAccountByIdQuery;
 import pe.edu.upc.prime.platform.iam.domain.model.queries.GetAllUserAccountsQuery;
 import pe.edu.upc.prime.platform.iam.domain.model.queries.GetUserAccountByIdQuery;
 import pe.edu.upc.prime.platform.iam.domain.model.queries.GetUserAccountByUsernameQuery;
@@ -63,6 +64,17 @@ public class UserAccountQueryServiceImpl implements UserAccountQueryService {
      */
     @Override
     public Optional<UserAccount> handle(GetUserAccountByUsernameQuery query) {
-        return userAccountRepository.findByUsername(query.username());
+        return this.userAccountRepository.findByUsername(query.username());
+    }
+
+    /**
+     * Check if a user account exists by its ID.
+     *
+     * @param query the query containing the user account ID
+     * @return true if the user account exists, false otherwise
+     */
+    @Override
+    public boolean handle(ExistsUserAccountByIdQuery query) {
+        return this.userAccountRepository.existsById(query.userAccountId());
     }
 }

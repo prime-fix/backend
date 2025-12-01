@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.commands.CreateVehicleCommand;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.commands.UpdateVehicleCommand;
+import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.valueobjects.MaintenanceStatus;
+import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.valueobjects.UserId;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.valueobjects.VehicleInformation;
 import pe.edu.upc.prime.platform.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
 
@@ -26,9 +28,11 @@ public class Vehicle extends AuditableAbstractAggregateRoot<Vehicle> {
     private String model;
 
     @Getter
-    @Column(name="id_user", nullable = false)
-    @JsonProperty("id_user")
-    private String idUser;
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "userId", column = @Column(name = "user_id", nullable = false))
+    })
+    private UserId userId;
 
     @Getter
     @Embedded
@@ -43,9 +47,9 @@ public class Vehicle extends AuditableAbstractAggregateRoot<Vehicle> {
     private VehicleInformation vehicleInformation;
 
     @Getter
-    @Column(name = "maintenance_status", nullable = false)
-    @JsonProperty("maintenance_status")
-    private int maintenanceStatus;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "maintenance_status", nullable = false, length = 20)
+    private MaintenanceStatus maintenanceStatus;
 
     /**
      * Default constructor for JPA.
@@ -59,9 +63,9 @@ public class Vehicle extends AuditableAbstractAggregateRoot<Vehicle> {
     public Vehicle(CreateVehicleCommand command) {
         this.color = command.color();
         this.model = command.model();
-        this.idUser = command.idUser();
+        this.userId = command.userId();
         this.vehicleInformation = command.vehicleInformation();
-        this.maintenanceStatus = command.maintenanceStatus();
+        this.maintenanceStatus = MaintenanceStatus.NOT_BEING_SERVICED;
     }
 
     /**
@@ -72,7 +76,7 @@ public class Vehicle extends AuditableAbstractAggregateRoot<Vehicle> {
     public void updateVehicle(UpdateVehicleCommand command) {
         this.color = command.color();
         this.model = command.model();
-        this.idUser = command.idUser();
+        this.userId = command.userId();
         this.vehicleInformation = command.vehicleInformation();
         this.maintenanceStatus = command.maintenanceStatus();
     }
