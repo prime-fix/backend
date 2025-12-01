@@ -109,15 +109,13 @@ public class MaintenanceTrackingFacade {
      * Creates a new notification with the provided details.
      *
      * @param message the notification message
-     * @param read the read status
      * @param vehicleId the associated vehicle ID
      * @param sent the date the notification was sent
      * @return the ID of the created notification, or 0L if creation failed
      */
-    public Long createNotification(String message, Boolean read,
-                                   Long vehicleId, LocalDate sent) {
+    public Long createNotification(String message, Long vehicleId, LocalDate sent) {
         var createNotificationCommand = NotificationAssembler.toCommandFromValues(
-                message, read, vehicleId, sent);
+                message, vehicleId, sent);
 
         var notificationId = this.notificationCommandService.handle(createNotificationCommand);
         if (Objects.isNull(notificationId)) {

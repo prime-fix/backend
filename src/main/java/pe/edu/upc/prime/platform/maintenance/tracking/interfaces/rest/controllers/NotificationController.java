@@ -9,9 +9,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.aggregates.Notification;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.commands.DeleteNotificationCommand;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.queries.GetAllNotificationsQuery;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.queries.GetNotificationByIdQuery;
+import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.queries.GetNotificationsByVehicleIdQuery;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.services.NotificationCommandService;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.services.NotificationQueryService;
 import pe.edu.upc.prime.platform.maintenance.tracking.interfaces.rest.assemblers.NotificationAssembler;
@@ -103,16 +105,23 @@ public class NotificationController {
      * @return the response entity with the list of notifications
      */
     @Operation(summary = "Retrieve all notifications",
-            description = "Retrieves a list of all notifications",
+            description = "Retrieves a list of all notifications or filters them by vehicle id",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Notifications retrieved successfully",
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = NotificationResponse.class))),
             })
     @GetMapping
-    public ResponseEntity<List<NotificationResponse>> getAllNotifications() {
-        var getAllNotificationsQuery = new GetAllNotificationsQuery();
-        var notifications = this.notificationQueryService.handle(getAllNotificationsQuery);
+    public ResponseEntity<List<NotificationResponse>> getAllNotifications(@RequestParam(required = false) Long vehicle_id) {
+        List<Notification> notifications;
+
+        if (Objects.isNull(vehicle_id)) {
+            var getAllNotificationsQuery = new GetAllNotificationsQuery();
+            notifications = this.notificationQueryService.handle(getAllNotificationsQuery);
+        } else {
+            var getNotificationsByVehicleIdQuery = new GetNotificationsByVehicleIdQuery(vehicle_id);
+            notifications = this.notificationQueryService.handle(getNotificationsByVehicleIdQuery);
+        }
 
         var notificationResponse = notifications.stream()
                 .map(NotificationAssembler::toResponseFromEntity)

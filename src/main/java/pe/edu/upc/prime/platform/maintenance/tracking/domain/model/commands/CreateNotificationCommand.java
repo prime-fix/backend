@@ -7,16 +7,13 @@ import java.util.Objects;
  * Command to create a new notification.
  *
  * @param message the message content of the notification to be created
- * @param read indicates whether the notification has been read
  * @param vehicleId the identifier of the vehicle associated with the notification to be created
  * @param sent the date the notification was sent
  */
-public record CreateNotificationCommand(String message, Boolean read,
-                                        Long vehicleId, LocalDate sent) {
+public record CreateNotificationCommand(String message, Long vehicleId, LocalDate sent) {
 
     public CreateNotificationCommand {
         Objects.requireNonNull(message, "[CreateNotificationCommand] message must not be null");
-        Objects.requireNonNull(read, "[CreateNotificationCommand] read status must not be null");
         Objects.requireNonNull(vehicleId, "[CreateNotificationCommand] vehicle id must not be null");
         Objects.requireNonNull(sent, "[CreateNotificationCommand] sent date must not be null");
     }

@@ -18,6 +18,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class OpenApiConfiguration {
 
+    // Inject the server URL from application properties
     @Value("${swagger.server.url}")
     private String swaggerServerUrl;
 

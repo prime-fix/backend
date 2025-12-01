@@ -12,7 +12,6 @@ import java.time.LocalDate;
  * Request to create a notification.
  *
  * @param message the message content of the notification to be created
- * @param read indicates whether the notification has been read
  * @param vehicleId the identifier of the vehicle associated with the notification to be created
  * @param sent the date the notification was sent
  */
@@ -21,9 +20,6 @@ public record CreateNotificationRequest(
         String message,
 
         @NotNull
-        Boolean read,
-
-        @NotNull @NotBlank
         @JsonProperty("vehicle_id")
         Long vehicleId,
 

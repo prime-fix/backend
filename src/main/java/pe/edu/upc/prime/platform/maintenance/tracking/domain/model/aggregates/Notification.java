@@ -49,7 +49,7 @@ public class Notification extends AuditableAbstractAggregateRoot<Notification> {
      */
     public Notification(CreateNotificationCommand command, Vehicle vehicle) {
         this.message = command.message();
-        this.read = command.read();
+        this.read = false;
         this.vehicle = vehicle;
         this.sent = command.sent();
     }

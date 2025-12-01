@@ -51,7 +51,7 @@ public class VehicleAssembler {
      */
     public static VehicleResponse toResponseFromEntity(Vehicle entity) {
         return new VehicleResponse(entity.getId(), entity.getColor(), entity.getModel(),
-                entity.getId(), entity.getVehicleInformation().vehicleBrand(),
+                entity.getUserId().value(), entity.getVehicleInformation().vehicleBrand(),
                 entity.getVehicleInformation().vehiclePlate(), entity.getVehicleInformation().vehicleType(),
                 entity.getMaintenanceStatus().getValue());
     }

@@ -4,7 +4,7 @@ import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.aggregates.Ve
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.queries.ExistsVehicleByIdQuery;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.queries.GetAllVehiclesQuery;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.queries.GetVehicleByIdQuery;
-import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.queries.GetVehicleByMaintenanceStatusQuery;
+import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.queries.GetVehiclesByMaintenanceStatusQuery;
 
 import java.util.List;
 import java.util.Optional;
@@ -35,7 +35,7 @@ public interface VehicleQueryService {
      * @param query the query containing the maintenance status
      * @return a list of vehicles matching the maintenance status
      */
-    List<Vehicle> handle(GetVehicleByMaintenanceStatusQuery query);
+    List<Vehicle> handle(GetVehiclesByMaintenanceStatusQuery query);
 
     /**
      * Handle the query to check if a vehicle exists by its ID.

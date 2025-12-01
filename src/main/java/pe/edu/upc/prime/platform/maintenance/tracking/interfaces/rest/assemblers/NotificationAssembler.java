@@ -21,7 +21,7 @@ public class NotificationAssembler {
      */
     public static CreateNotificationCommand toCommandFromRequest(CreateNotificationRequest request) {
         return new CreateNotificationCommand(
-                 request.message(), request.read(),
+                 request.message(),
                 request.vehicleId(), request.sent()
         );
     }
@@ -60,9 +60,9 @@ public class NotificationAssembler {
      * @param sent the date the notification was sent
      * @return the corresponding CreateNotificationCommand
      */
-    public static CreateNotificationCommand toCommandFromValues(String message, Boolean read,
+    public static CreateNotificationCommand toCommandFromValues(String message,
                                                                 Long vehicleId, LocalDate sent) {
-        return new CreateNotificationCommand(message, read, vehicleId, sent);
+        return new CreateNotificationCommand(message, vehicleId, sent);
     }
 
     /**
