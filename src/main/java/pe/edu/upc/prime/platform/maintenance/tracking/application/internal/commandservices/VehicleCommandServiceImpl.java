@@ -57,7 +57,7 @@ public class VehicleCommandServiceImpl implements VehicleCommandService {
         }
 
         // Validate if user ID exists in external IAM service
-        if (this.externalIamService.existsUserById(command.userId().userId())) {
+        if (!this.externalIamService.existsUserById(command.userId().userId())) {
             throw new NotFoundArgumentException(
                     String.format("[VehicleCommandServiceImpl User ID: %s not found in the external IAM service",
                             command.userId().userId()));
@@ -97,7 +97,7 @@ public class VehicleCommandServiceImpl implements VehicleCommandService {
         }
 
         // Validate if user ID exists in external IAM service
-        if (this.externalIamService.existsUserById(command.userId().userId())) {
+        if (!this.externalIamService.existsUserById(command.userId().userId())) {
             throw new NotFoundArgumentException(
                     String.format("[VehicleCommandServiceImpl User ID: %s not found in the external IAM service",
                             command.userId().userId()));
