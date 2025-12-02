@@ -47,7 +47,7 @@ public class ServiceAssembler {
      */
     public static ServiceResponse toResponseFromEntity(Service entity){
         return new ServiceResponse(
-                entity.getId().toString(),
+                entity.getId(),
                 entity.getName(),
                 entity.getDescription()
         );
