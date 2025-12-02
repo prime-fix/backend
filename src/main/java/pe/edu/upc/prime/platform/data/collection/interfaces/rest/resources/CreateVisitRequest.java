@@ -33,7 +33,7 @@ public record CreateVisitRequest(
         String failure,
 
         @NotNull
-        @JsonProperty("timeVisit")
+        @JsonProperty("time_visit")
         LocalDateTime timeVisit,
 
         @NotNull

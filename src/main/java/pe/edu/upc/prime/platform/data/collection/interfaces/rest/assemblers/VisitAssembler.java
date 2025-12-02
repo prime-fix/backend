@@ -22,7 +22,7 @@ public class VisitAssembler {
 
     public static VisitResponse toResponseFromEntity(Visit visit) {
         return new VisitResponse(
-                visit.getId().toString(),
+                visit.getId(),
                 visit.getFailure(),
                 visit.getVehicleId().vehicleId(),
                 visit.getTimeVisit(),
