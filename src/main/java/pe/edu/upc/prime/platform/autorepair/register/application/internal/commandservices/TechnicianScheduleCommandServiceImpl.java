@@ -43,21 +43,21 @@ public class TechnicianScheduleCommandServiceImpl implements TechnicianScheduleC
      * @return the ID of the newly created Technician Schedule
      */
     @Override
-    public String handle(CreateTechnicianScheduleCommand command) {
+    public Long handle(CreateTechnicianScheduleCommand command) {
         try {
             // Verify that the Technician exists
-            Optional<Technician> technicianOpt = technicianRepository.findById(command.technician().getId().toString());
+            Optional<Technician> technicianOpt = technicianRepository.findById(command.technician().getId());
             if (technicianOpt.isEmpty()) {
-                throw new NotFoundIdException(Technician.class, command.technician().getId().toString());
+                throw new NotFoundIdException(Technician.class, command.technician().getId());
             }
 
             Technician technician = technicianOpt.get();
 
-            // Create and save the schedule
+            // Create and save the schedulE
             var technicianSchedule = new TechnicianSchedule(command, technician);
             technicianScheduleRepository.save(technicianSchedule);
 
-            return technicianSchedule.getId().toString();
+            return technicianSchedule.getId();
 
         } catch (Exception e) {
             throw new PersistenceException(
@@ -73,13 +73,13 @@ public class TechnicianScheduleCommandServiceImpl implements TechnicianScheduleC
      */
     @Override
     public Optional<TechnicianSchedule> handle(UpdateTechnicianScheduleCommand command) {
-        var idSchedule = command.idTechnicianSchedule();
+        var technicianScheduleId = command.technicianScheduleId();
 
-        if (!technicianScheduleRepository.existsById(idSchedule)) {
-            throw new NotFoundIdException(TechnicianSchedule.class, idSchedule);
+        if (!technicianScheduleRepository.existsById(technicianScheduleId)) {
+            throw new NotFoundIdException(TechnicianSchedule.class, technicianScheduleId);
         }
 
-        var scheduleToUpdate = technicianScheduleRepository.findById(idSchedule).get();
+        var scheduleToUpdate = technicianScheduleRepository.findById(technicianScheduleId).get();
         scheduleToUpdate.updateTechnicianSchedule(command);
 
         try {
@@ -98,7 +98,7 @@ public class TechnicianScheduleCommandServiceImpl implements TechnicianScheduleC
      */
     @Override
     public void handle(DeleteTechnicianScheduleCommand command) {
-        var idSchedule = command.idTechnicianSchedule();
+        var idSchedule = command.technicianScheduleId();
 
         if (!technicianScheduleRepository.existsById(idSchedule)) {
             throw new NotFoundIdException(TechnicianSchedule.class, idSchedule);

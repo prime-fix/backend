@@ -17,7 +17,7 @@ import pe.edu.upc.prime.platform.payment.service.domain.model.commands.DeletePay
 import pe.edu.upc.prime.platform.payment.service.domain.model.queries.GetAllPaymentsQuery;
 import pe.edu.upc.prime.platform.payment.service.domain.model.queries.GetPaymentByIdQuery;
 import pe.edu.upc.prime.platform.payment.service.domain.model.queries.GetPaymentByIdUserAccountQuery;
-import pe.edu.upc.prime.platform.payment.service.domain.model.valueobjects.IdUserAccount;
+import pe.edu.upc.prime.platform.shared.domain.model.valueobjects.UserAccountId;
 import pe.edu.upc.prime.platform.payment.service.domain.services.PaymentCommandService;
 import pe.edu.upc.prime.platform.payment.service.domain.services.PaymentQueryService;
 import pe.edu.upc.prime.platform.payment.service.interfaces.rest.assemblers.PaymentAssembler;
@@ -29,23 +29,42 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+/**
+ * REST controller for managing payments.
+ */
 @CrossOrigin(origins = "*",
         methods = { RequestMethod.POST, RequestMethod.GET, RequestMethod.PUT, RequestMethod.DELETE })
 @RestController
 @RequestMapping(value = "/api/v1/payments", produces = MediaType.APPLICATION_JSON_VALUE)
 @Tag(name = "Payments", description = "Payment Management Endpoints")
 public class PaymentsController {
-
+    /**
+     * Service for handling payment queries.
+     */
     private final PaymentQueryService paymentQueryService;
+    /**
+     * Service for handling payment commands.
+     */
     private final PaymentCommandService paymentCommandService;
 
+    /**
+     * Constructor for PaymentsController.
+     *
+     * @param paymentQueryService   the payment query service
+     * @param paymentCommandService the payment command service
+     */
     public PaymentsController(PaymentQueryService paymentQueryService,
                               PaymentCommandService paymentCommandService) {
         this.paymentQueryService = paymentQueryService;
         this.paymentCommandService = paymentCommandService;
     }
 
-    // CREATE PAYMENT
+    /**
+     * Create a new payment.
+     *
+     * @param request the create payment request
+     * @return the response entity with the created payment
+     */
     @Operation(summary = "Create a new payment",
             description = "Creates a new payment method for a user",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
@@ -71,7 +90,7 @@ public class PaymentsController {
         var createCommand = PaymentAssembler.toCommandFromRequest(request);
         var paymentId = this.paymentCommandService.handle(createCommand);
 
-        if (Objects.isNull(paymentId) || paymentId.isBlank()) {
+        if (Objects.isNull(paymentId) || paymentId.equals(0L)) {
             return ResponseEntity.badRequest().build();
         }
 
@@ -85,7 +104,12 @@ public class PaymentsController {
         return new ResponseEntity<>(paymentResponse, HttpStatus.CREATED);
     }
 
-    // GET ALL / BY USER ACCOUNT
+    /**
+     * Get all payments, optionally filtered by user account ID.
+     *
+     * @param user_account_id the user account ID to filter payments (optional)
+     * @return the response entity with the list of payments
+     */
     @Operation(summary = "Retrieve all payments",
             description = "Retrieves all payments or filters by user account if provided")
     @ApiResponses(value = {
@@ -96,15 +120,15 @@ public class PaymentsController {
     })
     @GetMapping
     public ResponseEntity<List<PaymentResponse>> getAllPayments(
-            @RequestParam(required = false) String idUserAccount) {
+            @RequestParam(required = false) Long user_account_id) {
 
         List<Payment> payments;
 
-        if (Objects.isNull(idUserAccount)) {
+        if (Objects.isNull(user_account_id)) {
             var getAllPaymentsQuery = new GetAllPaymentsQuery();
             payments = paymentQueryService.handle(getAllPaymentsQuery);
         } else {
-            var getPaymentByIdUserAccountQuery = new GetPaymentByIdUserAccountQuery(new IdUserAccount(idUserAccount));
+            var getPaymentByIdUserAccountQuery = new GetPaymentByIdUserAccountQuery(new UserAccountId(user_account_id));
             payments = paymentQueryService.handle(getPaymentByIdUserAccountQuery);
         }
 
@@ -115,7 +139,12 @@ public class PaymentsController {
         return ResponseEntity.ok(paymentResponses);
     }
 
-    // GET BY ID
+    /**
+     * Get a payment by its ID.
+     *
+     * @param payment_id the payment ID
+     * @return the response entity with the payment
+     */
     @Operation(summary = "Retrieve a payment by its ID",
             description = "Retrieves a payment using its unique ID",
             responses = {
@@ -124,9 +153,9 @@ public class PaymentsController {
                             schema = @Schema(implementation = PaymentResponse.class))),
     })
 
-    @GetMapping("/{id_payment}")
-    public ResponseEntity<PaymentResponse> getPaymentById(@PathVariable String id_payment) {
-        var getPaymentByIdQuery = new GetPaymentByIdQuery(id_payment);
+    @GetMapping("/{payment_id}")
+    public ResponseEntity<PaymentResponse> getPaymentById(@PathVariable Long payment_id) {
+        var getPaymentByIdQuery = new GetPaymentByIdQuery(payment_id);
         var optionalPayment = paymentQueryService.handle(getPaymentByIdQuery);
 
         if (optionalPayment.isEmpty()) {
@@ -137,7 +166,13 @@ public class PaymentsController {
         return ResponseEntity.ok(response);
     }
 
-    // UPDATE
+    /**
+     * Update an existing payment.
+     *
+     * @param payment_id the payment ID
+     * @param request   the update payment request
+     * @return the response entity with the updated payment
+     */
     @Operation(summary = "Update an existing payment",
             description = "Updates an existing payment with the provided data",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
@@ -156,12 +191,12 @@ public class PaymentsController {
                                 schema = @Schema(implementation = RuntimeException.class)))
             }
     )
-    @PutMapping("/{id_payment}")
+    @PutMapping("/{payment_id}")
     public ResponseEntity<PaymentResponse> updatePayment(
-            @PathVariable String id_payment,
+            @PathVariable Long payment_id,
             @Valid @RequestBody UpdatePaymentRequest request) {
 
-        var updatePaymentCommand = PaymentAssembler.toCommandFromRequest(id_payment, request);
+        var updatePaymentCommand = PaymentAssembler.toCommandFromRequest(payment_id, request);
         var optionalPayment = this.paymentCommandService.handle(updatePaymentCommand);
         if (optionalPayment.isEmpty()) {
             return ResponseEntity.badRequest().build();
@@ -171,7 +206,12 @@ public class PaymentsController {
         return ResponseEntity.ok(response);
     }
 
-    // DELETE
+    /**
+     * Delete a payment by its ID.
+     *
+     * @param payment_id the payment ID
+     * @return the response entity indicating the result of the deletion
+     */
     @Operation(summary = "Delete a payment by its ID",
             description = "Deletes a payment using its unique ID",
             responses = {
@@ -182,9 +222,9 @@ public class PaymentsController {
                                 schema = @Schema(implementation = RuntimeException.class)))
             }
     )
-    @DeleteMapping("/{id_payment}")
-    public ResponseEntity<?> deletePayment(@PathVariable String id_payment) {
-        var deletePaymentCommand = new DeletePaymentCommand(id_payment);
+    @DeleteMapping("/{payment_id}")
+    public ResponseEntity<?> deletePayment(@PathVariable Long payment_id) {
+        var deletePaymentCommand = new DeletePaymentCommand(payment_id);
         paymentCommandService.handle(deletePaymentCommand);
         return ResponseEntity.noContent().build();
     }

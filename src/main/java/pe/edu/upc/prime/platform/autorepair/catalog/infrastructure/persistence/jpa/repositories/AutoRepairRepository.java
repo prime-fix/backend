@@ -1,0 +1,12 @@
+package pe.edu.upc.prime.platform.autorepair.catalog.infrastructure.persistence.jpa.repositories;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+import pe.edu.upc.prime.platform.autorepair.catalog.domain.model.aggregates.AutoRepair;
+
+/**
+ * Repository interface for AutoRepair entity
+ */
+@Repository
+public interface AutoRepairRepository extends JpaRepository<AutoRepair, Long> {
+}

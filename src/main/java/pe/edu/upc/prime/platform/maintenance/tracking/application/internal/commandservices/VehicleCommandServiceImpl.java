@@ -2,12 +2,15 @@ package pe.edu.upc.prime.platform.maintenance.tracking.application.internal.comm
 
 import jakarta.persistence.PersistenceException;
 import org.springframework.stereotype.Service;
+import pe.edu.upc.prime.platform.iam.domain.model.valueobjects.Roles;
+import pe.edu.upc.prime.platform.maintenance.tracking.application.internal.outboundservices.acl.ExternalIamServiceFromMaintenanceTracking;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.aggregates.Vehicle;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.commands.CreateVehicleCommand;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.commands.DeleteVehicleCommand;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.commands.UpdateVehicleCommand;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.services.VehicleCommandService;
 import pe.edu.upc.prime.platform.maintenance.tracking.infrastructure.persistence.jpa.repositories.VehicleRepository;
+import pe.edu.upc.prime.platform.shared.domain.exceptions.NotFoundArgumentException;
 import pe.edu.upc.prime.platform.shared.domain.exceptions.NotFoundIdException;
 
 import java.util.Optional;
@@ -23,12 +26,20 @@ public class VehicleCommandServiceImpl implements VehicleCommandService {
     private final VehicleRepository vehicleRepository;
 
     /**
+     * The external IAM service.
+     */
+    private final ExternalIamServiceFromMaintenanceTracking externalIamServiceFromMaintenanceTracking;
+
+    /**
      * Constructor for VehicleCommandServiceImpl.
      *
      * @param vehicleRepository the vehicle repository
+     * @param externalIamServiceFromMaintenanceTracking the external IAM service
      */
-    public VehicleCommandServiceImpl(VehicleRepository vehicleRepository) {
+    public VehicleCommandServiceImpl(VehicleRepository vehicleRepository,
+                                     ExternalIamServiceFromMaintenanceTracking externalIamServiceFromMaintenanceTracking) {
         this.vehicleRepository = vehicleRepository;
+        this.externalIamServiceFromMaintenanceTracking = externalIamServiceFromMaintenanceTracking;
     }
 
     /**
@@ -38,21 +49,30 @@ public class VehicleCommandServiceImpl implements VehicleCommandService {
      * @return the ID of the created vehicle
      */
     @Override
-    public String handle(CreateVehicleCommand command) {
-        /*
-        var idVehicle = command.idVehicle();
+    public Long handle(CreateVehicleCommand command) {
         var vehiclePlate = command.vehicleInformation().vehiclePlate();
 
-        if (vehicleRepository.existsById(idVehicle)) {
-            throw new IllegalArgumentException("[VehicleCommandServiceImpl] Vehicle with ID "
-                    + idVehicle + " already exists");
-        }
-
+        // Validate if vehicle plate already exists
         if (vehicleRepository.existsByVehicleInformation_VehiclePlate(vehiclePlate)) {
             throw new IllegalArgumentException("[VehicleCommandServiceImpl] Vehicle with the vehicle plate "
                     + vehiclePlate + " already exists");
         }
-        */
+
+        // Validate if user ID exists in external IAM service
+        if (!this.externalIamServiceFromMaintenanceTracking.existsUserById(command.userId().userId())) {
+            throw new NotFoundArgumentException(
+                    String.format("[VehicleCommandServiceImpl User ID: %s not found in the external IAM service",
+                            command.userId().userId()));
+        }
+
+        // Validate if user has an invalid role to own a vehicle
+        if (this.externalIamServiceFromMaintenanceTracking.getRoleIdByUserId(command.userId().userId()) == Roles.ROLE_AUTO_REPAIR) {
+            throw new IllegalArgumentException(
+                    String.format("[VehicleCommandServiceImpl] User ID: %s has an invalid role to own a vehicle",
+                            command.userId().userId()));
+        }
+
+        // Create and save the new vehicle
         var vehicle = new Vehicle(command);
         try {
             this.vehicleRepository.save(vehicle);
@@ -60,7 +80,7 @@ public class VehicleCommandServiceImpl implements VehicleCommandService {
             throw new PersistenceException("[VehicleCommandServiceImpl] Error while saving vehicle: "
                     + e.getMessage());
         }
-        return vehicle.getId().toString();
+        return vehicle.getId();
     }
 
     /**
@@ -71,18 +91,36 @@ public class VehicleCommandServiceImpl implements VehicleCommandService {
      */
     @Override
     public Optional<Vehicle> handle(UpdateVehicleCommand command) {
-        var idVehicle = command.idVehicle();
+        var vehicleId = command.vehicleId();
         var vehiclePlate = command.vehicleInformation().vehiclePlate();
 
-        if (!this.vehicleRepository.existsById(Long.valueOf(idVehicle))) {
-            throw new NotFoundIdException(Vehicle.class, idVehicle);
+        // Validate if vehicle ID exists
+        if (!this.vehicleRepository.existsById(vehicleId)) {
+            throw new NotFoundIdException(Vehicle.class, vehicleId);
         }
-        if (this.vehicleRepository.existsByVehicleInformation_VehiclePlateAndIdIsNot(vehiclePlate, Long.valueOf(idVehicle))) {
+
+        // Validate if another vehicle with the same vehicle plate exists
+        if (this.vehicleRepository.existsByVehicleInformation_VehiclePlateAndIdIsNot(vehiclePlate, vehicleId)) {
             throw new IllegalArgumentException("[VehicleCommandServiceImpl] Another vehicle with the vehicle plate "
                     + vehiclePlate + " already exists");
         }
 
-        var vehicleToUpdate = this.vehicleRepository.findById(Long.valueOf(idVehicle)).get();
+        // Validate if user ID exists in external IAM service
+        if (!this.externalIamServiceFromMaintenanceTracking.existsUserById(command.userId().userId())) {
+            throw new NotFoundArgumentException(
+                    String.format("[VehicleCommandServiceImpl User ID: %s not found in the external IAM service.",
+                            command.userId().userId()));
+        }
+
+        // Validate if user has an invalid role to own a vehicle
+        if (this.externalIamServiceFromMaintenanceTracking.getRoleIdByUserId(command.userId().userId()) == Roles.ROLE_AUTO_REPAIR) {
+            throw new IllegalArgumentException(
+                    String.format("[VehicleCommandServiceImpl] User ID: %s has an invalid role to own a vehicle",
+                            command.userId().userId()));
+        }
+
+        // Update and save the vehicle
+        var vehicleToUpdate = this.vehicleRepository.findById(vehicleId).get();
         vehicleToUpdate.updateVehicle(command);
 
         try {
@@ -101,12 +139,14 @@ public class VehicleCommandServiceImpl implements VehicleCommandService {
      */
     @Override
     public void handle(DeleteVehicleCommand command) {
-        if (!this.vehicleRepository.existsById(Long.valueOf(command.idVehicle()))) {
-            throw new NotFoundIdException(Vehicle.class, command.idVehicle());
+        // Validate if vehicle ID exists
+        if (!this.vehicleRepository.existsById(command.vehicleId())) {
+            throw new NotFoundIdException(Vehicle.class, command.vehicleId());
         }
 
+        // Delete the vehicle
         try {
-            this.vehicleRepository.deleteById(Long.valueOf(command.idVehicle()));
+            this.vehicleRepository.deleteById(command.vehicleId());
         } catch (Exception e) {
             throw new PersistenceException("[VehicleCommandServiceImpl] Error while deleting vehicle: "
                     + e.getMessage());

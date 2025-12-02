@@ -2,7 +2,7 @@ package pe.edu.upc.prime.platform.iam.application.internal.commandservices;
 
 import jakarta.persistence.PersistenceException;
 import org.springframework.stereotype.Service;
-import pe.edu.upc.prime.platform.iam.domain.model.aggregates.Membership;
+import pe.edu.upc.prime.platform.iam.domain.model.entities.Membership;
 import pe.edu.upc.prime.platform.iam.domain.model.commands.CreateMembershipCommand;
 import pe.edu.upc.prime.platform.iam.domain.model.commands.DeleteMembershipCommand;
 import pe.edu.upc.prime.platform.iam.domain.model.commands.UpdateMembershipCommand;
@@ -38,38 +38,15 @@ public class MembershipCommandServiceImpl implements MembershipCommandService {
      * @return the ID of the newly created membership
      */
     @Override
-    public String handle(CreateMembershipCommand command) {
-       /* var membershipId = command.idMembership();
-        var membershipDescription = command.membershipDescription();
-
-        if (this.membershipRepository.existsById(membershipId)) {
-            throw new IllegalArgumentException("[MembershipCommandServiceImpl] Membership with the same id "
-                    + membershipId + " already exists.");
-        }
-
-        if (this.membershipRepository.existsByMembershipDescription(membershipDescription)) {
-            throw new IllegalArgumentException("[MembershipCommandServiceImpl] Membership with the same description " +
-                    membershipDescription.description() + " already exists.");
-        }
-
-        var membership = new Membership(command);
-        try {
-            this.membershipRepository.save(membership);
-        } catch (Exception e) {
-            throw new PersistenceException("[MembershipCommandServiceImpl] Error while saving membership: "
-                    + e.getMessage());
-        }
-        return membership.getIdMembership();
-    */
-
+    public Long handle(CreateMembershipCommand command) {
 
         var membership = new Membership(command);
         try{
             this.membershipRepository.save(membership);
+            return membership.getId();
         } catch (Exception e){
             throw new IllegalStateException(e);
         }
-        return membership.getId().toString();
     }
 
 
@@ -81,16 +58,10 @@ public class MembershipCommandServiceImpl implements MembershipCommandService {
      */
     @Override
     public Optional<Membership> handle(UpdateMembershipCommand command) {
-        var membershipId = command.idMembership();
-        var membershipDescription = command.membershipDescription();
+        var membershipId = command.membershipId();
 
         if (!this.membershipRepository.existsById(membershipId)) {
             throw new NotFoundIdException(Membership.class, membershipId);
-        }
-
-        if (this.membershipRepository.existsByMembershipDescriptionAndIdIsNot(membershipDescription, Long.valueOf(membershipId))) {
-            throw new IllegalArgumentException("[MembershipCommandServiceImpl] Membership with the same description " +
-                    membershipDescription.description() + " already exists.");
         }
 
         var membershipToUpdate = this.membershipRepository.findById(membershipId).get();
@@ -112,12 +83,12 @@ public class MembershipCommandServiceImpl implements MembershipCommandService {
      */
     @Override
     public void handle(DeleteMembershipCommand command) {
-        if (!this.membershipRepository.existsById(command.idMembership())) {
-            throw new NotFoundIdException(Membership.class, command.idMembership());
+        if (!this.membershipRepository.existsById(command.membershipId())) {
+            throw new NotFoundIdException(Membership.class, command.membershipId());
         }
 
         try {
-            this.membershipRepository.deleteById(command.idMembership());
+            this.membershipRepository.deleteById(command.membershipId());
         } catch (Exception e) {
             throw new PersistenceException("[MembershipCommandServiceImpl] Error while deleting membership: "
                     + e.getMessage());

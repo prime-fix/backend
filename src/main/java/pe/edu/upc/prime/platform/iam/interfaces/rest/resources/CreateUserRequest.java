@@ -12,7 +12,7 @@ import jakarta.validation.constraints.Size;
  * @param lastName last name of the user
  * @param dni document number of the user
  * @param phoneNumber phone number of the user
- * @param idLocation identifier of the location
+ * @param locationId identifier of the location
  */
 public record CreateUserRequest(
 
@@ -36,5 +36,5 @@ public record CreateUserRequest(
 
         @JsonProperty("id_location")
         @NotNull @NotBlank
-        String idLocation) {
+        Long locationId) {
 }

@@ -3,11 +3,13 @@ package pe.edu.upc.prime.platform.maintenance.tracking.application.internal.comm
 import jakarta.persistence.PersistenceException;
 import org.springframework.stereotype.Service;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.aggregates.Notification;
+import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.aggregates.Vehicle;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.commands.CreateNotificationCommand;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.commands.DeleteNotificationCommand;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.commands.UpdateNotificationCommand;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.services.NotificationCommandService;
 import pe.edu.upc.prime.platform.maintenance.tracking.infrastructure.persistence.jpa.repositories.NotificationRepository;
+import pe.edu.upc.prime.platform.maintenance.tracking.infrastructure.persistence.jpa.repositories.VehicleRepository;
 import pe.edu.upc.prime.platform.shared.domain.exceptions.NotFoundIdException;
 
 import java.util.Optional;
@@ -23,12 +25,20 @@ public class NotificationCommandServiceImpl implements NotificationCommandServic
     private final NotificationRepository notificationRepository;
 
     /**
+     * Repository for managing Vehicle entities.
+     */
+    private final VehicleRepository vehicleRepository;
+
+    /**
      * Constructor for NotificationCommandServiceImpl.
      *
      * @param notificationRepository The repository for managing Notification entities.
+     * @param vehicleRepository The repository for managing Vehicle entities.
      */
-    public NotificationCommandServiceImpl(NotificationRepository notificationRepository) {
+    public NotificationCommandServiceImpl(NotificationRepository notificationRepository,
+                                          VehicleRepository vehicleRepository) {
         this.notificationRepository = notificationRepository;
+        this.vehicleRepository = vehicleRepository;
     }
 
     /**
@@ -38,23 +48,19 @@ public class NotificationCommandServiceImpl implements NotificationCommandServic
      * @return the ID of the created notification
      */
     @Override
-    public String handle(CreateNotificationCommand command) {
-        /*
-        var idNotification = command.idNotification();
+    public Long handle(CreateNotificationCommand command) {
+        // Fetch the associated vehicle
+        var vehicle = this.vehicleRepository.findById(command.vehicleId())
+                .orElseThrow(() -> new NotFoundIdException(Vehicle.class, command.vehicleId()));
 
-        if (notificationRepository.existsById(idNotification)) {
-            throw new IllegalArgumentException("[NotificationCommandServiceImpl] Notification with ID "
-                    + idNotification + " already exists");
-        }
-        */
-        var notification = new Notification(command);
+        var notification = new Notification(command, vehicle);
         try {
             this.notificationRepository.save(notification);
         } catch (Exception e) {
             throw new PersistenceException("[NotificationCommandServiceImpl] Error while saving notification: "
                     + e.getMessage());
         }
-        return notification.getId().toString();
+        return notification.getId();
     }
 
     /**
@@ -65,14 +71,18 @@ public class NotificationCommandServiceImpl implements NotificationCommandServic
      */
     @Override
     public Optional<Notification> handle(UpdateNotificationCommand command) {
-        var idNotification = command.idNotification();
+        // Fetch the associated vehicle
+        var vehicle = this.vehicleRepository.findById(command.vehicleId())
+                .orElseThrow(() -> new NotFoundIdException(Vehicle.class, command.vehicleId()));
 
-        if (!this.notificationRepository.existsById(Long.valueOf(idNotification))) {
-            throw new NotFoundIdException(Notification.class, idNotification);
+        var notificationId = command.notificationId();
+
+        if (!this.notificationRepository.existsById(notificationId)) {
+            throw new NotFoundIdException(Notification.class, notificationId);
         }
 
-        var notificationToUpdate = this.notificationRepository.findById(Long.valueOf(idNotification)).get();
-        notificationToUpdate.updateNotification(command);
+        var notificationToUpdate = this.notificationRepository.findById(notificationId).get();
+        notificationToUpdate.updateNotification(command, vehicle);
 
         try {
             this.notificationRepository.save(notificationToUpdate);
@@ -90,12 +100,12 @@ public class NotificationCommandServiceImpl implements NotificationCommandServic
      */
     @Override
     public void handle(DeleteNotificationCommand command) {
-        if (!this.notificationRepository.existsById(Long.valueOf(command.idNotification()))) {
-            throw new NotFoundIdException(Notification.class, command.idNotification());
+        if (!this.notificationRepository.existsById(command.notificationId())) {
+            throw new NotFoundIdException(Notification.class, command.notificationId());
         }
 
         try {
-            this.notificationRepository.deleteById(Long.valueOf(command.idNotification()));
+            this.notificationRepository.deleteById(command.notificationId());
         } catch (Exception e) {
             throw new PersistenceException("[NotificationCommandServiceImpl] Error while deleting notification: "
                     + e.getMessage());

@@ -1,13 +1,8 @@
 package pe.edu.upc.prime.platform.data.collection.interfaces.rest.resources;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import pe.edu.upc.prime.platform.data.collection.domain.model.valueobjects.AutoRepairId;
-import pe.edu.upc.prime.platform.data.collection.domain.model.valueobjects.ServiceId;
-import pe.edu.upc.prime.platform.data.collection.domain.model.valueobjects.VehicleId;
 
 import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.util.Date;
 
 /**
  * VisitResponse record to represent visit data in API responses.

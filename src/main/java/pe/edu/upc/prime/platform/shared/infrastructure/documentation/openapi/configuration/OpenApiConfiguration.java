@@ -12,43 +12,47 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.List;
-
 /**
  * Configuration class for OpenAPI documentation.
  */
 @Configuration
 public class OpenApiConfiguration {
 
+    // Inject the server URL from application properties
     @Value("${swagger.server.url}")
     private String swaggerServerUrl;
 
     /**
-     * Configures the OpenAPI documentation for the Prime Fix Platform API.
+     * Creates the OpenAPI bean for Prime Fix Platform.
      *
      * @return the OpenAPI configuration
      */
     @Bean
-    public OpenAPI primePlatformOpenApi() {
+    public OpenAPI primeFixPlatformOpenApi() {
+        // Define the security scheme name
         final String securitySchemeName = "bearerAuth";
 
+        // Build and return the OpenAPI configuration
         return new OpenAPI()
-                .servers(List.of(
-                        new Server()
-                                .url(swaggerServerUrl)
-                                .description("Active server environment for Prime Fix Platform")
-                ))
+                // Configure the server
+                .addServersItem(new Server()
+                        .url(swaggerServerUrl)
+                        .description("Prime Fix Platform server"))
+                // Set API information
                 .info(new Info()
                         .title("Prime Fix Platform API")
-                        .description("REST API documentation for Prime Fix Platform.")
+                        .description("Prime Fix Platform application REST API documentation.")
                         .version("v1.0.0")
                         .license(new License()
                                 .name("Apache 2.0")
                                 .url("https://springdoc.org")))
+                // Set external documentation
                 .externalDocs(new ExternalDocumentation()
-                        .description("Official repository")
+                        .description("Prime Fix Platform Documentation")
                         .url("https://github.com/prime-fix/backend"))
+                // Configure security requirements
                 .addSecurityItem(new SecurityRequirement().addList(securitySchemeName))
+                // Define security schemes
                 .components(new Components()
                         .addSecuritySchemes(securitySchemeName,
                                 new SecurityScheme()

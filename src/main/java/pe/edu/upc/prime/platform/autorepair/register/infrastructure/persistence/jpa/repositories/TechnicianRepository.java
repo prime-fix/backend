@@ -3,7 +3,7 @@ package pe.edu.upc.prime.platform.autorepair.register.infrastructure.persistence
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import pe.edu.upc.prime.platform.autorepair.register.domain.model.aggregates.Technician;
-import pe.edu.upc.prime.platform.autorepair.register.domain.model.valueobjects.IdAutoRepair;
+import pe.edu.upc.prime.platform.shared.domain.model.valueobjects.AutoRepairId;
 
 import java.util.List;
 
@@ -14,15 +14,15 @@ import java.util.List;
  * and custom query methods for the Technician entity.</p>
  */
 @Repository
-public interface TechnicianRepository extends JpaRepository<Technician, String> {
+public interface TechnicianRepository extends JpaRepository<Technician, Long> {
 
     /**
-     * Custom query method to find all technicians by a specific AutoRepair ID.
+     * Finds a list of technicians associated with a specific auto repair shop.
      *
-     * @param idAutoRepair the ID of the AutoRepair
-     * @return a list of technicians working in the specified AutoRepair
+     * @param autoRepairId the ID of the auto repair shop
+     * @return a list of technicians linked to the given auto repair shop ID
      */
-    List<Technician> findByIdAutoRepair(IdAutoRepair idAutoRepair);
+    List<Technician> findByAutoRepairId(AutoRepairId autoRepairId);
 
     /**
      * Custom query method to check if a technician exists by their name and last name.

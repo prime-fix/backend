@@ -23,22 +23,42 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+/**
+ * REST controller for managing memberships.
+ */
 @CrossOrigin(origins = "*", methods = { RequestMethod.POST, RequestMethod.GET,
         RequestMethod.PUT, RequestMethod.DELETE })
 @RestController
 @RequestMapping(value = "/api/v1/memberships", produces = MediaType.APPLICATION_JSON_VALUE)
 @Tag(name = "Memberships", description = "Membership Management Endpoints")
 public class MembershipController {
+    /**
+     * Service for handling membership queries.
+     */
     private final MembershipQueryService membershipQueryService;
-
+    /**
+     * Service for handling membership commands.
+     */
     private final MembershipCommandService membershipCommandService;
 
+    /**
+     * Constructor for MembershipController.
+     *
+     * @param membershipQueryService the membership query service
+     * @param membershipCommandService the membership command service
+     */
     public MembershipController(MembershipQueryService membershipQueryService,
                                 MembershipCommandService membershipCommandService) {
         this.membershipQueryService = membershipQueryService;
         this.membershipCommandService = membershipCommandService;
     }
 
+    /**
+     * Create a new membership.
+     *
+     * @param request the membership creation request
+     * @return ResponseEntity containing the created membership response
+     */
     @Operation(summary = "Create a new membership",
             description = "Creates a new membership with the provided data",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
@@ -62,7 +82,7 @@ public class MembershipController {
         var createMembershipCommand = MembershipAssembler.toCommandFromRequest(request);
         var membershipId = this.membershipCommandService.handle(createMembershipCommand);
 
-        if (Objects.isNull(membershipId) || membershipId.isBlank()) {
+        if (Objects.isNull(membershipId) || membershipId.equals(0L)) {
             return ResponseEntity.badRequest().build();
         }
 
@@ -76,6 +96,11 @@ public class MembershipController {
         return new ResponseEntity<>(membershipResponse, HttpStatus.CREATED);
     }
 
+    /**
+     * Retrieve all memberships.
+     *
+     * @return ResponseEntity containing the list of all membership responses
+     */
     @Operation(summary = "Retrieve all memberships",
             description = "Retrieves a list of all memberships",
             responses = {
@@ -94,6 +119,12 @@ public class MembershipController {
         return ResponseEntity.ok(membershipResponses);
     }
 
+    /**
+     * Retrieve a membership by its ID.
+     *
+     * @param membership_id the ID of the membership to retrieve
+     * @return ResponseEntity containing the membership response
+     */
     @Operation(summary = "Retrieve a membership by its ID",
             description = "Retrieves a membership using its unique ID",
             responses = {
@@ -101,9 +132,9 @@ public class MembershipController {
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = MembershipResponse.class))),
             })
-    @GetMapping("/{id_membership}")
-    public ResponseEntity<MembershipResponse> getMembershipById(@PathVariable String id_membership) {
-        var getMembershipByIdQuery = new GetMembershipByIdQuery(id_membership);
+    @GetMapping("/{membership_id}")
+    public ResponseEntity<MembershipResponse> getMembershipById(@PathVariable Long membership_id) {
+        var getMembershipByIdQuery = new GetMembershipByIdQuery(membership_id);
         var optionalMembership = this.membershipQueryService.handle(getMembershipByIdQuery);
         if (optionalMembership.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -112,6 +143,13 @@ public class MembershipController {
         return ResponseEntity.ok(membershipResponse);
     }
 
+    /**
+     * Update an existing membership.
+     *
+     * @param membership_id the ID of the membership to update
+     * @param request the membership update request
+     * @return ResponseEntity containing the updated membership response
+     */
     @Operation(summary = "Update an existing membership",
             description = "Update an existing membership with the provided data",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
@@ -130,10 +168,10 @@ public class MembershipController {
                                     schema = @Schema(implementation = RuntimeException.class)))
             }
     )
-    @PutMapping("/{id_membership}")
-    public ResponseEntity<MembershipResponse> updateMembership(@PathVariable String id_membership,
+    @PutMapping("/{membership_id}")
+    public ResponseEntity<MembershipResponse> updateMembership(@PathVariable Long membership_id,
                                                                @RequestBody UpdateMembershipRequest request) {
-        var updateMembershipCommand = MembershipAssembler.toCommandFromRequest(id_membership, request);
+        var updateMembershipCommand = MembershipAssembler.toCommandFromRequest(membership_id, request);
         var optionalMembership = this.membershipCommandService.handle(updateMembershipCommand);
         if (optionalMembership.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -142,6 +180,12 @@ public class MembershipController {
         return ResponseEntity.ok(membershipResponse);
     }
 
+    /**
+     * Delete a membership by its ID.
+     *
+     * @param membership_id the ID of the membership to delete
+     * @return ResponseEntity with no content
+     */
     @Operation(summary = "Delete a membership by its ID",
             description = "Deletes a membership using its unique ID",
             responses = {
@@ -152,9 +196,9 @@ public class MembershipController {
                                     schema = @Schema(implementation = RuntimeException.class)))
             }
     )
-    @DeleteMapping("/{id_membership}")
-    public ResponseEntity<?> deleteMembership(@PathVariable String id_membership) {
-        var deleteMembershipCommand = new DeleteMembershipCommand(id_membership);
+    @DeleteMapping("/{membership_id}")
+    public ResponseEntity<?> deleteMembership(@PathVariable Long membership_id) {
+        var deleteMembershipCommand = new DeleteMembershipCommand(membership_id);
         this.membershipCommandService.handle(deleteMembershipCommand);
         return ResponseEntity.noContent().build();
     }

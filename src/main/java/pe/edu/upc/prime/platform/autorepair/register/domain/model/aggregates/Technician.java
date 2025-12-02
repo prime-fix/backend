@@ -5,8 +5,10 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import pe.edu.upc.prime.platform.autorepair.register.domain.model.commands.CreateTechnicianCommand;
 import pe.edu.upc.prime.platform.autorepair.register.domain.model.commands.UpdateTechnicianCommand;
-import pe.edu.upc.prime.platform.autorepair.register.domain.model.valueobjects.IdAutoRepair;
+import pe.edu.upc.prime.platform.autorepair.register.domain.model.events.TechnicianDeletedEvent;
+import pe.edu.upc.prime.platform.autorepair.register.domain.model.events.TechnicianRegisteredEvent;
 import pe.edu.upc.prime.platform.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
+import pe.edu.upc.prime.platform.shared.domain.model.valueobjects.AutoRepairId;
 
 /**
  * Aggregate root representing a Technician within the AutoRepair context.
@@ -27,11 +29,11 @@ public class Technician extends AuditableAbstractAggregateRoot<Technician> {
     @Getter
     @Embedded
     @AttributeOverride(
-            name = "idAutoRepair",
-            column = @Column(name = "id_auto_repair", nullable = false)
+            name = "AutoRepairId",
+            column = @Column(name = "auto_repair_id", nullable = false)
     )
     @JsonProperty("id_auto_repair")
-    private IdAutoRepair idAutoRepair;
+    private AutoRepairId autoRepairId;
 
     /**
      * Default constructor for JPA.
@@ -46,7 +48,8 @@ public class Technician extends AuditableAbstractAggregateRoot<Technician> {
     public Technician(CreateTechnicianCommand command) {
         this.name = command.name();
         this.lastName = command.lastName();
-        this.idAutoRepair = command.idAutoRepair();
+        this.autoRepairId = command.autoRepairId();
+        this.registerEvent(new TechnicianRegisteredEvent(this, command.autoRepairId().value()));
     }
 
     /**
@@ -60,11 +63,9 @@ public class Technician extends AuditableAbstractAggregateRoot<Technician> {
     }
 
     /**
-     * Returns the raw IdAutoRepair value as a Long.
-     *
-     * @return the numeric value of IdAutoRepair
+     * Registers a TechnicianDeletedDomainEvent when the technician is deleted.
      */
-    public Long getIdAutoRepairValue() {
-        return idAutoRepair != null ? idAutoRepair.getIdAutoRepair() : null;
+    public void registerDeletedEvent() {
+        this.registerEvent(new TechnicianDeletedEvent(this, this.autoRepairId.value()));
     }
 }

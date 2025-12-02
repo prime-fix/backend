@@ -27,7 +27,7 @@ import pe.edu.upc.prime.platform.data.collection.interfaces.rest.resources.Visit
 import pe.edu.upc.prime.platform.shared.interfaces.rest.resources.BadRequestResponse;
 import pe.edu.upc.prime.platform.shared.interfaces.rest.resources.InternalServerErrorResponse;
 import pe.edu.upc.prime.platform.shared.interfaces.rest.resources.NotFoundResponse;
-import pe.edu.upc.prime.platform.workshopCatalog.interfaces.rest.controllers.ServicesController;
+import pe.edu.upc.prime.platform.autorepair.catalog.interfaces.rest.controllers.ServicesController;
 
 import java.util.List;
 import java.util.Objects;
@@ -245,7 +245,7 @@ public class VisitsController {
             )),
     })
     @DeleteMapping("/{visitId}")
-    public ResponseEntity<?> deleteVisit(@PathVariable String visitId){
+    public ResponseEntity<?> deleteVisit(@PathVariable Long visitId){
         var deleteVisitCommand = new DeleteVisitCommand(visitId);
         this.visitCommandService.handle(deleteVisitCommand);
         return ResponseEntity.noContent().build();

@@ -1,8 +1,8 @@
 package pe.edu.upc.prime.platform.iam.domain.services;
 
-import pe.edu.upc.prime.platform.iam.domain.model.aggregates.Role;
+import pe.edu.upc.prime.platform.iam.domain.model.entities.Role;
 import pe.edu.upc.prime.platform.iam.domain.model.queries.GetAllRolesQuery;
-import pe.edu.upc.prime.platform.iam.domain.model.queries.GetRoleByIdQuery;
+import pe.edu.upc.prime.platform.iam.domain.model.queries.GetRoleByNameQuery;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,10 +20,10 @@ public interface RoleQueryService {
     List<Role> handle(GetAllRolesQuery query);
 
     /**
-     * Handle the query to get a role by its ID.
+     * Handle the query to get a role by its name.
      *
-     * @param query the query containing the role ID
-     * @return an optional role matching the ID
+     * @param query the query to get a role by name
+     * @return an Optional containing the Role if found, or empty if not found
      */
-    Optional<Role> handle(GetRoleByIdQuery query);
+    Optional<Role> handle(GetRoleByNameQuery query);
 }

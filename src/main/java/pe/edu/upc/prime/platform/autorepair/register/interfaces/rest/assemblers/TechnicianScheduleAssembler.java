@@ -34,11 +34,11 @@ public class TechnicianScheduleAssembler {
      * Converts an UpdateTechnicianScheduleRequest into an UpdateTechnicianScheduleCommand.
      */
     public static UpdateTechnicianScheduleCommand toCommandFromRequest(
-            String idTechnicianSchedule,
+            Long technicianScheduleId,
             UpdateTechnicianScheduleRequest request) {
 
         return new UpdateTechnicianScheduleCommand(
-                idTechnicianSchedule,
+                technicianScheduleId,
                 request.dayOfWeek(),
                 request.startTime(),
                 request.endTime(),

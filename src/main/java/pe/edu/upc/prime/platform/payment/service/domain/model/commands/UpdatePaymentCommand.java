@@ -1,6 +1,7 @@
 package pe.edu.upc.prime.platform.payment.service.domain.model.commands;
 
 import pe.edu.upc.prime.platform.payment.service.domain.model.valueobjects.*;
+import pe.edu.upc.prime.platform.shared.domain.model.valueobjects.UserAccountId;
 
 import java.util.Objects;
 
@@ -13,27 +14,29 @@ import java.util.Objects;
  * @param month The new expiration month.
  * @param year The new expiration year.
  * @param ccv The new CCV code.
- * @param idUserAccount The user account associated with this payment.
+ * @param userAccountId The user account associated with this payment.
  */
 
 public record UpdatePaymentCommand(
-        String paymentId,
+        Long paymentId,
         String cardNumber,
         CardType cardType,
-        int month,
-        int year,
-        String ccv,
-        IdUserAccount idUserAccount
+        Integer month,
+        Integer year,
+        Integer ccv,
+        UserAccountId userAccountId
 ) {
     public UpdatePaymentCommand {
-        Objects.requireNonNull(paymentId, "[UpdatePaymentCommand] paymentId must not be null");
-        Objects.requireNonNull(cardNumber, "[UpdatePaymentCommand] cardNumber must not be null");
-        Objects.requireNonNull(cardType, "[UpdatePaymentCommand] cardType must not be null");
+        Objects.requireNonNull(paymentId, "[UpdatePaymentCommand] payment id must not be null");
+        Objects.requireNonNull(cardNumber, "[UpdatePaymentCommand] card number must not be null");
+        Objects.requireNonNull(cardType, "[UpdatePaymentCommand] card type must not be null");
+        Objects.requireNonNull(month, "[UpdatePaymentCommand] month must not be null");
+        Objects.requireNonNull(year, "[UpdatePaymentCommand] year must not be null");
         Objects.requireNonNull(ccv, "[UpdatePaymentCommand] ccv must not be null");
-        Objects.requireNonNull(idUserAccount, "[UpdatePaymentCommand] idUserAccount must not be null");
+        Objects.requireNonNull(userAccountId, "[UpdatePaymentCommand] user account id must not be null");
 
-        if (paymentId.isBlank())
-            throw new IllegalArgumentException("[UpdatePaymentCommand] paymentId cannot be blank");
+        if (paymentId <= 0)
+            throw new IllegalArgumentException("[UpdatePaymentCommand] paymentId cannot be less than or equal to zero");
 
         if (cardNumber.isBlank())
             throw new IllegalArgumentException("[UpdatePaymentCommand] cardNumber cannot be blank");
@@ -45,7 +48,7 @@ public record UpdatePaymentCommand(
         if (year < 2000)
             throw new IllegalArgumentException("[UpdatePaymentCommand] year must be greater than 2000");
 
-        if (!ccv.matches("^\\d{3}$"))
-            throw new IllegalArgumentException("[UpdatePaymentCommand] ccv must have exactly 3 digits");
+        if (ccv < 100 || ccv > 9999)
+            throw new IllegalArgumentException("[UpdatePaymentCommand] ccv must be between 100 and 9999");
     }
 }

@@ -6,6 +6,9 @@ import pe.edu.upc.prime.platform.payment.service.domain.model.queries.*;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Service interface for handling rating-related queries.
+ */
 public interface RatingQueryService {
     /**
      * Retrieves all ratings.

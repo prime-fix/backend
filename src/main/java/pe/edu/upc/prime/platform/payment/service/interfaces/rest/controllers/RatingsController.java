@@ -24,23 +24,42 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+/**
+ * REST controller for managing ratings related to auto repairs.
+ */
 @CrossOrigin(origins = "*",
         methods = { RequestMethod.POST, RequestMethod.GET, RequestMethod.PUT, RequestMethod.DELETE })
 @RestController
 @RequestMapping(value = "/api/v1/ratings", produces = MediaType.APPLICATION_JSON_VALUE)
 @Tag(name = "Ratings", description = "Ratings Management Endpoints")
 public class RatingsController {
-
+    /**
+     * Service for handling rating queries.
+     */
     private final RatingQueryService ratingQueryService;
+    /**
+     * Service for handling rating commands.
+     */
     private final RatingCommandService ratingCommandService;
 
+    /**
+     * Constructor for RatingsController.
+     *
+     * @param ratingQueryService   the rating query service
+     * @param ratingCommandService the rating command service
+     */
     public RatingsController(RatingQueryService ratingQueryService,
                              RatingCommandService ratingCommandService) {
         this.ratingQueryService = ratingQueryService;
         this.ratingCommandService = ratingCommandService;
     }
 
-    // CREATE
+    /**
+     * Create a new rating.
+     *
+     * @param request the create rating request
+     * @return the response entity with the created rating
+     */
     @Operation(summary = "Create a new rating",
             description = "Creates a new rating for an auto repair",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
@@ -59,7 +78,6 @@ public class RatingsController {
                                     schema = @Schema(implementation = RuntimeException.class)))
             }
     )
-
     @PostMapping
     public ResponseEntity<RatingResponse> createRating(
             @Valid @RequestBody CreateRatingRequest request) {
@@ -67,7 +85,7 @@ public class RatingsController {
         var createCommand = RatingAssembler.toCommandFromRequest(request);
         var ratingId = this.ratingCommandService.handle(createCommand);
 
-        if (Objects.isNull(ratingId) || ratingId.isBlank()) {
+        if (Objects.isNull(ratingId) || ratingId.equals(0L)) {
             return ResponseEntity.badRequest().build();
         }
 
@@ -82,7 +100,11 @@ public class RatingsController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    // GET ALL / FILTER
+    /**
+     * Get all ratings or filter by auto repair.
+     *
+     * @return the response entity with the list of ratings
+     */
     @Operation(summary = "Retrieve all ratings",
             description = "Retrieves all ratings or filters by auto repair if provided",
             responses = {
@@ -103,7 +125,12 @@ public class RatingsController {
         return ResponseEntity.ok(responses);
     }
 
-    // GET BY ID
+    /**
+     * Get a rating by its ID.
+     *
+     * @param rating_id the rating ID
+     * @return the response entity with the rating
+     */
     @Operation(summary = "Retrieve a rating by its ID",
             description = "Retrieves a rating using its unique ID",
             responses = {
@@ -111,9 +138,9 @@ public class RatingsController {
                         content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                                 schema = @Schema(implementation = RatingResponse.class))),
     })
-    @GetMapping("/{id_rating}")
-    public ResponseEntity<RatingResponse> getRatingById(@PathVariable String id_rating) {
-        var getRatingByIdQuery = new GetRatingByIdQuery(id_rating);
+    @GetMapping("/{rating_id}")
+    public ResponseEntity<RatingResponse> getRatingById(@PathVariable Long rating_id) {
+        var getRatingByIdQuery = new GetRatingByIdQuery(rating_id);
         var optionalRating = ratingQueryService.handle(getRatingByIdQuery);
 
         if (optionalRating.isEmpty()) {
@@ -123,7 +150,13 @@ public class RatingsController {
         return ResponseEntity.ok(ratingResponse);
     }
 
-    // UPDATE
+    /**
+     * Update an existing rating.
+     *
+     * @param rating_id the rating ID
+     * @param request the update rating request
+     * @return the response entity with the updated rating
+     */
     @Operation(summary = "Update an existing rating",
             description = "Updates an existing rating with the provided data",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
@@ -142,12 +175,12 @@ public class RatingsController {
                                     schema = @Schema(implementation = RuntimeException.class)))
             }
     )
-    @PutMapping("/{id_rating}")
+    @PutMapping("/{rating_id}")
     public ResponseEntity<RatingResponse> updateRating(
-            @PathVariable String id_rating,
+            @PathVariable Long rating_id,
             @Valid @RequestBody UpdateRatingRequest request) {
 
-        var updateCommand = RatingAssembler.toCommandFromRequest(id_rating, request);
+        var updateCommand = RatingAssembler.toCommandFromRequest(rating_id, request);
         var optionalRating = this.ratingCommandService.handle(updateCommand);
         if (optionalRating.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -156,7 +189,12 @@ public class RatingsController {
         return ResponseEntity.ok(ratingResponse);
     }
 
-    // DELETE
+    /**
+     * Delete a rating by its ID.
+     *
+     * @param rating_id the rating ID
+     * @return the response entity indicating the result of the deletion
+     */
     @Operation(summary = "Delete a rating by its ID",
             description = "Deletes a rating using its unique ID",
             responses = {
@@ -167,9 +205,9 @@ public class RatingsController {
                                     schema = @Schema(implementation = RuntimeException.class)))
             }
     )
-    @DeleteMapping("/{id_rating}")
-    public ResponseEntity<?> deleteRating(@PathVariable String id_rating) {
-        var deleteRatingCommand = new DeleteRatingCommand(id_rating);
+    @DeleteMapping("/{rating_id}")
+    public ResponseEntity<?> deleteRating(@PathVariable Long rating_id) {
+        var deleteRatingCommand = new DeleteRatingCommand(rating_id);
         this.ratingCommandService.handle(deleteRatingCommand);
         return ResponseEntity.noContent().build();
     }

@@ -5,5 +5,5 @@ package pe.edu.upc.prime.platform.payment.service.domain.model.queries;
  *
  * @param paymentId the ID of the profile to retrieve
  */
-public record GetPaymentByIdQuery(String paymentId) {
+public record GetPaymentByIdQuery(Long paymentId) {
 }

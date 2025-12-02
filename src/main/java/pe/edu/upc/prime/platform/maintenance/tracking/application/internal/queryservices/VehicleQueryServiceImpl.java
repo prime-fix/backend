@@ -2,9 +2,11 @@ package pe.edu.upc.prime.platform.maintenance.tracking.application.internal.quer
 
 import org.springframework.stereotype.Service;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.aggregates.Vehicle;
+import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.queries.ExistsVehicleByIdQuery;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.queries.GetAllVehiclesQuery;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.queries.GetVehicleByIdQuery;
-import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.queries.GetVehicleByMaintenanceStatusQuery;
+import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.queries.GetVehiclesByMaintenanceStatusQuery;
+import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.valueobjects.MaintenanceStatus;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.services.VehicleQueryService;
 import pe.edu.upc.prime.platform.maintenance.tracking.infrastructure.persistence.jpa.repositories.VehicleRepository;
 import pe.edu.upc.prime.platform.shared.domain.exceptions.NotFoundIdException;
@@ -50,8 +52,8 @@ public class VehicleQueryServiceImpl implements VehicleQueryService {
      */
     @Override
     public Optional<Vehicle> handle(GetVehicleByIdQuery query) {
-        return Optional.ofNullable(this.vehicleRepository.findById(Long.valueOf(query.idVehicle()))
-        .orElseThrow(() -> new NotFoundIdException(Vehicle.class, query.idVehicle())));
+        return Optional.ofNullable(this.vehicleRepository.findById(query.vehicleId())
+        .orElseThrow(() -> new NotFoundIdException(Vehicle.class, query.vehicleId())));
     }
 
     /**
@@ -61,7 +63,18 @@ public class VehicleQueryServiceImpl implements VehicleQueryService {
      * @return a list of vehicles with the specified maintenance status
      */
     @Override
-    public List<Vehicle> handle(GetVehicleByMaintenanceStatusQuery query) {
-        return this.vehicleRepository.findByMaintenanceStatus(query.maintenanceStatus());
+    public List<Vehicle> handle(GetVehiclesByMaintenanceStatusQuery query) {
+        return this.vehicleRepository.findByMaintenanceStatus(MaintenanceStatus.fromValue(query.maintenanceStatus()));
+    }
+
+    /**
+     * Handles the ExistsVehicleByIdQuery to check if a vehicle exists by its ID.
+     *
+     * @param query the query containing the vehicle ID
+     * @return true if the vehicle exists, false otherwise
+     */
+    @Override
+    public boolean handle(ExistsVehicleByIdQuery query) {
+        return this.vehicleRepository.existsById(query.vehicleId());
     }
 }

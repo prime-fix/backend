@@ -16,7 +16,6 @@ import java.time.LocalDate;
  * @param over the end date of the membership to be created
  */
 public record CreateMembershipRequest(
-
         @NotNull @NotBlank
         String description,
         @NotNull

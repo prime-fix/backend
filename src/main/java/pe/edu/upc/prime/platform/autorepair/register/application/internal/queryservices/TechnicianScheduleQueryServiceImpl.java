@@ -49,8 +49,8 @@ public class TechnicianScheduleQueryServiceImpl implements TechnicianScheduleQue
     @Override
     public Optional<TechnicianSchedule> handle(GetTechnicianScheduleByIdQuery query) {
         return Optional.ofNullable(
-                technicianScheduleRepository.findById(query.idTechnicianSchedule())
-                        .orElseThrow(() -> new NotFoundIdException(TechnicianSchedule.class, query.idTechnicianSchedule()))
+                technicianScheduleRepository.findById(query.technicianScheduleId())
+                        .orElseThrow(() -> new NotFoundIdException(TechnicianSchedule.class, query.technicianScheduleId()))
         );
     }
 
@@ -62,6 +62,6 @@ public class TechnicianScheduleQueryServiceImpl implements TechnicianScheduleQue
      */
     @Override
     public List<TechnicianSchedule> handle(GetSchedulesByTechnicianIdQuery query) {
-        return technicianScheduleRepository.findByTechnician_Id(Long.valueOf(query.idTechnician()));
+        return technicianScheduleRepository.findByTechnician_Id(query.technicianId());
     }
 }

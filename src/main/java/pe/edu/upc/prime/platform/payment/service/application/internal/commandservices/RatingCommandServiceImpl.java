@@ -2,6 +2,8 @@ package pe.edu.upc.prime.platform.payment.service.application.internal.commandse
 
 import jakarta.persistence.PersistenceException;
 import org.springframework.stereotype.Service;
+import pe.edu.upc.prime.platform.payment.service.application.internal.outboundservices.acl.ExternalAutoRepairCatalogServiceFromPaymentService;
+import pe.edu.upc.prime.platform.payment.service.application.internal.outboundservices.acl.ExternalIamServiceFromPaymentService;
 import pe.edu.upc.prime.platform.payment.service.domain.model.aggregates.Rating;
 import pe.edu.upc.prime.platform.payment.service.domain.model.commands.CreateRatingCommand;
 import pe.edu.upc.prime.platform.payment.service.domain.model.commands.DeleteRatingCommand;
@@ -9,6 +11,7 @@ import pe.edu.upc.prime.platform.payment.service.domain.model.commands.UpdateRat
 import pe.edu.upc.prime.platform.payment.service.domain.services.RatingCommandService;
 import pe.edu.upc.prime.platform.payment.service.infrastructure.persistence.jpa.repositories.RatingRepository;
 import pe.edu.upc.prime.platform.shared.domain.exceptions.NotFoundArgumentException;
+import pe.edu.upc.prime.platform.shared.domain.exceptions.NotFoundIdException;
 
 import java.util.Optional;
 
@@ -24,12 +27,28 @@ public class RatingCommandServiceImpl implements RatingCommandService {
     private final RatingRepository ratingRepository;
 
     /**
+     * Service for interacting with external IAM services.
+     */
+    private final ExternalIamServiceFromPaymentService externalIamServiceFromPaymentService;
+
+    /**
+     * Service for interacting with external Auto Repair Catalog services.
+     */
+    private final ExternalAutoRepairCatalogServiceFromPaymentService externalAutoRepairCatalogServiceFromPaymentService;
+
+    /**
      * Constructor for RatingCommandServiceImpl.
      *
      * @param ratingRepository the repository to access user data
+     * @param externalIamServiceFromPaymentService service for interacting with external IAM services
+     * @param externalAutoRepairCatalogServiceFromPaymentService service for interacting with external Auto Repair Catalog services
      */
-    public RatingCommandServiceImpl(RatingRepository ratingRepository) {
+    public RatingCommandServiceImpl(RatingRepository ratingRepository,
+                                    ExternalIamServiceFromPaymentService externalIamServiceFromPaymentService,
+                                    ExternalAutoRepairCatalogServiceFromPaymentService externalAutoRepairCatalogServiceFromPaymentService) {
         this.ratingRepository = ratingRepository;
+        this.externalIamServiceFromPaymentService = externalIamServiceFromPaymentService;
+        this.externalAutoRepairCatalogServiceFromPaymentService = externalAutoRepairCatalogServiceFromPaymentService;
     }
 
     /**
@@ -39,16 +58,34 @@ public class RatingCommandServiceImpl implements RatingCommandService {
      * @return the ID of the newly created rating
      */
     @Override
-    public String handle(CreateRatingCommand command) {
+    public Long handle(CreateRatingCommand command) {
+
+        // Validate if user account ID exists in external IAM service
+        if (!this.externalIamServiceFromPaymentService.existsUserAccountById(command.userAccountId().value())) {
+            throw new NotFoundArgumentException(
+                    String.format("[RatingCommandServiceImpl] User Account ID: %s not found in the external IAM service",
+                            command.userAccountId().value())
+            );
+        }
+
+        // Validate if auto repair ID exists in external Auto Repair Catalog service
+        if (!this.externalAutoRepairCatalogServiceFromPaymentService.existsAutoRepairById(command.autoRepairId().value())) {
+            throw new NotFoundArgumentException(
+                    String.format("[RatingCommandServiceImpl] Auto Repair ID: %s not found in the external Auto Repair Catalog service",
+                            command.autoRepairId().value())
+            );
+        }
+
+        // Create a new Rating aggregate using the command data
         var rating = new Rating(command);
 
         try {
             ratingRepository.save(rating);
         } catch (Exception e) {
-            throw new PersistenceException(
-                    "Error creating rating: " + e.getMessage());
+            throw new PersistenceException("[RatingCommandServiceImpl] Error creating rating: "
+                    + e.getMessage());
         }
-        return rating.getId().toString();
+        return rating.getId();
 
     }
 
@@ -62,20 +99,37 @@ public class RatingCommandServiceImpl implements RatingCommandService {
     public Optional<Rating> handle(UpdateRatingCommand command) {
         var ratingId = command.ratingId();
 
-        if (!this.ratingRepository.existsById(Long.valueOf(ratingId))) {
+        // Check if the rating exists
+        if (!this.ratingRepository.existsById(ratingId)) {
+            throw new NotFoundIdException(Rating.class, ratingId);
+        }
+
+        // Validate if user account ID exists in external IAM service
+        if (!this.externalIamServiceFromPaymentService.existsUserAccountById(command.userAccountId().value())) {
             throw new NotFoundArgumentException(
-                    String.format("Rating with the same id %s does not exist.", ratingId)
+                    String.format("[RatingCommandServiceImpl] User Account ID: %s not found in the external IAM service.",
+                            command.userAccountId().value())
             );
         }
 
-        var ratingToUpdate = this.ratingRepository.findById(Long.valueOf(ratingId)).get();
+        // Validate if auto repair ID exists in external Auto Repair Catalog service
+        if (!this.externalAutoRepairCatalogServiceFromPaymentService.existsAutoRepairById(command.autoRepairId().value())) {
+            throw new NotFoundArgumentException(
+                    String.format("[RatingCommandServiceImpl] Auto Repair ID: %s not found in the external Auto Repair Catalog service",
+                            command.autoRepairId().value())
+            );
+        }
+
+        // Retrieve the existing rating and update its details
+        var ratingToUpdate = this.ratingRepository.findById(ratingId).get();
         ratingToUpdate.updateRating(command);
 
         try {
             this.ratingRepository.save(ratingToUpdate);
             return Optional.of(ratingToUpdate);
         } catch (Exception e) {
-            throw new PersistenceException("Error updating rating: " + e.getMessage());
+            throw new PersistenceException("[RatingCommandServiceImpl] Error while updating rating: "
+                    + e.getMessage());
         }
     }
 
@@ -86,20 +140,17 @@ public class RatingCommandServiceImpl implements RatingCommandService {
      */
     @Override
     public void handle(DeleteRatingCommand command) {
-        if (!this.ratingRepository.existsById(Long.valueOf(command.ratingId()))) {
-            throw new NotFoundArgumentException(
-                    String.format("Rating with the same id %s does not exist.", command.ratingId())
-            );
+        // Check if the rating exists
+        if (!this.ratingRepository.existsById(command.ratingId())) {
+            throw new NotFoundIdException(Rating.class, command.ratingId());
         }
 
-        /*this.ratingRepository.findById(command.ratingId()).ifPresent(optionalRating -> {
-            this.ratingRepository.deleteById(optionalRating.getIdRating());
-        });*/
-
+        // Delete the rating from the repository
         try {
-            this.ratingRepository.deleteById(Long.valueOf(command.ratingId()));
+            this.ratingRepository.deleteById(command.ratingId());
         }catch (Exception e) {
-            throw new IllegalArgumentException("Error deleting rating: " + e.getMessage());
+            throw new PersistenceException("[RatingCommandServiceImpl] Error deleting rating: "
+                    + e.getMessage());
         }
     }
 }

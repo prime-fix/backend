@@ -1,7 +1,7 @@
 package pe.edu.upc.prime.platform.iam.application.internal.queryservices;
 
 import org.springframework.stereotype.Service;
-import pe.edu.upc.prime.platform.iam.domain.model.aggregates.Membership;
+import pe.edu.upc.prime.platform.iam.domain.model.entities.Membership;
 import pe.edu.upc.prime.platform.iam.domain.model.queries.GetAllMembershipsQuery;
 import pe.edu.upc.prime.platform.iam.domain.model.queries.GetMembershipByIdQuery;
 import pe.edu.upc.prime.platform.iam.domain.services.MembershipQueryService;
@@ -48,7 +48,7 @@ public class MembershipQueryServiceImpl implements MembershipQueryService {
      */
     @Override
     public Optional<Membership> handle(GetMembershipByIdQuery query) {
-        return Optional.ofNullable(this.membershipRepository.findById(query.idMembership())
-        .orElseThrow(() -> new NotFoundIdException(Membership.class, query.idMembership())));
+        return Optional.ofNullable(this.membershipRepository.findById(query.membershipId())
+        .orElseThrow(() -> new NotFoundIdException(Membership.class, query.membershipId())));
     }
 }

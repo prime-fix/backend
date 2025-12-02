@@ -13,7 +13,7 @@ import java.util.List;
  * and custom query methods for the TechnicianSchedule entity.</p>
  */
 @Repository
-public interface TechnicianScheduleRepository extends JpaRepository<TechnicianSchedule, String> {
+public interface TechnicianScheduleRepository extends JpaRepository<TechnicianSchedule, Long> {
 
     /**
      * Custom query method to find all schedules for a specific technician.

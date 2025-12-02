@@ -9,7 +9,7 @@ import pe.edu.upc.prime.platform.shared.utils.Util;
  *
  * @param color             The color of the vehicle.
  * @param model             The model of the vehicle.
- * @param idUser            The identifier of the user associated with the vehicle.
+ * @param userId            The identifier of the user associated with the vehicle.
  * @param vehicleBrand     The brand of the vehicle.
  * @param vehiclePlate     The license plate of the vehicle.
  * @param vehicleType      The type of the vehicle.
@@ -25,8 +25,8 @@ public record UpdateVehicleRequest(
         String model,
 
         @NotNull @NotBlank
-        @JsonProperty("id_user")
-        String idUser,
+        @JsonProperty("user_id")
+        Long userId,
 
         @NotNull @NotBlank
         @JsonProperty("vehicle_brand")
@@ -43,5 +43,5 @@ public record UpdateVehicleRequest(
         @NotNull @NotBlank
         @Min(Util.MIN_MAINTENANCE_STATUS) @Max(Util.MAX_MAINTENANCE_STATUS)
         @JsonProperty("maintenance_status")
-        int maintenanceStatus) {
+        Integer maintenanceStatus) {
 }

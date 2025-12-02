@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 /**
  * Request to create a new Technician Schedule.
  *
- * @param idTechnician         The identifier of the technician linked to this schedule.
+ * @param technicianId         The identifier of the technician linked to this schedule.
  * @param dayOfWeek            The day of the week (e.g., MONDAY, TUESDAY).
  * @param startTime            The schedule start time.
  * @param endTime              The schedule end time.
@@ -19,8 +19,8 @@ import java.time.LocalDateTime;
 public record CreateTechnicianScheduleRequest(
 
         @NotNull @NotBlank
-        @JsonProperty("id_technician")
-        String idTechnician,
+        @JsonProperty("technician_id")
+        Long technicianId,
 
         @NotNull @NotBlank
         @JsonProperty("day_of_week")

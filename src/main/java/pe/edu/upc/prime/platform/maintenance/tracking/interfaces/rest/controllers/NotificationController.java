@@ -9,9 +9,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.aggregates.Notification;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.commands.DeleteNotificationCommand;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.queries.GetAllNotificationsQuery;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.queries.GetNotificationByIdQuery;
+import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.queries.GetNotificationsByVehicleIdQuery;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.services.NotificationCommandService;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.services.NotificationQueryService;
 import pe.edu.upc.prime.platform.maintenance.tracking.interfaces.rest.assemblers.NotificationAssembler;
@@ -84,7 +86,7 @@ public class NotificationController {
         var createNotificationCommand = NotificationAssembler.toCommandFromRequest(request);
         var notificationId = this.notificationCommandService.handle(createNotificationCommand);
 
-        if (Objects.isNull(notificationId) || notificationId.isBlank()) {
+        if (Objects.isNull(notificationId) || notificationId.equals(0L)) {
             return ResponseEntity.badRequest().build();
         }
 
@@ -103,16 +105,23 @@ public class NotificationController {
      * @return the response entity with the list of notifications
      */
     @Operation(summary = "Retrieve all notifications",
-            description = "Retrieves a list of all notifications",
+            description = "Retrieves a list of all notifications or filters them by vehicle id",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Notifications retrieved successfully",
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = NotificationResponse.class))),
             })
     @GetMapping
-    public ResponseEntity<List<NotificationResponse>> getAllNotifications() {
-        var getAllNotificationsQuery = new GetAllNotificationsQuery();
-        var notifications = this.notificationQueryService.handle(getAllNotificationsQuery);
+    public ResponseEntity<List<NotificationResponse>> getAllNotifications(@RequestParam(required = false) Long vehicle_id) {
+        List<Notification> notifications;
+
+        if (Objects.isNull(vehicle_id)) {
+            var getAllNotificationsQuery = new GetAllNotificationsQuery();
+            notifications = this.notificationQueryService.handle(getAllNotificationsQuery);
+        } else {
+            var getNotificationsByVehicleIdQuery = new GetNotificationsByVehicleIdQuery(vehicle_id);
+            notifications = this.notificationQueryService.handle(getNotificationsByVehicleIdQuery);
+        }
 
         var notificationResponse = notifications.stream()
                 .map(NotificationAssembler::toResponseFromEntity)
@@ -123,7 +132,7 @@ public class NotificationController {
     /**
      * Retrieve a notification by its ID.
      *
-     * @param id_notification the notification ID
+     * @param notification_id the notification ID
      * @return the response entity with the notification
      */
     @Operation(summary = "Retrieve a notification by its ID",
@@ -133,9 +142,9 @@ public class NotificationController {
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = NotificationResponse.class))),
             })
-    @GetMapping("/{id_notification}")
-    public ResponseEntity<NotificationResponse> getNotificationById(@PathVariable String id_notification) {
-        var getNotificationByIdQuery = new GetNotificationByIdQuery(id_notification);
+    @GetMapping("/{notification_id}")
+    public ResponseEntity<NotificationResponse> getNotificationById(@PathVariable Long notification_id) {
+        var getNotificationByIdQuery = new GetNotificationByIdQuery(notification_id);
         var optionalNotification = this.notificationQueryService.handle(getNotificationByIdQuery);
         if (optionalNotification.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -147,7 +156,7 @@ public class NotificationController {
     /**
      * Update an existing notification.
      *
-     * @param id_notification the notification ID
+     * @param notification_id the notification ID
      * @param request the update notification request
      * @return the response entity with the updated notification
      */
@@ -169,10 +178,10 @@ public class NotificationController {
                                     schema = @Schema(implementation = RuntimeException.class)))
             }
     )
-    @PutMapping("/{id_notification}")
-    public ResponseEntity<NotificationResponse> updateNotification(@PathVariable String id_notification,
+    @PutMapping("/{notification_id}")
+    public ResponseEntity<NotificationResponse> updateNotification(@PathVariable Long notification_id,
                                                                    @RequestBody UpdateNotificationRequest request) {
-        var updateNotificationCommand = NotificationAssembler.toCommandFromRequest(id_notification, request);
+        var updateNotificationCommand = NotificationAssembler.toCommandFromRequest(notification_id, request);
         var optionalNotification = this.notificationCommandService.handle(updateNotificationCommand);
         if (optionalNotification.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -184,7 +193,7 @@ public class NotificationController {
     /**
      * Delete a notification by its ID.
      *
-     * @param id_notification the notification ID
+     * @param notification_id the notification ID
      * @return the response entity indicating the result of the deletion
      */
     @Operation(summary = "Delete a notification by its ID",
@@ -197,9 +206,9 @@ public class NotificationController {
                                     schema = @Schema(implementation = RuntimeException.class)))
             }
     )
-    @DeleteMapping("/{id_notification}")
-    public ResponseEntity<?> deleteNotification(@PathVariable String id_notification) {
-        var deleteNotificationCommand = new DeleteNotificationCommand(id_notification);
+    @DeleteMapping("/{notification_id}")
+    public ResponseEntity<?> deleteNotification(@PathVariable Long notification_id) {
+        var deleteNotificationCommand = new DeleteNotificationCommand(notification_id);
         this.notificationCommandService.handle(deleteNotificationCommand);
         return ResponseEntity.noContent().build();
     }

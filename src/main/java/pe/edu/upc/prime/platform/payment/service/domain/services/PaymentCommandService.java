@@ -1,16 +1,20 @@
 package pe.edu.upc.prime.platform.payment.service.domain.services;
+
 import pe.edu.upc.prime.platform.payment.service.domain.model.aggregates.Payment;
 import pe.edu.upc.prime.platform.payment.service.domain.model.commands.*;
 
 import java.util.Optional;
 
+/**
+ * Service interface for handling payment-related commands.
+ */
 public interface PaymentCommandService {
     /**
      * Handles the creation of a new Payment.
      * @param command The command containing payment details.
      * @return The ID of the created Payment.
      */
-    String handle(CreatePaymentCommand command);
+    Long handle(CreatePaymentCommand command);
 
     /**
      * Handles updating an existing Payment.

@@ -8,26 +8,23 @@ import jakarta.validation.constraints.*;
  *
  * @param starRating   The number of stars (1-5).
  * @param comment      The optional comment of the user.
- * @param idAutoRepair The ID of the auto repair being rated.
- * @param idUserAccount The ID of the user account that creates the rating.
+ * @param autoRepairId The ID of the auto repair being rated.
+ * @param userAccountId The ID of the user account that creates the rating.
  */
 public record CreateRatingRequest(
-
-
         @JsonProperty("star_rating")
         @Min(1) @Max(5)
-        int starRating,
+        Integer starRating,
 
         @JsonProperty("comment")
         @Size(max = 250, message = "Comment cannot exceed 250 characters")
         String comment,
 
-        @JsonProperty("id_auto_repair")
+        @JsonProperty("auto_repair_id")
         @NotNull @NotBlank
-        String idAutoRepair,
+        Long autoRepairId,
 
-        @JsonProperty("id_user_account")
+        @JsonProperty("user_account_id")
         @NotNull @NotBlank
-        String idUserAccount
-) {
+        Long userAccountId) {
 }

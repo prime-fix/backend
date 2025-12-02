@@ -2,6 +2,7 @@ package pe.edu.upc.prime.platform.payment.service.application.internal.commandse
 
 import jakarta.persistence.PersistenceException;
 import org.springframework.stereotype.Service;
+import pe.edu.upc.prime.platform.payment.service.application.internal.outboundservices.acl.ExternalIamServiceFromPaymentService;
 import pe.edu.upc.prime.platform.payment.service.domain.model.aggregates.Payment;
 import pe.edu.upc.prime.platform.payment.service.domain.model.commands.CreatePaymentCommand;
 import pe.edu.upc.prime.platform.payment.service.domain.model.commands.DeletePaymentCommand;
@@ -9,6 +10,7 @@ import pe.edu.upc.prime.platform.payment.service.domain.model.commands.UpdatePay
 import pe.edu.upc.prime.platform.payment.service.domain.services.PaymentCommandService;
 import pe.edu.upc.prime.platform.payment.service.infrastructure.persistence.jpa.repositories.PaymentRepository;
 import pe.edu.upc.prime.platform.shared.domain.exceptions.NotFoundArgumentException;
+import pe.edu.upc.prime.platform.shared.domain.exceptions.NotFoundIdException;
 
 import java.util.Optional;
 
@@ -24,12 +26,20 @@ public class PaymentCommandServiceImpl implements PaymentCommandService {
     private final PaymentRepository paymentRepository;
 
     /**
+     * Service for interacting with external IAM services.
+     */
+    private final ExternalIamServiceFromPaymentService externalIamServiceFromPaymentService;
+
+    /**
      * Constructor for PaymentCommandServiceImpl.
      *
      * @param paymentRepository the repository to access user data
+     * @param externalIamServiceFromPaymentService service for interacting with external IAM services
      */
-    public PaymentCommandServiceImpl(PaymentRepository paymentRepository) {
+    public PaymentCommandServiceImpl(PaymentRepository paymentRepository,
+                                     ExternalIamServiceFromPaymentService externalIamServiceFromPaymentService) {
         this.paymentRepository = paymentRepository;
+        this.externalIamServiceFromPaymentService = externalIamServiceFromPaymentService;
     }
 
     /**
@@ -39,19 +49,25 @@ public class PaymentCommandServiceImpl implements PaymentCommandService {
      * @return the ID of the newly created user
      */
     @Override
-    public String handle(CreatePaymentCommand command) {
+    public Long handle(CreatePaymentCommand command) {
+        // Validate if user account ID exists in external IAM service
+        if (!this.externalIamServiceFromPaymentService.existsUserAccountById(command.userAccountId().userAccountId())) {
+            throw new NotFoundArgumentException(
+                    String.format("[PaymentCommandServiceImpl User Account ID: %s not found in the external IAM service",
+                            command.userAccountId().userAccountId()));
+        }
 
-        var userAccountId = command.idUserAccount();
-
+        // Create a new Payment aggregate using the command data
         var payment = new Payment(command);
 
+        // Save the new payment to the repository
         try {
             this.paymentRepository.save(payment);
         } catch (Exception e) {
-            throw new IllegalArgumentException(
-                    "[CreatePaymentCommand] Error while saving payment: " + e.getMessage());
+            throw new PersistenceException(
+                    "[PaymentCommandServiceImpl] Error while saving payment: " + e.getMessage());
         }
-        return payment.getId().toString();
+        return payment.getId();
     }
 
     /**
@@ -64,21 +80,29 @@ public class PaymentCommandServiceImpl implements PaymentCommandService {
     public Optional<Payment> handle(UpdatePaymentCommand command) {
         var paymentId = command.paymentId();
 
-        if (!this.paymentRepository.existsById(Long.valueOf(paymentId))) {
-            throw new NotFoundArgumentException(
-                    String.format("Payment with the same id %s does not exist.", paymentId)
-            );
+        // Check if the payment exists
+        if (!this.paymentRepository.existsById(paymentId)) {
+            throw new NotFoundIdException(Payment.class, paymentId);
         }
 
-        var paymentToUpdate = this.paymentRepository.findById(Long.valueOf(paymentId)).get();
+        // Validate if user account ID exists in external IAM service
+        if (!this.externalIamServiceFromPaymentService.existsUserAccountById(command.userAccountId().userAccountId())) {
+            throw new NotFoundArgumentException(
+                    String.format("[PaymentCommandServiceImpl] User Account ID: %s not found in the external IAM service",
+                            command.userAccountId().userAccountId()));
+        }
+
+        // Retrieve the existing payment and update its details
+        var paymentToUpdate = this.paymentRepository.findById(paymentId).get();
         paymentToUpdate.updatePayment(command);
 
+        // Save the updated payment to the repository
         try {
             this.paymentRepository.save(paymentToUpdate);
             return Optional.of(paymentToUpdate);
         } catch (Exception e) {
             throw new PersistenceException(
-                    "[UpdatePaymentCommand] Error while updating payment: " + e.getMessage());
+                    "[PaymentCommandServiceImpl] Error while updating payment: " + e.getMessage());
         }
     }
 
@@ -91,21 +115,16 @@ public class PaymentCommandServiceImpl implements PaymentCommandService {
     public void handle(DeletePaymentCommand command) {
         var paymentId = command.paymentId();
 
-        if (!this.paymentRepository.existsById(Long.valueOf(paymentId))) {
-            throw new NotFoundArgumentException(
-                    String.format("Payment with the same id %s does not exist.", paymentId));
+        // Check if the payment exists
+        if (!this.paymentRepository.existsById(paymentId)) {
+            throw new NotFoundIdException(Payment.class, paymentId);
         }
 
-       /* this.paymentRepository.findById(paymentId).ifPresent(optionalPayment -> {
-            this.paymentRepository.deleteById(optionalPayment.getIdPayment());
-
-
-        });
-    */
+        // Delete the payment from the repository
         try {
-            this.paymentRepository.deleteById(Long.valueOf(paymentId));
+            this.paymentRepository.deleteById(paymentId);
         } catch (Exception e) {
-            throw new IllegalArgumentException("Error while deleting service:" + e.getMessage());
+            throw new PersistenceException("[PaymentCommandServiceImpl] Error while deleting service:" + e.getMessage());
         }
     }
 }

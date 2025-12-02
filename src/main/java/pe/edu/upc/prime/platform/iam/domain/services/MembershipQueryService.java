@@ -1,6 +1,6 @@
 package pe.edu.upc.prime.platform.iam.domain.services;
 
-import pe.edu.upc.prime.platform.iam.domain.model.aggregates.Membership;
+import pe.edu.upc.prime.platform.iam.domain.model.entities.Membership;
 import pe.edu.upc.prime.platform.iam.domain.model.queries.GetAllMembershipsQuery;
 import pe.edu.upc.prime.platform.iam.domain.model.queries.GetMembershipByIdQuery;
 

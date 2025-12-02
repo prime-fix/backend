@@ -17,7 +17,7 @@ public interface VehicleCommandService {
      * @param command the command containing the vehicle information
      * @return the ID of the newly created vehicle
      */
-    String handle(CreateVehicleCommand command);
+    Long handle(CreateVehicleCommand command);
 
     /**
      * Handles the update of a vehicle based on the provided command.
