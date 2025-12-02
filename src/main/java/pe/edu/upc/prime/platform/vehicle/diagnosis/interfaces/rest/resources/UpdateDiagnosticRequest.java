@@ -13,13 +13,18 @@ import jakarta.validation.constraints.Size;
  * @param price the updated price of the diagnosis
  */
 public record UpdateDiagnosticRequest(
-        @JsonProperty("diagnosis")
-        @NotNull @NotBlank
-        @Size(min = 5, max = 255)
-        String diagnosis,
-
         @JsonProperty("price")
         @NotNull
-        @Positive
-        Float price
-) {}
+        @Positive(message = "Price must be a positive value")
+        Float price,
+
+        @JsonProperty("vehicle_id")
+        @NotNull
+        Long vehicleId,
+
+        @JsonProperty("diagnosis")
+        @NotNull @NotBlank
+        @Size(min = 5, max = 255, message = "Diagnosis description must be between 5 and 255 characters")
+        String diagnosis) {
+
+}

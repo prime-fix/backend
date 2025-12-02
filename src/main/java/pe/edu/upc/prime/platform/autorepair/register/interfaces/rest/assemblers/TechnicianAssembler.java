@@ -23,23 +23,23 @@ public class TechnicianAssembler {
         return new CreateTechnicianCommand(
                 request.name(),
                 request.lastName(),
-                new AutoRepairId(request.idAutoRepair())
+                new AutoRepairId(request.autoRepairId())
         );
     }
 
     /**
      * Converts an UpdateTechnicianRequest into an UpdateTechnicianCommand.
      *
-     * @param idTechnician The technician ID to update.
+     * @param technician_id The technician ID to update.
      * @param request The update technician request.
      * @return The corresponding UpdateTechnicianCommand.
      */
-    public static UpdateTechnicianCommand toCommandFromRequest(Long idTechnician, UpdateTechnicianRequest request) {
+    public static UpdateTechnicianCommand toCommandFromRequest(Long technician_id, UpdateTechnicianRequest request) {
         return new UpdateTechnicianCommand(
-                idTechnician,
+                technician_id,
                 request.name(),
                 request.lastName(),
-                new AutoRepairId(request.idAutoRepair())
+                new AutoRepairId(request.autoRepairId())
         );
     }
 

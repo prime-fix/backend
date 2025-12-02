@@ -1,7 +1,5 @@
 package pe.edu.upc.prime.platform.iam.interfaces.rest.resources;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.time.LocalDate;
 
 /**

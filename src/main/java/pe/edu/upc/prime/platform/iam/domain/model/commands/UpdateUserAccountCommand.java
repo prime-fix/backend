@@ -37,7 +37,7 @@ public record UpdateUserAccountCommand(Long userAccountId ,String username, Stri
         Objects.requireNonNull(userAccountId, "[UpdateUserAccountCommand] userAccountId must not be null");
         Objects.requireNonNull(username, "[UpdateUserAccountCommand] username must not be null");
         Objects.requireNonNull(email, "[UpdateUserAccountCommand] email must not be null");
-        Objects.requireNonNull(userId, "[UpdateUserAccountCommand] role id must not be null");
+        Objects.requireNonNull(roleId, "[UpdateUserAccountCommand] role id must not be null");
         Objects.requireNonNull(userId, "[UpdateUserAccountCommand] user id must not be null");
         Objects.requireNonNull(membershipId, "[UpdateUserAccountCommand] membership id must not be null");
         Objects.requireNonNull(password, "[UpdateUserAccountCommand] password id must not be null");

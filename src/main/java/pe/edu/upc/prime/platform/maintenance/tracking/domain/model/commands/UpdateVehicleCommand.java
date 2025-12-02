@@ -27,12 +27,17 @@ public record UpdateVehicleCommand(Long vehicleId, String color, String model, U
         Objects.requireNonNull(userId, "[UpdateVehicleCommand] user id must not be null");
         Objects.requireNonNull(vehicleInformation, "[UpdateVehicleCommand] vehicleInformation must not be null");
 
-        if (maintenanceStatus != MaintenanceStatus.NOT_BEING_SERVICED && maintenanceStatus != MaintenanceStatus.WAITING
+        if (maintenanceStatus == MaintenanceStatus.NOT_BEING_SERVICED) {
+            throw new IllegalArgumentException(
+                    "[CreateVehicleCommand] Maintenance status cannot revert to NOT_BEING_SERVICED");
+        }
+
+        if (maintenanceStatus != MaintenanceStatus.WAITING
                 && maintenanceStatus != MaintenanceStatus.IN_DIAGNOSIS && maintenanceStatus != MaintenanceStatus.IN_REPAIR
                 && maintenanceStatus != MaintenanceStatus.TESTING && maintenanceStatus != MaintenanceStatus.READY_FOR_PICKUP
                 && maintenanceStatus != MaintenanceStatus.COLLECTED) {
             throw new IllegalArgumentException(
-                    "[CreateVehicleCommand] Invalid maintenance status: [" + maintenanceStatus + "]");
+                    "[CreateVehicleCommand] Invalid maintenance status: [" + maintenanceStatus.getValue() + "]");
         }
     }
 }

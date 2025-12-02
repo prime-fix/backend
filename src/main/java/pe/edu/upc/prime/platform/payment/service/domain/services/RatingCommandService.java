@@ -5,7 +5,9 @@ import pe.edu.upc.prime.platform.payment.service.domain.model.commands.*;
 
 import java.util.Optional;
 
-
+/**
+ * Service interface for handling rating-related commands.
+ */
 public interface RatingCommandService {
     /**
      * Handles the creation of a new Rating.

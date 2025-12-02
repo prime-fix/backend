@@ -27,12 +27,25 @@ public class Location extends AuditableAbstractAggregateRoot<Location> {
     })
     private LocationInformation locationInformation;
 
+    /**
+     * Default constructor for JPA
+     */
     public Location(){}
 
+    /**
+     * Constructor with CreateLocationCommand
+     *
+     * @param command the command to create a location
+     */
     public Location(CreateLocationCommand command) {
         this.locationInformation = command.locationInformation();
     }
 
+    /**
+     * Update location information
+     *
+     * @param command the command to update location
+     */
     public void updateLocation(UpdateLocationCommand command){
         this.locationInformation = command.locationInformation();
     }

@@ -39,4 +39,11 @@ public interface VisitQueryService {
      */
     List<Visit> handle(GetVisitByAutoRepairIdQuery query);
 
+    /**
+     * Handle the query to check if a visit exists by its ID.
+     *
+     * @param query the query containing the visit ID
+     * @return true if the visit exists, false otherwise
+     */
+    boolean handle(ExistsVisitByIdQuery query);
 }

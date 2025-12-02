@@ -28,6 +28,12 @@ public class LocationCommandServiceImpl implements LocationCommandService {
     }
 
 
+    /**
+     * Handles the creation of a new location based on the provided command.
+     *
+     * @param command the command containing the location information
+     * @return the ID of the newly created Location
+     */
     @Override
     public Long handle(CreateLocationCommand command) {
         var location = new Location(command);
@@ -40,6 +46,12 @@ public class LocationCommandServiceImpl implements LocationCommandService {
         }
     }
 
+    /**
+     * Handles the update of a location based on the provided command.
+     *
+     * @param command the command containing the updated location information
+     * @return an Optional containing the updated Location if successful
+     */
     @Override
     public Optional<Location> handle(UpdateLocationCommand command) {
         var locationId = command.locationId();
@@ -59,6 +71,11 @@ public class LocationCommandServiceImpl implements LocationCommandService {
         }
     }
 
+    /**
+     * Handles the deletion of a location based on the provided command.
+     *
+     * @param command the command containing the ID of the location to be related
+     */
     @Override
     public void handle(DeleteLocationCommand command) {
         if (!this.locationRepository.existsById(command.locationId())){

@@ -12,7 +12,7 @@ import jakarta.validation.constraints.*;
  * @param month         The expiration month.
  * @param year          The expiration year.
  * @param ccv           The new CCV.
- * @param idUserAccount The user account ID linked to this payment.
+ * @param userAccountId The user account ID linked to this payment.
  */
 public record UpdatePaymentRequest(
         @JsonProperty("card_number")
@@ -25,20 +25,19 @@ public record UpdatePaymentRequest(
         @Pattern(regexp = "VISA|MASTERCARD|AMEX", message = "Card type must be VISA, MASTERCARD or AMEX")
         String cardType,
 
-        @JsonProperty("month")
+        @NotNull
         @Min(1) @Max(12)
-        int month,
+        Integer month,
 
-        @JsonProperty("year")
+        @NotNull
         @Min(2000)
-        int year,
+        Integer year,
 
-        @JsonProperty("ccv")
-        @NotNull @Pattern(regexp = "\\d{3}", message = "CCV must have exactly 3 digits")
-        String ccv,
+        @NotNull
+        @Min(100) @Max(9999)
+        Integer ccv,
 
         @JsonProperty("user_account_id")
         @NotNull
-        Long userAccountId
-) {
+        Long userAccountId) {
 }

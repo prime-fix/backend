@@ -24,7 +24,15 @@ public interface UserAccountCommandService {
      * @param command the command containing the user account information
      * @return an Optional containing the created UserAccount if successful, or empty if sign-up failed
      */
-    Optional<UserAccount> handle(SignUpCommand command);
+    Optional<UserAccount> handle(VehicleOwnerSignUpCommand command);
+
+    /**
+     * Handles the sign-up process for a new auto repair user account based on the provided command.
+     *
+     * @param command the command containing the auto repair user account information
+     * @return an Optional containing the created UserAccount if successful, or empty if sign-up failed
+     */
+    Optional<UserAccount> handle(AutoRepairSignUpCommand command);
 
     /**
      * Handles the creation of a new user account based on the provided command.

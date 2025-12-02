@@ -4,6 +4,7 @@ import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.aggregates.No
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.queries.ExistsNotificationByIdQuery;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.queries.GetAllNotificationsQuery;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.queries.GetNotificationByIdQuery;
+import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.queries.GetNotificationsByVehicleIdQuery;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,6 +28,14 @@ public interface NotificationQueryService {
      * @return an optional notification matching the ID
      */
     Optional<Notification> handle(GetNotificationByIdQuery query);
+
+    /**
+     * Handle the query to get notifications by user ID.
+     *
+     * @param query the query containing the user ID
+     * @return a list of notifications associated with the specified user ID
+     */
+    List<Notification> handle(GetNotificationsByVehicleIdQuery query);
 
     /**
      * Handle the query to check if a notification exists by its ID.

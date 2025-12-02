@@ -4,9 +4,13 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import pe.edu.upc.prime.platform.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
 import pe.edu.upc.prime.platform.shared.domain.model.valueobjects.VehicleId;
-import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.commands.CreateDiagnosisCommand;
-import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.commands.UpdateDiagnosisCommand;
+import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.commands.CreateDiagnosticCommand;
+import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.commands.UpdateDiagnosticCommand;
+import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.events.DiagnosticRegisteredEvent;
 
+/**
+ * Diagnostic Aggregate Root
+ */
 @Entity
 @Table(name = "diagnostic")
 public class Diagnostic extends AuditableAbstractAggregateRoot<Diagnostic> {
@@ -18,8 +22,8 @@ public class Diagnostic extends AuditableAbstractAggregateRoot<Diagnostic> {
     @Getter
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name = "idVehicle",
-                    column = @Column(name = "id_vehicle", nullable = false))
+            @AttributeOverride(name = "vehicleId",
+                    column = @Column(name = "vehicle_id", nullable = false))
     })
     private VehicleId vehicleId;
 
@@ -27,29 +31,33 @@ public class Diagnostic extends AuditableAbstractAggregateRoot<Diagnostic> {
     @Column(name = "diagnosis", nullable = false)
     private String diagnosis;
 
-    @Getter
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "expected_visit_id")
-    private ExpectedVisit expectedVisit;
-
-    public Diagnostic(CreateDiagnosisCommand command) {
-        this.vehicleId = command.vehicleId();
-        this.diagnosis = command.diagnosis();
-        this.price = command.price();
-    }
-
+    /**
+     * Default constructor for JPA
+     */
     public Diagnostic() {
     }
 
-    public void updateDiagnostic(UpdateDiagnosisCommand command) {
+    /**
+     * Constructor for Diagnostic using CreateDiagnosticCommand
+     *
+     * @param command the CreateDiagnosticCommand
+     */
+    public Diagnostic(CreateDiagnosticCommand command) {
+        this.vehicleId = command.vehicleId();
         this.diagnosis = command.diagnosis();
         this.price = command.price();
+        this.registerEvent(new DiagnosticRegisteredEvent(this, command.vehicleId().value(), command.diagnosis()));
     }
 
-    /*public static Diagnostic sendNewDiagnostic(VehicleId vehicleId, ExpectedVisit expectedVisit) {
-        String diagnosticId = "DIAG_" + System.currentTimeMillis();
-        return new Diagnostic(new CreateVehicleDiagnosisCommand(
-                        diagnosticId, vehicleId, "INITIAL_DIAGNOSIS", 0.0f, expectedVisit
-                ));
-    }*/
+    /**
+     * Update Diagnostic details
+     *
+     * @param command the UpdateDiagnosticCommand
+     */
+    public void updateDiagnostic(UpdateDiagnosticCommand command) {
+        this.vehicleId = command.vehicleId();
+        this.diagnosis = command.diagnosis();
+        this.price = command.price();
+        this.registerEvent(new DiagnosticRegisteredEvent(this, command.vehicleId().value(), command.diagnosis()));
+    }
 }

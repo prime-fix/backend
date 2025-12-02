@@ -9,8 +9,16 @@ import pe.edu.upc.prime.platform.payment.service.interfaces.rest.resources.Creat
 import pe.edu.upc.prime.platform.payment.service.interfaces.rest.resources.RatingResponse;
 import pe.edu.upc.prime.platform.payment.service.interfaces.rest.resources.UpdateRatingRequest;
 
+/**
+ * Assembler class for converting between Rating-related requests, commands, and responses.
+ */
 public class RatingAssembler {
-
+    /**
+     * Convert CreateRatingRequest to CreateRatingCommand.
+     *
+     * @param request The create rating request.
+     * @return The corresponding to create rating command.
+     */
     public static CreateRatingCommand toCommandFromRequest(CreateRatingRequest request) {
         return new CreateRatingCommand(
                 request.starRating(),
@@ -20,6 +28,13 @@ public class RatingAssembler {
         );
     }
 
+    /**
+     * Convert UpdateRatingRequest to UpdateRatingCommand.
+     *
+     * @param ratingId The ID of the rating to update.
+     * @param request The update rating request.
+     * @return The corresponding to update rating command.
+     */
     public static UpdateRatingCommand toCommandFromRequest(Long ratingId, UpdateRatingRequest request) {
         return new UpdateRatingCommand(
                 ratingId,
@@ -30,6 +45,12 @@ public class RatingAssembler {
         );
     }
 
+    /**
+     * Convert Rating entity to RatingResponse.
+     *
+     * @param entity The rating entity.
+     * @return The corresponding rating response.
+     */
     public static RatingResponse toResponseFromEntity(Rating entity) {
         return new RatingResponse(
                 entity.getId(),

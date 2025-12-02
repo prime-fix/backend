@@ -5,7 +5,7 @@ import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.aggregates.Ve
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.queries.ExistsVehicleByIdQuery;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.queries.GetAllVehiclesQuery;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.queries.GetVehicleByIdQuery;
-import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.queries.GetVehicleByMaintenanceStatusQuery;
+import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.queries.GetVehiclesByMaintenanceStatusQuery;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.valueobjects.MaintenanceStatus;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.services.VehicleQueryService;
 import pe.edu.upc.prime.platform.maintenance.tracking.infrastructure.persistence.jpa.repositories.VehicleRepository;
@@ -63,7 +63,7 @@ public class VehicleQueryServiceImpl implements VehicleQueryService {
      * @return a list of vehicles with the specified maintenance status
      */
     @Override
-    public List<Vehicle> handle(GetVehicleByMaintenanceStatusQuery query) {
+    public List<Vehicle> handle(GetVehiclesByMaintenanceStatusQuery query) {
         return this.vehicleRepository.findByMaintenanceStatus(MaintenanceStatus.fromValue(query.maintenanceStatus()));
     }
 

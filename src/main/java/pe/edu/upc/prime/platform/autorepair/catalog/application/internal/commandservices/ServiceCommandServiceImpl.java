@@ -26,6 +26,12 @@ public class ServiceCommandServiceImpl implements ServiceCommandService {
         this.serviceRepository = serviceRepository;
     }
 
+    /**
+     * Handles the creation of a new service based on the provided command.
+     *
+     * @param command the command containing the service information
+     * @return the ID of the newly created service
+     */
     @Override
     public Long handle(CreateServiceCommand command) {
 
@@ -39,6 +45,12 @@ public class ServiceCommandServiceImpl implements ServiceCommandService {
         return service.getId();
     }
 
+    /**
+     * Handles the update of an existing service based on the provided command.
+     *
+     * @param command the command containing the updated service information
+     * @return an Optional containing the updated service if successful, or empty if not found
+     */
     @Override
     public Optional<Service> handle(UpdateServiceCommand command) {
         var serviceId = command.serviceId();
@@ -56,6 +68,11 @@ public class ServiceCommandServiceImpl implements ServiceCommandService {
         }
     }
 
+    /**
+     * Handles the deletion of an existing service based on the provided command.
+     *
+     * @param command the command containing the ID of the service to be related
+     */
     @Override
     public void handle(DeleteServiceCommand command) {
         if(!this.serviceRepository.existsById(command.serviceId())){

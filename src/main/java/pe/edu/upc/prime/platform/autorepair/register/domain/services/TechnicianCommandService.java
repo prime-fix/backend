@@ -18,7 +18,7 @@ public interface TechnicianCommandService {
      * @param command The command containing technician details.
      * @return The created Technician entity.
      */
-    Technician handle(CreateTechnicianCommand command);
+    Long handle(CreateTechnicianCommand command);
 
     /**
      * Handles updating an existing Technician.
@@ -26,7 +26,7 @@ public interface TechnicianCommandService {
      * @param command The command containing updated technician data.
      * @return The updated Technician entity.
      */
-    Technician handle(UpdateTechnicianCommand command);
+    Optional<Technician> handle(UpdateTechnicianCommand command);
 
     /**
      * Handles deleting an existing Technician by ID.

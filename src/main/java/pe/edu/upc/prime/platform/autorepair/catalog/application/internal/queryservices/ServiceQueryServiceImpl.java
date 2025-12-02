@@ -15,7 +15,9 @@ import java.util.Optional;
  */
 @org.springframework.stereotype.Service
 public class ServiceQueryServiceImpl implements ServiceQueryService {
-
+    /**
+     * The service repository.
+     */
     private final ServiceRepository serviceRepository;
 
     /**
@@ -32,11 +34,23 @@ public class ServiceQueryServiceImpl implements ServiceQueryService {
     }
      */
 
+    /**
+     * Handle the query to get a Service by its ID.
+     *
+     * @param query the query containing the service ID
+     * @return an optional service matching the ID
+     */
     @Override
     public Optional<Service> handle(GetServiceByIdQuery query) {
         return this.serviceRepository.findById(query.serviceId());
     }
 
+    /**
+     * Handle the query to get all services.
+     *
+     * @param query the query to get all services
+     * @return a list of all services
+     */
     @Override
     public List<Service> handle(GetAllServicesQuery query) {
         return this.serviceRepository.findAll();

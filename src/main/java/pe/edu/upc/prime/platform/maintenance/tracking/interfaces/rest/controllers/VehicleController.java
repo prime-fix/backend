@@ -13,7 +13,7 @@ import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.aggregates.Ve
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.commands.DeleteVehicleCommand;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.queries.GetAllVehiclesQuery;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.queries.GetVehicleByIdQuery;
-import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.queries.GetVehicleByMaintenanceStatusQuery;
+import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.queries.GetVehiclesByMaintenanceStatusQuery;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.services.VehicleCommandService;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.services.VehicleQueryService;
 import pe.edu.upc.prime.platform.maintenance.tracking.interfaces.rest.assemblers.VehicleAssembler;
@@ -101,7 +101,7 @@ public class VehicleController {
     /**
      * Retrieve all vehicles or filter by maintenance status.
      *
-     * @param maintenanceStatus optional maintenance status filter
+     * @param maintenance_status optional maintenance status filter
      * @return ResponseEntity with the list of vehicles
      */
     @Operation(summary = "Retrieve all vehicles",
@@ -112,15 +112,15 @@ public class VehicleController {
                                     schema = @Schema(implementation = VehicleResponse.class))),
             })
     @GetMapping
-    public ResponseEntity<List<VehicleResponse>> getAllVehicles(@RequestParam(required = false) Integer maintenanceStatus) {
+    public ResponseEntity<List<VehicleResponse>> getAllVehicles(@RequestParam(required = false) Integer maintenance_status) {
 
         List<Vehicle> vehicles;
-        if (Objects.isNull(maintenanceStatus)) {
+        if (Objects.isNull(maintenance_status)) {
             var getAllVehiclesQuery = new GetAllVehiclesQuery();
             vehicles = vehicleQueryService.handle(getAllVehiclesQuery);
         } else {
-            var query = new GetVehicleByMaintenanceStatusQuery(maintenanceStatus);
-            vehicles = this.vehicleQueryService.handle(query);
+            var getVehiclesByMaintenanceStatusQuery = new GetVehiclesByMaintenanceStatusQuery(maintenance_status);
+            vehicles = this.vehicleQueryService.handle(getVehiclesByMaintenanceStatusQuery);
         }
 
         var vehicleResponses = vehicles.stream()

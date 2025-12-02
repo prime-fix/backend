@@ -1,24 +1,28 @@
 package pe.edu.upc.prime.platform.autorepair.catalog.interfaces.rest.resources;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import pe.edu.upc.prime.platform.autorepair.catalog.domain.model.valueobjects.UserAccountId;
 
+/**
+ * Request to update an auto repair
+ *
+ * @param contactEmail the contact email of the auto repair to be updated
+ * @param ruc the RUC of the auto repair to be updated
+ * @param userAccountId the user account ID associated with the auto repair to be updated
+ */
 public record UpdateAutoRepairRequest(
         @NotBlank
         @NotNull
-        String contact_email,
+        @JsonProperty("contact_email")
+        String contactEmail,
 
         @NotBlank
         @NotNull
-        Integer technician_count,
+        String ruc,
 
         @NotBlank
         @NotNull
-        String RUC,
-
-        @NotBlank
-        @NotNull
-        UserAccountId userAccountId
-) {
+        @JsonProperty("user_account_id")
+        Long userAccountId) {
 }

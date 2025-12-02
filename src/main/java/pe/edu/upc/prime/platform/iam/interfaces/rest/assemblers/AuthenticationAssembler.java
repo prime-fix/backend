@@ -1,13 +1,15 @@
 package pe.edu.upc.prime.platform.iam.interfaces.rest.assemblers;
 
 import pe.edu.upc.prime.platform.iam.domain.model.aggregates.UserAccount;
+import pe.edu.upc.prime.platform.iam.domain.model.commands.AutoRepairSignUpCommand;
 import pe.edu.upc.prime.platform.iam.domain.model.commands.SignInCommand;
-import pe.edu.upc.prime.platform.iam.domain.model.commands.SignUpCommand;
+import pe.edu.upc.prime.platform.iam.domain.model.commands.VehicleOwnerSignUpCommand;
 import pe.edu.upc.prime.platform.iam.domain.model.valueobjects.LocationInformation;
 import pe.edu.upc.prime.platform.iam.domain.model.valueobjects.MembershipDescription;
 import pe.edu.upc.prime.platform.iam.interfaces.rest.resources.AuthenticatedUserAccountResponse;
+import pe.edu.upc.prime.platform.iam.interfaces.rest.resources.AutoRepairSignUpRequest;
 import pe.edu.upc.prime.platform.iam.interfaces.rest.resources.SignInRequest;
-import pe.edu.upc.prime.platform.iam.interfaces.rest.resources.SignUpRequest;
+import pe.edu.upc.prime.platform.iam.interfaces.rest.resources.VehicleOwnerSignUpRequest;
 import pe.edu.upc.prime.platform.payment.service.domain.model.valueobjects.CardType;
 
 /**
@@ -17,41 +19,67 @@ public class AuthenticationAssembler {
     /**
      * Converts a SignInRequest to a SignInCommand.
      *
-     * @param signInRequest the sign-in request
+     * @param request the sign-in request
      * @return the corresponding sign-in command
      */
-    public static SignInCommand toCommandFromRequestSignIn(SignInRequest signInRequest) {
+    public static SignInCommand toCommandFromRequestSignIn(SignInRequest request) {
         return new SignInCommand(
-                signInRequest.username(),
-                signInRequest.password()
+                request.username(),
+                request.password()
         );
     }
 
     /**
-     * Converts a SignUpRequest to a SignUpCommand.
+     * Converts a VehicleOwnerSignUpRequest to a VehicleOwnerSignUpCommand.
      *
-     * @param signUpRequest the sign-up request
+     * @param request the sign-up request for vehicle owner
      * @return the corresponding sign-up command
      */
-    public static SignUpCommand toCommandFromRequestSignUp(SignUpRequest signUpRequest) {
-        return new SignUpCommand(
-                signUpRequest.name(),
-                signUpRequest.lastName(),
-                signUpRequest.dni(),
-                signUpRequest.phoneNumber(),
-                signUpRequest.username(),
-                signUpRequest.email(),
-                signUpRequest.roleId(),
-                signUpRequest.password(),
-                new LocationInformation(signUpRequest.address(), signUpRequest.district(), signUpRequest.department()),
-                new MembershipDescription(signUpRequest.membershipDescription()),
-                signUpRequest.started(),
-                signUpRequest.over(),
-                signUpRequest.cardNumber(),
-                CardType.valueOf(signUpRequest.cardType()),
-                signUpRequest.month(),
-                signUpRequest.year(),
-                signUpRequest.cvv()
+    public static VehicleOwnerSignUpCommand toCommandFromRequestSignUpVehicleOwner(VehicleOwnerSignUpRequest request) {
+        return new VehicleOwnerSignUpCommand(
+                request.name(),
+                request.lastName(),
+                request.dni(),
+                request.phoneNumber(),
+                request.username(),
+                request.email(),
+                request.password(),
+                new LocationInformation(request.address(), request.district(), request.department()),
+                new MembershipDescription(request.membershipDescription()),
+                request.started(),
+                request.over(),
+                request.cardNumber(),
+                CardType.valueOf(request.cardType()),
+                request.month(),
+                request.year(),
+                request.cvv()
+        );
+    }
+
+    /**
+     * Converts an AutoRepairSignUpRequest to an AutoRepairSignUpCommand.
+     *
+     * @param request the sign-up request for auto repair
+     * @return the corresponding sign-up command
+     */
+    public static AutoRepairSignUpCommand toCommandFromRequestSignUpAutoRepair(AutoRepairSignUpRequest request) {
+        return new AutoRepairSignUpCommand(
+                request.autoRepairName(),
+                request.phoneNumber(),
+                request.username(),
+                request.email(),
+                request.password(),
+                request.contactEmail(),
+                request.ruc(),
+                new LocationInformation(request.address(), request.district(), request.department()),
+                new MembershipDescription(request.membershipDescription()),
+                request.started(),
+                request.over(),
+                request.cardNumber(),
+                CardType.valueOf(request.cardType()),
+                request.month(),
+                request.year(),
+                request.cvv()
         );
     }
 

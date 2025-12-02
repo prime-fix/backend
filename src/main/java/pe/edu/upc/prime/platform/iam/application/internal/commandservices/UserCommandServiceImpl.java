@@ -51,20 +51,23 @@ public class UserCommandServiceImpl implements UserCommandService {
     public Long handle(CreateUserCommand command) {
         var name = command.name();
         var lastName = command.lastName();
+        var locationId = command.locationId();
 
+        // Validate uniqueness of name and last name
         if (this.userRepository.existsByNameAndLastName(name, lastName)) {
             throw new IllegalArgumentException("[UserCommandServiceImpl] User with the same name "
                     + name + " and last name " + lastName + " already exists.");
         }
 
-        var locationId = command.locationId();
-
+        // Validate location existence
         if (!this.locationRepository.existsById(locationId)) {
             throw new NotFoundIdException(Location.class, locationId);
         }
 
+        // Create new user
         var user = new User(command, this.locationRepository.findById(locationId).get());
 
+        // Save new user
         try {
             this.userRepository.save(user);
             return user.getId();
@@ -85,26 +88,31 @@ public class UserCommandServiceImpl implements UserCommandService {
         var userId = command.userId();
         var name = command.name();
         var lastName = command.lastName();
+        var locationId = command.locationId();
 
+        // Validate user existence
         if (!this.userRepository.existsById(userId)) {
             throw new NotFoundIdException(User.class, userId);
         }
 
+        // Validate uniqueness of name and last name
         if (this.userRepository.existsByNameAndLastNameAndIdIsNot(name, lastName, userId)) {
             throw new IllegalArgumentException("[UserCommandServiceImpl] User with the same name "
                     + name + " and last name " + lastName + " already exists.");
         }
 
-        var locationId = command.locationId();
-
+        // Validate location existence
         if (!this.locationRepository.existsById(locationId)) {
             throw new NotFoundIdException(Location.class, locationId);
         }
 
+        // Retrieve and update user
         var userToUpdate = this.userRepository.findById(userId).get();
 
+        // Update user fields
         userToUpdate.updateUser(command, this.locationRepository.findById(locationId).get());
 
+        // Save updated user
         try {
             var updatedUser = this.userRepository.save(userToUpdate);
             return Optional.of(updatedUser);
@@ -121,10 +129,12 @@ public class UserCommandServiceImpl implements UserCommandService {
      */
     @Override
     public void handle(DeleteUserCommand command) {
+        // Validate user existence
         if (!this.userRepository.existsById(command.userId())) {
             throw new NotFoundIdException(User.class, command.userId());
         }
 
+        // Delete user
         try {
             this.userRepository.deleteById(command.userId());
         } catch (Exception e) {

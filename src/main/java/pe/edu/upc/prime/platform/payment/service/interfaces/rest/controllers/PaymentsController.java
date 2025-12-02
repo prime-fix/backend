@@ -29,23 +29,42 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+/**
+ * REST controller for managing payments.
+ */
 @CrossOrigin(origins = "*",
         methods = { RequestMethod.POST, RequestMethod.GET, RequestMethod.PUT, RequestMethod.DELETE })
 @RestController
 @RequestMapping(value = "/api/v1/payments", produces = MediaType.APPLICATION_JSON_VALUE)
 @Tag(name = "Payments", description = "Payment Management Endpoints")
 public class PaymentsController {
-
+    /**
+     * Service for handling payment queries.
+     */
     private final PaymentQueryService paymentQueryService;
+    /**
+     * Service for handling payment commands.
+     */
     private final PaymentCommandService paymentCommandService;
 
+    /**
+     * Constructor for PaymentsController.
+     *
+     * @param paymentQueryService   the payment query service
+     * @param paymentCommandService the payment command service
+     */
     public PaymentsController(PaymentQueryService paymentQueryService,
                               PaymentCommandService paymentCommandService) {
         this.paymentQueryService = paymentQueryService;
         this.paymentCommandService = paymentCommandService;
     }
 
-    // CREATE PAYMENT
+    /**
+     * Create a new payment.
+     *
+     * @param request the create payment request
+     * @return the response entity with the created payment
+     */
     @Operation(summary = "Create a new payment",
             description = "Creates a new payment method for a user",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
@@ -66,7 +85,7 @@ public class PaymentsController {
     )
     @PostMapping
     public ResponseEntity<PaymentResponse> createPayment(
-            @Valid @RequestBody CreatePaymentRequest request) {
+            @RequestBody CreatePaymentRequest request) {
 
         var createCommand = PaymentAssembler.toCommandFromRequest(request);
         var paymentId = this.paymentCommandService.handle(createCommand);
@@ -85,7 +104,12 @@ public class PaymentsController {
         return new ResponseEntity<>(paymentResponse, HttpStatus.CREATED);
     }
 
-    // GET ALL / BY USER ACCOUNT
+    /**
+     * Get all payments, optionally filtered by user account ID.
+     *
+     * @param user_account_id the user account ID to filter payments (optional)
+     * @return the response entity with the list of payments
+     */
     @Operation(summary = "Retrieve all payments",
             description = "Retrieves all payments or filters by user account if provided")
     @ApiResponses(value = {
@@ -96,15 +120,15 @@ public class PaymentsController {
     })
     @GetMapping
     public ResponseEntity<List<PaymentResponse>> getAllPayments(
-            @RequestParam(required = false) Long userAccountId) {
+            @RequestParam(required = false) Long user_account_id) {
 
         List<Payment> payments;
 
-        if (Objects.isNull(userAccountId)) {
+        if (Objects.isNull(user_account_id)) {
             var getAllPaymentsQuery = new GetAllPaymentsQuery();
             payments = paymentQueryService.handle(getAllPaymentsQuery);
         } else {
-            var getPaymentByIdUserAccountQuery = new GetPaymentByIdUserAccountQuery(new UserAccountId(userAccountId));
+            var getPaymentByIdUserAccountQuery = new GetPaymentByIdUserAccountQuery(new UserAccountId(user_account_id));
             payments = paymentQueryService.handle(getPaymentByIdUserAccountQuery);
         }
 
@@ -115,7 +139,12 @@ public class PaymentsController {
         return ResponseEntity.ok(paymentResponses);
     }
 
-    // GET BY ID
+    /**
+     * Get a payment by its ID.
+     *
+     * @param payment_id the payment ID
+     * @return the response entity with the payment
+     */
     @Operation(summary = "Retrieve a payment by its ID",
             description = "Retrieves a payment using its unique ID",
             responses = {
@@ -137,7 +166,13 @@ public class PaymentsController {
         return ResponseEntity.ok(response);
     }
 
-    // UPDATE
+    /**
+     * Update an existing payment.
+     *
+     * @param payment_id the payment ID
+     * @param request   the update payment request
+     * @return the response entity with the updated payment
+     */
     @Operation(summary = "Update an existing payment",
             description = "Updates an existing payment with the provided data",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
@@ -159,7 +194,7 @@ public class PaymentsController {
     @PutMapping("/{payment_id}")
     public ResponseEntity<PaymentResponse> updatePayment(
             @PathVariable Long payment_id,
-            @Valid @RequestBody UpdatePaymentRequest request) {
+            @RequestBody UpdatePaymentRequest request) {
 
         var updatePaymentCommand = PaymentAssembler.toCommandFromRequest(payment_id, request);
         var optionalPayment = this.paymentCommandService.handle(updatePaymentCommand);
@@ -171,7 +206,12 @@ public class PaymentsController {
         return ResponseEntity.ok(response);
     }
 
-    // DELETE
+    /**
+     * Delete a payment by its ID.
+     *
+     * @param payment_id the payment ID
+     * @return the response entity indicating the result of the deletion
+     */
     @Operation(summary = "Delete a payment by its ID",
             description = "Deletes a payment using its unique ID",
             responses = {

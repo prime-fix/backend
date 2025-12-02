@@ -170,7 +170,7 @@ public class UserController {
     )
     @PutMapping("/{user_id}")
     public ResponseEntity<UserResponse> updateUser(@PathVariable Long user_id,
-                                                   @Valid @RequestBody UpdateUserRequest request) {
+                                                   @RequestBody UpdateUserRequest request) {
         var updateUserCommand = UserAssembler.toCommandFromRequest(user_id, request);
         var optionalUser = this.userCommandService.handle(updateUserCommand);
         if (optionalUser.isEmpty()) {

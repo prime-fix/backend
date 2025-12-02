@@ -7,6 +7,9 @@ import pe.edu.upc.prime.platform.shared.domain.model.valueobjects.UserAccountId;
 
 import java.util.List;
 
+/**
+ * Repository interface for Payment entity.
+ */
 @Repository
 public interface PaymentRepository extends JpaRepository<Payment, Long> {
 

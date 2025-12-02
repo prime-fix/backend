@@ -2,6 +2,7 @@ package pe.edu.upc.prime.platform.data.collection.application.internal.commandse
 
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import pe.edu.upc.prime.platform.data.collection.application.internal.outboundservices.acl.ExternalVehicleDiagnosisServiceFromDataCollection;
 import pe.edu.upc.prime.platform.data.collection.domain.exceptions.VisitAlreadyRegisteredException;
 import pe.edu.upc.prime.platform.data.collection.domain.model.aggregates.Visit;
 import pe.edu.upc.prime.platform.data.collection.domain.model.commands.CreateVisitCommand;
@@ -18,13 +19,18 @@ public class VisitCommandServiceImpl implements VisitCommandService {
 
     private final VisitRepository visitRepository;
     private final ApplicationEventPublisher publisher;
+    private final ExternalVehicleDiagnosisServiceFromDataCollection externalVehicleDiagnosisServiceFromDataCollection;
+
     /**
      * Constructor for VisitCommandServiceImpl.
      * @param visitRepository the visit repository
      */
-    public VisitCommandServiceImpl(VisitRepository visitRepository, ApplicationEventPublisher publisher) {
+    public VisitCommandServiceImpl(VisitRepository visitRepository,
+                                   ApplicationEventPublisher publisher,
+                                   ExternalVehicleDiagnosisServiceFromDataCollection externalVehicleDiagnosisServiceFromDataCollection) {
         this.visitRepository = visitRepository;
         this.publisher = publisher;
+        this.externalVehicleDiagnosisServiceFromDataCollection = externalVehicleDiagnosisServiceFromDataCollection;
     }
 
     /**
@@ -42,6 +48,13 @@ public class VisitCommandServiceImpl implements VisitCommandService {
         var visit = new Visit(command);
         try{
             this.visitRepository.save(visit);
+
+            var expectedVisitId = this.externalVehicleDiagnosisServiceFromDataCollection.createExpectedVisit(visit.getId(), vehicleId);
+
+            if (expectedVisitId.equals(0L)) {
+                throw new IllegalArgumentException("Expected Visit could not be created");
+            }
+
         } catch (Exception e){
             throw new IllegalArgumentException("Error while saving visit:"+ e.getMessage());
         }

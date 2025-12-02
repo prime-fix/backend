@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 
 /**
  * Request record for updating a service.
+ *
  * @param name the name of the service
  * @param description the description of the service
  */

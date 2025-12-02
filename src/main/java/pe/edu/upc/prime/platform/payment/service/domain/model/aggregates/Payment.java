@@ -11,41 +11,43 @@ import pe.edu.upc.prime.platform.payment.service.domain.model.valueobjects.*;
 import pe.edu.upc.prime.platform.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
 import pe.edu.upc.prime.platform.shared.domain.model.valueobjects.UserAccountId;
 
+/**
+ * Payment aggregate root entity.
+ */
 @Entity
 @Table(name="payments")
-public class Payment extends AuditableAbstractAggregateRoot<Payment>{
-
+public class Payment extends AuditableAbstractAggregateRoot<Payment> {
 
     @Getter
     @Column(name = "card_number", nullable = false, length = 20)
-    @JsonProperty("card_number")
     private String cardNumber;
 
     @Getter
     @Enumerated(EnumType.STRING)
     @Column(name = "card_type", nullable = false, length = 20)
-    @JsonProperty("card_type")
     private CardType cardType;
 
     @Getter
     @Min(1)
     @Max(12)
     @Column(name = "month", nullable = false)
-    private int month;
+    private Integer month;
 
     @Getter
     @Column(name = "year", nullable = false)
-    private int year;
+    private Integer year;
 
     @Getter
-    @Column(name = "ccv", nullable = false, length = 3)
-    private String ccv;
+    @Min(100)
+    @Max(9999)
+    @Column(name = "ccv", nullable = false)
+    private Integer ccv;
 
     @Getter
     @Embedded
     @AttributeOverride(
-            name = "id_user_account",
-            column = @Column(name = "id_user_account", nullable = false, length = 10)
+            name = "userAccountId",
+            column = @Column(name = "user_account_id", nullable = false, length = 10)
     )
     @JsonProperty("id_user_account")
     private UserAccountId userAccountId;
@@ -79,6 +81,7 @@ public class Payment extends AuditableAbstractAggregateRoot<Payment>{
         this.month = command.month();
         this.year = command.year();
         this.ccv = command.ccv();
+        this.userAccountId = command.userAccountId();
     }
 
     public String getMaskedCardNumber() {
