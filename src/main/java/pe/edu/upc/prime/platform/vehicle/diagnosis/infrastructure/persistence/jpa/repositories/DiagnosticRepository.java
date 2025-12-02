@@ -6,16 +6,10 @@ import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.aggregates.Diagn
 
 import java.util.List;
 
-public interface DiagnosisRepository extends JpaRepository<Diagnostic, Long> {
-
-    /**
-     * Check if a diagnostic exists by its ID.
-     *
-     * @param diagnosticId the ID to check
-     * @return true if a diagnostic with the given ID exists, false otherwise
-     */
-    boolean existsById(Long diagnosticId);
-
+/**
+ * Repository interface for managing Diagnostic entities.
+ */
+public interface DiagnosticRepository extends JpaRepository<Diagnostic, Long> {
     /**
      * Finds all diagnostics associated with a given vehicle.
      *

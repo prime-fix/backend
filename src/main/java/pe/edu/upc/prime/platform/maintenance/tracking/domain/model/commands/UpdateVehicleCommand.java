@@ -32,7 +32,7 @@ public record UpdateVehicleCommand(Long vehicleId, String color, String model, U
                 && maintenanceStatus != MaintenanceStatus.TESTING && maintenanceStatus != MaintenanceStatus.READY_FOR_PICKUP
                 && maintenanceStatus != MaintenanceStatus.COLLECTED) {
             throw new IllegalArgumentException(
-                    "[CreateVehicleCommand] Invalid maintenance status: [" + maintenanceStatus + "]");
+                    "[CreateVehicleCommand] Invalid maintenance status: [" + maintenanceStatus.getValue() + "]");
         }
     }
 }

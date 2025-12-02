@@ -16,12 +16,12 @@ import pe.edu.upc.prime.platform.shared.domain.model.valueobjects.VehicleId;
 import pe.edu.upc.prime.platform.shared.interfaces.rest.resources.BadRequestResponse;
 import pe.edu.upc.prime.platform.shared.interfaces.rest.resources.NotFoundResponse;
 import pe.edu.upc.prime.platform.shared.interfaces.rest.resources.ServiceUnavailableResponse;
-import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.commands.DeleteDiagnosisCommand;
-import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.queries.GetAllDiagnosticsByVehicleIdQuery;
+import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.commands.DeleteDiagnosticCommand;
+import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.queries.GetDiagnosticsByVehicleIdQuery;
 import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.queries.GetAllDiagnosticsQuery;
 import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.queries.GetDiagnosticByIdQuery;
-import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.services.DiagnosisCommandService;
-import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.services.DiagnosisQueryService;
+import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.services.DiagnosticCommandService;
+import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.services.DiagnosticQueryService;
 import pe.edu.upc.prime.platform.vehicle.diagnosis.interfaces.rest.assemblers.DiagnosticAssembler;
 import pe.edu.upc.prime.platform.vehicle.diagnosis.interfaces.rest.resources.CreateDiagnosticRequest;
 import pe.edu.upc.prime.platform.vehicle.diagnosis.interfaces.rest.resources.DiagnosticResponse;
@@ -41,20 +41,20 @@ import java.util.stream.Collectors;
 @Tag(name = "VehiclesDiagnosis", description = "Vehicles Diagnosis Management Endpoints")
 public class VehiclesDiagnosisController {
 
-    private final DiagnosisQueryService diagnosisQueryService;
-    private final DiagnosisCommandService diagnosisCommandService;
+    private final DiagnosticQueryService diagnosticQueryService;
+    private final DiagnosticCommandService diagnosticCommandService;
 
     /**
      * Constructor for VehiclesDiagnosisController.
      *
-     * @param diagnosisQueryService   the service for handling diagnosis queries
-     * @param diagnosisCommandService the service for handling diagnosis commands
+     * @param diagnosticQueryService   the service for handling diagnosis queries
+     * @param diagnosticCommandService the service for handling diagnosis commands
      */
     public VehiclesDiagnosisController(
-            DiagnosisQueryService diagnosisQueryService,
-            DiagnosisCommandService diagnosisCommandService) {
-        this.diagnosisQueryService = diagnosisQueryService;
-        this.diagnosisCommandService = diagnosisCommandService;
+            DiagnosticQueryService diagnosticQueryService,
+            DiagnosticCommandService diagnosticCommandService) {
+        this.diagnosticQueryService = diagnosticQueryService;
+        this.diagnosticCommandService = diagnosticCommandService;
     }
 
     /**
@@ -90,14 +90,14 @@ public class VehiclesDiagnosisController {
     public ResponseEntity<DiagnosticResponse> createDiagnostic(@Valid @RequestBody CreateDiagnosticRequest request) {
 
         var createProfileCommand = DiagnosticAssembler.toCommandFromRequest(request);
-        var diagnosticId = this.diagnosisCommandService.handle(createProfileCommand);
+        var diagnosticId = this.diagnosticCommandService.handle(createProfileCommand);
 
-        if (Objects.isNull(diagnosticId) || diagnosticId.isBlank()) {
+        if (Objects.isNull(diagnosticId) || diagnosticId.equals(0L)) {
             return ResponseEntity.badRequest().build();
         }
 
         var getDiagnosticByIdQuery = new GetDiagnosticByIdQuery(diagnosticId);
-        var optionalDiagnostic = this.diagnosisQueryService.handle(getDiagnosticByIdQuery);
+        var optionalDiagnostic = this.diagnosticQueryService.handle(getDiagnosticByIdQuery);
 
         if (optionalDiagnostic.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -123,8 +123,8 @@ public class VehiclesDiagnosisController {
             return ResponseEntity.ok(List.of());
         }
 
-        var query = new GetAllDiagnosticsByVehicleIdQuery(new VehicleId(vehicleId));
-        var diagnostics = diagnosisQueryService.handle(query);
+        var query = new GetDiagnosticsByVehicleIdQuery(new VehicleId(vehicleId));
+        var diagnostics = diagnosticQueryService.handle(query);
 
         var resources = diagnostics.stream()
                 .map(DiagnosticAssembler::toResourceFromEntity)
@@ -135,6 +135,7 @@ public class VehiclesDiagnosisController {
 
     /**
      * Endpoint to retrieve all diagnostics
+     *
      * @return a list of DiagnosticResponse
      */
     @Operation( summary = "Retrieve all diagnostic",
@@ -148,7 +149,7 @@ public class VehiclesDiagnosisController {
     })
     @GetMapping
     public ResponseEntity<List<DiagnosticResponse>> getAllDiagnostic() {
-        var diagnostics = diagnosisQueryService.handle(new GetAllDiagnosticsQuery());
+        var diagnostics = diagnosticQueryService.handle(new GetAllDiagnosticsQuery());
         var responses = diagnostics.stream()
                 .map(DiagnosticAssembler::toResourceFromEntity)
                 .collect(Collectors.toList());
@@ -195,7 +196,7 @@ public class VehiclesDiagnosisController {
             @Valid @RequestBody UpdateDiagnosticRequest request) {
 
         var updateDiagnosticCommand = DiagnosticAssembler.toCommandFromRequest(diagnosticId, request);
-        var optionalDiagnostic = this.diagnosisCommandService.handle(updateDiagnosticCommand);
+        var optionalDiagnostic = this.diagnosticCommandService.handle(updateDiagnosticCommand);
 
         if (optionalDiagnostic.isEmpty()) {
             return ResponseEntity.badRequest().build();
@@ -221,8 +222,8 @@ public class VehiclesDiagnosisController {
     })
     @DeleteMapping("/{diagnostic_id}")
     public ResponseEntity<?> deleteDiagnostic(@PathVariable Long diagnostic_id) {
-        var deleteDiagnosticCommand = new DeleteDiagnosisCommand(diagnostic_id);
-        this.diagnosisCommandService.handle(deleteDiagnosticCommand);
+        var deleteDiagnosticCommand = new DeleteDiagnosticCommand(diagnostic_id);
+        this.diagnosticCommandService.handle(deleteDiagnosticCommand);
         return ResponseEntity.noContent().build();
     }
 }

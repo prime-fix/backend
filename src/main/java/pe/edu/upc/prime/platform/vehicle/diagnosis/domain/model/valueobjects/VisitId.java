@@ -9,15 +9,14 @@ import java.util.Objects;
  * @param visitId the unique identifier for the Visit
  */
 @Embeddable
-public record VisitId(String visitId) {
+public record VisitId(Long visitId) {
     /**
      * Constructor for IdVisit with validation.
      *
      * @param visitId the unique identifier for the visit
-     * @throws IllegalArgumentException if IdVisit is negative
      */
     public VisitId {
-        if (Objects.isNull(visitId) || visitId.isBlank()) {
+        if (Objects.isNull(visitId) || visitId <= 0) {
             throw new IllegalArgumentException("Visit ID cannot be null or negative");
         }
     }
@@ -27,5 +26,14 @@ public record VisitId(String visitId) {
      */
     public VisitId() {
         this(null);
+    }
+
+    /**
+     * Gets the value of the visitId.
+     *
+     * @return the visitId
+     */
+    public Long value() {
+        return this.visitId;
     }
 }

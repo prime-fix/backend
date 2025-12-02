@@ -1,6 +1,7 @@
 package pe.edu.upc.prime.platform.data.collection.interfaces.acl;
 
 import org.springframework.stereotype.Service;
+import pe.edu.upc.prime.platform.data.collection.domain.model.queries.ExistsVisitByIdQuery;
 import pe.edu.upc.prime.platform.data.collection.domain.model.queries.GetVisitByAutoRepairIdQuery;
 import pe.edu.upc.prime.platform.data.collection.domain.model.queries.GetVisitByIdQuery;
 import pe.edu.upc.prime.platform.data.collection.domain.model.queries.GetVisitByVehicleIdQuery;
@@ -8,13 +9,15 @@ import pe.edu.upc.prime.platform.data.collection.domain.services.VisitCommandSer
 import pe.edu.upc.prime.platform.data.collection.domain.services.VisitQueryService;
 import pe.edu.upc.prime.platform.data.collection.interfaces.rest.assemblers.VisitAssembler;
 import pe.edu.upc.prime.platform.data.collection.interfaces.rest.resources.VisitResponse;
-import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.queries.GetVehicleByIdQuery;
 
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Facade for Data Collection context operations, providing methods to manage and retrieve visit data.
+ */
 @Service
-public class VisitContextFacade {
+public class DataCollectionContextFacade {
     private final VisitCommandService visitCommandService;
     private final VisitQueryService visitQueryService;
 
@@ -23,9 +26,20 @@ public class VisitContextFacade {
      * @param visitCommandService the service for handling visit commands
      * @param visitQueryService the service for handling visit queries
      */
-    public VisitContextFacade(VisitCommandService visitCommandService, VisitQueryService visitQueryService) {
+    public DataCollectionContextFacade(VisitCommandService visitCommandService, VisitQueryService visitQueryService) {
         this.visitCommandService = visitCommandService;
         this.visitQueryService = visitQueryService;
+    }
+
+    /**
+     * Checks if a visit exists by its ID
+     *
+     * @param visitId the ID of the visit to check
+     * @return true if the visit exists, false otherwise
+     */
+    public boolean existsVisitById(Long visitId){
+        var existsVisitByIdQuery = new ExistsVisitByIdQuery(visitId);
+        return visitQueryService.handle(existsVisitByIdQuery);
     }
 
     /**

@@ -1,7 +1,7 @@
 package pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.queries;
 
 /**
- * Query to get all diagnostics.
+ * Query to get all expected visits.
  */
-public record GetAllDiagnosticsQuery() {
+public record GetAllExpectedVisitsQuery() {
 }
