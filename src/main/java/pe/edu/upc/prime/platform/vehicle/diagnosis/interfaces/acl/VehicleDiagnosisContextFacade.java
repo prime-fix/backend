@@ -1,6 +1,7 @@
 package pe.edu.upc.prime.platform.vehicle.diagnosis.interfaces.acl;
 
 import org.springframework.stereotype.Service;
+import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.commands.DeleteExpectedVisitByVisitIdCommand;
 import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.queries.ExistsExpectedVisitByIdQuery;
 import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.services.ExpectedVisitCommandService;
 import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.services.ExpectedVisitQueryService;
@@ -59,5 +60,14 @@ public class VehicleDiagnosisContextFacade {
             return 0L;
         }
         return expectedVisitId;
+    }
+
+    /**
+     * Delete expected visit using visitId
+     * @param visitId the visit id to be deleted
+     */
+    public void deleteExpectedVisitByVisitId(Long visitId) {
+        var deleteCommand = new DeleteExpectedVisitByVisitIdCommand(visitId);
+        this.expectedVisitCommandService.handle(deleteCommand);
     }
 }

@@ -52,27 +52,23 @@ public class VehicleCommandServiceImpl implements VehicleCommandService {
     public Long handle(CreateVehicleCommand command) {
         var vehiclePlate = command.vehicleInformation().vehiclePlate();
 
-        // Validate if vehicle plate already exists
         if (vehicleRepository.existsByVehicleInformation_VehiclePlate(vehiclePlate)) {
             throw new IllegalArgumentException("[VehicleCommandServiceImpl] Vehicle with the vehicle plate "
                     + vehiclePlate + " already exists");
         }
 
-        // Validate if user ID exists in external IAM service
         if (!this.externalIamServiceFromMaintenanceTracking.existsUserById(command.userId().userId())) {
             throw new NotFoundArgumentException(
                     String.format("[VehicleCommandServiceImpl User ID: %s not found in the external IAM service",
                             command.userId().userId()));
         }
 
-        // Validate if user has an invalid role to own a vehicle
-        if (this.externalIamServiceFromMaintenanceTracking.getRoleIdByUserId(command.userId().userId()) == Roles.ROLE_AUTO_REPAIR) {
+        if (this.externalIamServiceFromMaintenanceTracking.getRoleIdByUserId(command.userId().userId()) != Roles.ROLE_VEHICLE_OWNER) {
             throw new IllegalArgumentException(
                     String.format("[VehicleCommandServiceImpl] User ID: %s has an invalid role to own a vehicle",
                             command.userId().userId()));
         }
 
-        // Create and save the new vehicle
         var vehicle = new Vehicle(command);
         try {
             this.vehicleRepository.save(vehicle);

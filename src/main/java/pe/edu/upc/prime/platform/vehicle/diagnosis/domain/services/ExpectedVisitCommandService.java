@@ -2,6 +2,7 @@ package pe.edu.upc.prime.platform.vehicle.diagnosis.domain.services;
 
 import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.aggregates.ExpectedVisit;
 import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.commands.CreateExpectedVisitCommand;
+import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.commands.DeleteExpectedVisitByVisitIdCommand;
 import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.commands.DeleteExpectedVisitCommand;
 import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.commands.UpdateExpectedVisitCommand;
 
@@ -34,4 +35,10 @@ public interface ExpectedVisitCommandService {
      * @param command the command containing the ID of the expected visit to be deleted
      */
     void handle(DeleteExpectedVisitCommand command);
+
+    /**
+     * Handles the deletion fo an expected visit based on the provided command
+     * @param command the command containing the visitID of the expected visit to be deleted
+     */
+    void handle(DeleteExpectedVisitByVisitIdCommand command);
 }

@@ -6,8 +6,10 @@ import pe.edu.upc.prime.platform.shared.domain.exceptions.NotFoundIdException;
 import pe.edu.upc.prime.platform.vehicle.diagnosis.application.internal.outboundservices.acl.ExternalMaintenanceTrackingServiceFromVehicleDiagnosis;
 import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.aggregates.ExpectedVisit;
 import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.commands.CreateExpectedVisitCommand;
+import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.commands.DeleteExpectedVisitByVisitIdCommand;
 import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.commands.DeleteExpectedVisitCommand;
 import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.commands.UpdateExpectedVisitCommand;
+import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.valueobjects.VisitId;
 import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.services.ExpectedVisitCommandService;
 import pe.edu.upc.prime.platform.vehicle.diagnosis.infrastructure.persistence.jpa.repositories.ExpectedVisitRepository;
 
@@ -136,6 +138,24 @@ public class ExpectedVisitCommandServiceImpl implements ExpectedVisitCommandServ
             this.expectedVisitRepository.deleteById(command.expectedVisitId());
         } catch (Exception e) {
             throw new PersistenceException("[ExpectedVisitCommandServiceImpl] Error deleting Expected Visit: "
+                    + e.getMessage());
+        }
+    }
+
+    /**
+     * Handles the deletion of an expected visit by visitId
+     * @param command the command containing the visitID of the expected visit to be deleted
+     */
+    @Override
+    public void handle(DeleteExpectedVisitByVisitIdCommand command) {
+        if(!this.expectedVisitRepository.existsByVisitId(new VisitId(command.visitId()))){
+            throw new NotFoundIdException(ExpectedVisit.class, command.visitId());
+        }
+
+        try{
+            this.expectedVisitRepository.deleteByVisitId(new VisitId(command.visitId()));
+        }catch (Exception e){
+            throw  new PersistenceException("[ExpectedVisitCommandServiceImpl] Error deleting Expected Visit: "
                     + e.getMessage());
         }
     }

@@ -8,8 +8,17 @@ import pe.edu.upc.prime.platform.data.collection.interfaces.rest.resources.Visit
 import pe.edu.upc.prime.platform.shared.domain.model.valueobjects.AutoRepairId;
 import pe.edu.upc.prime.platform.shared.domain.model.valueobjects.VehicleId;
 
+/**
+ * Assembler for converting between Visit-related requests, commands, and responses.
+ */
 public class VisitAssembler {
 
+    /**
+     * Converts a CreateVisitRequest to a CreateVisitCommand.
+     *
+     * @param request the CreateVisitRequest to convert
+     * @return the corresponding CreateVisitCommand
+     */
     public static CreateVisitCommand toCommandFromRequest(CreateVisitRequest request) {
         return new CreateVisitCommand(
                 request.failure(),
@@ -20,6 +29,12 @@ public class VisitAssembler {
         );
     }
 
+    /**
+     * Converts a Visit entity to a VisitResponse.
+     *
+     * @param visit the Visit entity to convert
+     * @return the corresponding VisitResponse
+     */
     public static VisitResponse toResponseFromEntity(Visit visit) {
         return new VisitResponse(
                 visit.getId().toString(),

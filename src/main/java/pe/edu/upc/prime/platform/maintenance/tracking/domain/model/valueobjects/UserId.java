@@ -18,7 +18,7 @@ public record UserId(Long userId) {
      * @param userId the unique identifier for the User
      */
     public UserId {
-        if (Objects.isNull(userId) || userId <= 0) {
+        if (userId < 0) {
             throw new IllegalArgumentException("[UserId] userId cannot be null or negative");
         }
     }

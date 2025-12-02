@@ -7,6 +7,7 @@ import pe.edu.upc.prime.platform.data.collection.domain.exceptions.VisitAlreadyR
 import pe.edu.upc.prime.platform.data.collection.domain.model.aggregates.Visit;
 import pe.edu.upc.prime.platform.data.collection.domain.model.commands.CreateVisitCommand;
 import pe.edu.upc.prime.platform.data.collection.domain.model.commands.DeleteVisitCommand;
+import pe.edu.upc.prime.platform.data.collection.domain.model.events.CreateExpectedVisitEvent;
 import pe.edu.upc.prime.platform.data.collection.domain.model.events.VisitCreatedEvent;
 import pe.edu.upc.prime.platform.data.collection.domain.services.VisitCommandService;
 import pe.edu.upc.prime.platform.data.collection.infrastructure.persistance.jpa.repositories.VisitRepository;
@@ -45,19 +46,19 @@ public class VisitCommandServiceImpl implements VisitCommandService {
         if(this.visitRepository.existsByAutoRepairId_AutoRepairId(command.autoRepairId().autoRepairId())){
             throw new VisitAlreadyRegisteredException(vehicleId, command.autoRepairId().autoRepairId());
         }
+
         var visit = new Visit(command);
+
         try{
             this.visitRepository.save(visit);
 
-            var expectedVisitId = this.externalVehicleDiagnosisServiceFromDataCollection.createExpectedVisit(visit.getId(), vehicleId);
-
-            if (expectedVisitId.equals(0L)) {
-                throw new IllegalArgumentException("Expected Visit could not be created");
-            }
+            var createExpectedVisitEvent = new CreateExpectedVisitEvent(this, visit.getId(), vehicleId);
+            this.publisher.publishEvent(createExpectedVisitEvent);
 
         } catch (Exception e){
             throw new IllegalArgumentException("Error while saving visit:"+ e.getMessage());
         }
+
         var event = new VisitCreatedEvent(
                 this,
                 visit.getId(),

@@ -31,4 +31,12 @@ public class ExternalVehicleDiagnosisServiceFromDataCollection {
     public Long createExpectedVisit(Long visitId, Long vehicleId) {
         return this.vehicleDiagnosisContextFacade.createExpectedVisit(visitId, vehicleId);
     }
+
+    /**
+     * Delete expected visit linked to a visit.
+     * @param visitId the visit id to be deleted
+     */
+    public void deleteExpectedVisitByVisitId(Long visitId) {
+        this.vehicleDiagnosisContextFacade.deleteExpectedVisitByVisitId(visitId);
+    }
 }

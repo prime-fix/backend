@@ -25,4 +25,11 @@ public interface ExpectedVisitRepository extends JpaRepository<ExpectedVisit, Lo
      * @return true if an ExpectedVisit with the given VisitId exists excluding the specified ID, false otherwise
      */
     boolean existsByVisitIdAndIdIsNot(VisitId visitId, Long id);
+
+    /**
+     * Deletes an ExpectedVisit by VisitId.
+     *
+     * @param visitId the VisitId to delete
+     */
+    void deleteByVisitId(VisitId visitId);
 }
