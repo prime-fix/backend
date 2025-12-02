@@ -168,6 +168,11 @@ public class UserAccountCommandServiceImpl implements UserAccountCommandService 
         }
 
         // Check if email already exists
+        if (userAccountRepository.existsByEmail(command.email())) {
+            throw new IllegalArgumentException("[UserAccountCommandServiceImpl] Email already exists");
+        }
+
+        // Check if email already exists
         if (!roleRepository.existsByName(roleName)) {
             throw new IllegalArgumentException("[UserAccountCommandServiceImpl] Role not found");
         }
@@ -234,6 +239,11 @@ public class UserAccountCommandServiceImpl implements UserAccountCommandService 
         // Check if username already exists
         if (userAccountRepository.existsByUsername(command.username())) {
             throw new IllegalArgumentException("[UserAccountCommandServiceImpl] Username already exists.");
+        }
+
+        // Check if email already exists
+        if (userAccountRepository.existsByEmail(command.email())) {
+            throw new IllegalArgumentException("[UserAccountCommandServiceImpl] Email already exists");
         }
 
         // Check if email already exists
