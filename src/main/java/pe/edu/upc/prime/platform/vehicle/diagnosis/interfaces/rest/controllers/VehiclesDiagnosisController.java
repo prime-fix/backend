@@ -16,6 +16,7 @@ import pe.edu.upc.prime.platform.shared.domain.model.valueobjects.VehicleId;
 import pe.edu.upc.prime.platform.shared.interfaces.rest.resources.BadRequestResponse;
 import pe.edu.upc.prime.platform.shared.interfaces.rest.resources.NotFoundResponse;
 import pe.edu.upc.prime.platform.shared.interfaces.rest.resources.ServiceUnavailableResponse;
+import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.aggregates.Diagnostic;
 import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.commands.DeleteDiagnosticCommand;
 import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.queries.GetDiagnosticsByVehicleIdQuery;
 import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.queries.GetAllDiagnosticsQuery;
@@ -37,11 +38,17 @@ import java.util.stream.Collectors;
 @CrossOrigin(origins = "*", methods = { RequestMethod.POST, RequestMethod.GET,
         RequestMethod.PUT, RequestMethod.DELETE })
 @RestController
-@RequestMapping(value = "/api/v1/diagnosis", produces = MediaType.APPLICATION_JSON_VALUE)
-@Tag(name = "VehiclesDiagnosis", description = "Vehicles Diagnosis Management Endpoints")
+@RequestMapping(value = "/api/v1/diagnostics", produces = MediaType.APPLICATION_JSON_VALUE)
+@Tag(name = "Diagnostics", description = "Diagnostics Management Endpoints")
 public class VehiclesDiagnosisController {
-
+    /**
+     * The diagnostic query service for handling diagnosis-related queries.
+     */
     private final DiagnosticQueryService diagnosticQueryService;
+
+    /**
+     * The diagnostic command service for handling diagnosis-related commands.
+     */
     private final DiagnosticCommandService diagnosticCommandService;
 
     /**
@@ -57,35 +64,31 @@ public class VehiclesDiagnosisController {
         this.diagnosticCommandService = diagnosticCommandService;
     }
 
+
     /**
-     * Endpoint to create a new diagnostic.
+     * Create a new diagnostic.
      *
-     * @param request the diagnostic data to be created
-     * @return a ResponseEntity containing the created diagnostic resource or a bad request status
-     *     if creation fails
+     * @param request the request body containing diagnostic data
+     * @return the created DiagnosticResponse
      */
     @Operation(summary = "Create a new diagnostic",
             description = "Creates a new diagnostic with the provided data",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "Diagnostic data for creation", required = true,
-                    content = @Content (
+                    content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = CreateDiagnosticRequest.class)))
+                            schema = @Schema(implementation = CreateDiagnosticRequest.class))),
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "Diagnostic created successfully",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = DiagnosticResponse.class))),
+                    @ApiResponse(responseCode = "400", description = "Bad request - Invalid input data",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = RuntimeException.class)))
+            }
     )
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Diagnostic created successfully",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = DiagnosticResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Bad request - Invalid input data",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = BadRequestResponse.class))),
-            @ApiResponse(responseCode = "500", description = "Internal server error - Unexpected error",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = ServiceUnavailableResponse.class)))
-    })
     @PostMapping
     public ResponseEntity<DiagnosticResponse> createDiagnostic(@Valid @RequestBody CreateDiagnosticRequest request) {
 
@@ -108,94 +111,81 @@ public class VehiclesDiagnosisController {
     }
 
     /**
-     * Endpoint to retrieve all diagnostic or filter by vehicle id.
+     * Retrieve all diagnostics, optionally filtered by vehicle ID.
      *
-     * @param vehicleId optional vehicle id parameter to filter diagnostics
-     * @return a list of ResponseMinimalEntity
+     * @param vehicleId the vehicle ID to filter diagnostics (optional)
+     * @return a list of DiagnosticResponse objects
      */
-    @Operation( summary = "Retrieve a diagnostic by vehicleId",
-            description = "Retrieves all diagnostic or filters by vehicleId if provided"
-    )
-    @GetMapping("/{vehicleId}")
-    public ResponseEntity<List<DiagnosticResponse>> getAllDiagnosticsByVehicleId(@PathVariable Long vehicleId) {
+    @Operation(summary = "Retrieve all diagnostics",
+            description = "Retrieves all diagnostics or filters them by vehicle id if provided",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Diagnostics retrieved successfully",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = DiagnosticResponse.class))),
+            })
+    @GetMapping
+    public ResponseEntity<List<DiagnosticResponse>> getAllDiagnostics(@RequestParam(required = false) Long vehicleId) {
+        List<Diagnostic> diagnostics;
 
-        if (vehicleId == null || vehicleId.equals(0L)) {
-            return ResponseEntity.ok(List.of());
+        if (Objects.isNull(vehicleId)) {
+            var getAllDiagnosticsQuery = new GetAllDiagnosticsQuery();
+            diagnostics = diagnosticQueryService.handle(getAllDiagnosticsQuery);
+        } else {
+            var getDiagnosticsByVehicleIdQuery = new GetDiagnosticsByVehicleIdQuery(new VehicleId(vehicleId));
+            diagnostics = diagnosticQueryService.handle(getDiagnosticsByVehicleIdQuery);
         }
 
-        var query = new GetDiagnosticsByVehicleIdQuery(new VehicleId(vehicleId));
-        var diagnostics = diagnosticQueryService.handle(query);
-
-        var resources = diagnostics.stream()
-                .map(DiagnosticAssembler::toResourceFromEntity)
-                .toList();
-
-        return ResponseEntity.ok(resources);
-    }
-
-    /**
-     * Endpoint to retrieve all diagnostics
-     *
-     * @return a list of DiagnosticResponse
-     */
-    @Operation( summary = "Retrieve all diagnostic",
-            description = "Retrieves all diagnostic"
-    )
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Diagnostics retrieved successfully",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            array = @ArraySchema(schema = @Schema(implementation = DiagnosticResponse.class)) ))
-    })
-    @GetMapping
-    public ResponseEntity<List<DiagnosticResponse>> getAllDiagnostic() {
-        var diagnostics = diagnosticQueryService.handle(new GetAllDiagnosticsQuery());
-        var responses = diagnostics.stream()
+        var diagnosticResponses = diagnostics.stream()
                 .map(DiagnosticAssembler::toResourceFromEntity)
                 .collect(Collectors.toList());
-        return ResponseEntity.ok(responses);
+
+        return ResponseEntity.ok(diagnosticResponses);
     }
 
-    /**
-     * Endpoint to update an existing diagnostic.
-     *
-     * @param diagnosticId the ID of the diagnostic to be updated
-     * @param request  the updated diagnostic data
-     * @return a ResponseEntity containing the updated diagnostic resource or a bad request status
-     *     if the update fails
-     */
+    @Operation(summary = "Retrieve a diagnostic by its ID",
+            description = "Retrieves a diagnostic using its unique ID",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Diagnostic retrieved successfully",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = DiagnosticResponse.class))),
+            })
+    @GetMapping("/{diagnostic_id}")
+    public ResponseEntity<DiagnosticResponse> getDiagnosticById(@PathVariable Long diagnostic_id) {
+        var getDiagnosticByIdQuery = new GetDiagnosticByIdQuery(diagnostic_id);
+        var optionalDiagnostic = this.diagnosticQueryService.handle(getDiagnosticByIdQuery);
+
+        if (optionalDiagnostic.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        var diagnosticResponse = DiagnosticAssembler.toResourceFromEntity(optionalDiagnostic.get());
+        return ResponseEntity.ok(diagnosticResponse);
+    }
+
     @Operation(summary = "Update an existing diagnostic",
             description = "Update an existing diagnostic with the provided data",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "Diagnostic data for update", required = true,
                     content = @Content (
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = UpdateDiagnosticRequest.class)))
+                            schema = @Schema(implementation = UpdateDiagnosticRequest.class))),
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Diagnostic updated successfully",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = DiagnosticResponse.class))),
+                    @ApiResponse(responseCode = "400", description = "Bad request - Invalid input data",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = RuntimeException.class)))
+            }
     )
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Diagnostic updated successfully",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = DiagnosticResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Bad request - Invalid input data",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = BadRequestResponse.class))),
-            @ApiResponse(responseCode = "404", description = "Not found - Related resource not found",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = NotFoundResponse.class))),
-            @ApiResponse(responseCode = "500", description = "Internal server error - Unexpected error",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = ServiceUnavailableResponse.class)))
-    })
-    @PutMapping("/{diagnosticId}")
+    @PutMapping("/{diagnostic_id}")
     public ResponseEntity<DiagnosticResponse> updateDiagnostic(
-            @PathVariable Long diagnosticId,
+            @PathVariable Long diagnostic_id,
             @Valid @RequestBody UpdateDiagnosticRequest request) {
 
-        var updateDiagnosticCommand = DiagnosticAssembler.toCommandFromRequest(diagnosticId, request);
+        var updateDiagnosticCommand = DiagnosticAssembler.toCommandFromRequest(diagnostic_id, request);
         var optionalDiagnostic = this.diagnosticCommandService.handle(updateDiagnosticCommand);
 
         if (optionalDiagnostic.isEmpty()) {
@@ -205,21 +195,17 @@ public class VehiclesDiagnosisController {
         return ResponseEntity.ok(diagnosticResponse);
     }
 
-    /**
-     * Endpoint to delete a diagnostic by its ID.
-     *
-     * @param diagnostic_id the ID of the diagnostic to be deleted
-     * @return a ResponseEntity with no content if deletion is successful
-     */
+
     @Operation(summary = "Delete a diagnostic by its ID",
-            description = "Deletes a diagnostic using its unique ID")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Diagnostic deleted successfully"),
-            @ApiResponse(responseCode = "404", description = "Not found - Related resource not found",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = NotFoundResponse.class))),
-    })
+            description = "Deletes a diagnostic using its unique ID",
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "Diagnostic deleted successfully"),
+                    @ApiResponse(responseCode = "400", description = "Bad request - Invalid diagnostic ID",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = RuntimeException.class)))
+            }
+    )
     @DeleteMapping("/{diagnostic_id}")
     public ResponseEntity<?> deleteDiagnostic(@PathVariable Long diagnostic_id) {
         var deleteDiagnosticCommand = new DeleteDiagnosticCommand(diagnostic_id);

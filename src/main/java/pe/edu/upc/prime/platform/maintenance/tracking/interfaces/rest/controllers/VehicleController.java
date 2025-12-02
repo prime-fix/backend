@@ -101,7 +101,7 @@ public class VehicleController {
     /**
      * Retrieve all vehicles or filter by maintenance status.
      *
-     * @param maintenanceStatus optional maintenance status filter
+     * @param maintenance_status optional maintenance status filter
      * @return ResponseEntity with the list of vehicles
      */
     @Operation(summary = "Retrieve all vehicles",
