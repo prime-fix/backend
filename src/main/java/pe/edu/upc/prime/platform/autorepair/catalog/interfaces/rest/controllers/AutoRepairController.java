@@ -173,7 +173,7 @@ public class AutoRepairController {
     )
     @PutMapping("/{auto_repair_id}")
     public ResponseEntity<AutoRepairResponse> updateAutoRepair(@PathVariable Long auto_repair_id,
-                                                               @Valid @RequestBody UpdateAutoRepairRequest request){
+                                                               @RequestBody UpdateAutoRepairRequest request){
         var updateAutoRepairCommand = AutoRepairAssembler.toCommandFromRequest(auto_repair_id,request);
         var optionalAutoRepair = this.autoRepairCommandService.handle(updateAutoRepairCommand);
 

@@ -57,8 +57,9 @@ public class UserDetailsImpl implements UserDetails {
     public static UserDetailsImpl build(UserAccount userAccount) {
         Collection<? extends GrantedAuthority> authorities = Optional.ofNullable(userAccount.getRole())
                 .map(Role::getName)
-                .map(Object::toString)
-                .map(name -> List.<GrantedAuthority>of(new SimpleGrantedAuthority(name)))
+                .map(Enum::name)
+                .map(SimpleGrantedAuthority::new)
+                .map(List::of)
                 .orElseGet(List::of);
 
         return new UserDetailsImpl(userAccount.getUsername(), userAccount.getPassword(), authorities);

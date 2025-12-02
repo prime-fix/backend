@@ -85,7 +85,7 @@ public class PaymentsController {
     )
     @PostMapping
     public ResponseEntity<PaymentResponse> createPayment(
-            @Valid @RequestBody CreatePaymentRequest request) {
+            @RequestBody CreatePaymentRequest request) {
 
         var createCommand = PaymentAssembler.toCommandFromRequest(request);
         var paymentId = this.paymentCommandService.handle(createCommand);
@@ -194,7 +194,7 @@ public class PaymentsController {
     @PutMapping("/{payment_id}")
     public ResponseEntity<PaymentResponse> updatePayment(
             @PathVariable Long payment_id,
-            @Valid @RequestBody UpdatePaymentRequest request) {
+            @RequestBody UpdatePaymentRequest request) {
 
         var updatePaymentCommand = PaymentAssembler.toCommandFromRequest(payment_id, request);
         var optionalPayment = this.paymentCommandService.handle(updatePaymentCommand);

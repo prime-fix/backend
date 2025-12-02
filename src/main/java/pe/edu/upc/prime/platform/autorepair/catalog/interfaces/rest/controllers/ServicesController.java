@@ -187,7 +187,7 @@ public class ServicesController {
     })
     @PutMapping("/{serviceId}")
     public ResponseEntity<ServiceResponse> updateService(@PathVariable Long serviceId,
-    @Valid @RequestBody UpdateServiceRequest request){
+    @RequestBody UpdateServiceRequest request){
 
         var updateServiceCommand = ServiceAssembler.toCommandFromRequest(serviceId, request);
         var optionalService = this.serviceCommandService.handle(updateServiceCommand);

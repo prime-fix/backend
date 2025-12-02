@@ -171,7 +171,7 @@ public class UserAccountController {
     )
     @PutMapping("/{user_account_id}")
     public ResponseEntity<UserAccountResponse> updateUserAccount(@PathVariable Long user_account_id,
-                                                                 @Valid @RequestBody UpdateUserAccountRequest request) {
+                                                                 @RequestBody UpdateUserAccountRequest request) {
         var updateUserAccountCommand = UserAccountAssembler.toCommandFromRequest(user_account_id, request);
         var optionalUserAccount = this.userAccountCommandService.handle(updateUserAccountCommand);
         if (optionalUserAccount.isEmpty()) {

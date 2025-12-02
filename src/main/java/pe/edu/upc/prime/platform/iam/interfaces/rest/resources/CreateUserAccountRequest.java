@@ -1,7 +1,6 @@
 package pe.edu.upc.prime.platform.iam.interfaces.rest.resources;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
 
 /**

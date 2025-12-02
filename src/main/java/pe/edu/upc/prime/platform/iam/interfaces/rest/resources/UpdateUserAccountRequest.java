@@ -1,7 +1,6 @@
 package pe.edu.upc.prime.platform.iam.interfaces.rest.resources;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -28,11 +27,11 @@ public record UpdateUserAccountRequest(
         @Size(min = 1, max = 200)
         String email,
 
-        @JsonProperty("id_role")
+        @JsonProperty("role_id")
         @NotNull
         Long roleId,
 
-        @JsonProperty("id_user")
+        @JsonProperty("user_id")
         @NotNull
         Long userId,
 
@@ -44,7 +43,8 @@ public record UpdateUserAccountRequest(
         @Size(min = 1, max = 100)
         String password,
 
-        @Schema(name="is_new", defaultValue="false")
         @JsonProperty("is_new")
-        boolean isNew) {
+        @NotNull
+        Boolean isNew) {
 }
+

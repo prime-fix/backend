@@ -80,7 +80,7 @@ public class RatingsController {
     )
     @PostMapping
     public ResponseEntity<RatingResponse> createRating(
-            @Valid @RequestBody CreateRatingRequest request) {
+            @RequestBody CreateRatingRequest request) {
 
         var createCommand = RatingAssembler.toCommandFromRequest(request);
         var ratingId = this.ratingCommandService.handle(createCommand);
@@ -178,7 +178,7 @@ public class RatingsController {
     @PutMapping("/{rating_id}")
     public ResponseEntity<RatingResponse> updateRating(
             @PathVariable Long rating_id,
-            @Valid @RequestBody UpdateRatingRequest request) {
+            @RequestBody UpdateRatingRequest request) {
 
         var updateCommand = RatingAssembler.toCommandFromRequest(rating_id, request);
         var optionalRating = this.ratingCommandService.handle(updateCommand);
