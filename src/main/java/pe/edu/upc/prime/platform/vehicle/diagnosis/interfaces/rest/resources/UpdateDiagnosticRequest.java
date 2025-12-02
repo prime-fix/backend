@@ -19,16 +19,12 @@ public record UpdateDiagnosticRequest(
         Float price,
 
         @JsonProperty("vehicle_id")
-        @NotNull @NotBlank
+        @NotNull
         Long vehicleId,
 
         @JsonProperty("diagnosis")
         @NotNull @NotBlank
         @Size(min = 5, max = 255, message = "Diagnosis description must be between 5 and 255 characters")
-        String diagnosis,
-
-        @JsonProperty("expected_visit_id")
-        @NotNull
-        Long expectedVisitId) {
+        String diagnosis) {
 
 }

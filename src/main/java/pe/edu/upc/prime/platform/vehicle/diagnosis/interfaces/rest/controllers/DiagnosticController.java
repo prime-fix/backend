@@ -1,21 +1,15 @@
 package pe.edu.upc.prime.platform.vehicle.diagnosis.interfaces.rest.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pe.edu.upc.prime.platform.shared.domain.model.valueobjects.VehicleId;
-import pe.edu.upc.prime.platform.shared.interfaces.rest.resources.BadRequestResponse;
-import pe.edu.upc.prime.platform.shared.interfaces.rest.resources.NotFoundResponse;
-import pe.edu.upc.prime.platform.shared.interfaces.rest.resources.ServiceUnavailableResponse;
 import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.aggregates.Diagnostic;
 import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.commands.DeleteDiagnosticCommand;
 import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.queries.GetDiagnosticsByVehicleIdQuery;
@@ -40,7 +34,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping(value = "/api/v1/diagnostics", produces = MediaType.APPLICATION_JSON_VALUE)
 @Tag(name = "Diagnostics", description = "Diagnostics Management Endpoints")
-public class VehiclesDiagnosisController {
+public class DiagnosticController {
     /**
      * The diagnostic query service for handling diagnosis-related queries.
      */
@@ -57,7 +51,7 @@ public class VehiclesDiagnosisController {
      * @param diagnosticQueryService   the service for handling diagnosis queries
      * @param diagnosticCommandService the service for handling diagnosis commands
      */
-    public VehiclesDiagnosisController(
+    public DiagnosticController(
             DiagnosticQueryService diagnosticQueryService,
             DiagnosticCommandService diagnosticCommandService) {
         this.diagnosticQueryService = diagnosticQueryService;
@@ -90,7 +84,7 @@ public class VehiclesDiagnosisController {
             }
     )
     @PostMapping
-    public ResponseEntity<DiagnosticResponse> createDiagnostic(@Valid @RequestBody CreateDiagnosticRequest request) {
+    public ResponseEntity<DiagnosticResponse> createDiagnostic(@RequestBody CreateDiagnosticRequest request) {
 
         var createProfileCommand = DiagnosticAssembler.toCommandFromRequest(request);
         var diagnosticId = this.diagnosticCommandService.handle(createProfileCommand);
@@ -183,7 +177,7 @@ public class VehiclesDiagnosisController {
     @PutMapping("/{diagnostic_id}")
     public ResponseEntity<DiagnosticResponse> updateDiagnostic(
             @PathVariable Long diagnostic_id,
-            @Valid @RequestBody UpdateDiagnosticRequest request) {
+            @RequestBody UpdateDiagnosticRequest request) {
 
         var updateDiagnosticCommand = DiagnosticAssembler.toCommandFromRequest(diagnostic_id, request);
         var optionalDiagnostic = this.diagnosticCommandService.handle(updateDiagnosticCommand);

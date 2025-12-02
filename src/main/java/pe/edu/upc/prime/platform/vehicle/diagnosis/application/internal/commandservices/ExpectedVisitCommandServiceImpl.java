@@ -3,7 +3,7 @@ package pe.edu.upc.prime.platform.vehicle.diagnosis.application.internal.command
 import jakarta.persistence.PersistenceException;
 import org.springframework.stereotype.Service;
 import pe.edu.upc.prime.platform.shared.domain.exceptions.NotFoundIdException;
-import pe.edu.upc.prime.platform.vehicle.diagnosis.application.internal.outboundservices.acl.ExternalDataCollectionServiceFromVehicleDiagnosis;
+import pe.edu.upc.prime.platform.vehicle.diagnosis.application.internal.outboundservices.acl.ExternalMaintenanceTrackingServiceFromVehicleDiagnosis;
 import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.aggregates.ExpectedVisit;
 import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.commands.CreateExpectedVisitCommand;
 import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.commands.DeleteExpectedVisitCommand;
@@ -24,20 +24,19 @@ public class ExpectedVisitCommandServiceImpl implements ExpectedVisitCommandServ
     private final ExpectedVisitRepository expectedVisitRepository;
 
     /**
-     * The external data collection service.
+     * The external maintenance tracking service.
      */
-    private final ExternalDataCollectionServiceFromVehicleDiagnosis externalDataCollectionServiceFromVehicleDiagnosis;
+    private final ExternalMaintenanceTrackingServiceFromVehicleDiagnosis externalMaintenanceTrackingServiceFromVehicleDiagnosis;
 
     /**
      * Constructor for ExpectedVisitCommandServiceImpl.
      *
      * @param expectedVisitRepository the Expected Visit repository
-     * @param externalDataCollectionServiceFromVehicleDiagnosis the external data collection service
      */
     public ExpectedVisitCommandServiceImpl(ExpectedVisitRepository expectedVisitRepository,
-                                           ExternalDataCollectionServiceFromVehicleDiagnosis externalDataCollectionServiceFromVehicleDiagnosis) {
+                                           ExternalMaintenanceTrackingServiceFromVehicleDiagnosis externalMaintenanceTrackingServiceFromVehicleDiagnosis) {
         this.expectedVisitRepository = expectedVisitRepository;
-        this.externalDataCollectionServiceFromVehicleDiagnosis = externalDataCollectionServiceFromVehicleDiagnosis;
+        this.externalMaintenanceTrackingServiceFromVehicleDiagnosis = externalMaintenanceTrackingServiceFromVehicleDiagnosis;
     }
 
     /**
@@ -56,12 +55,11 @@ public class ExpectedVisitCommandServiceImpl implements ExpectedVisitCommandServ
             );
         }
 
-        // Validate if Visit ID exists in external Data Collection Service
-        if (!this.externalDataCollectionServiceFromVehicleDiagnosis.existsVisitById(command.visitId().visitId())) {
+        // Validate if Vehicle ID exists in external Maintenance Tracking Service
+        if (!this.externalMaintenanceTrackingServiceFromVehicleDiagnosis.existsVehicleById(command.vehicleId().value())) {
             throw new IllegalArgumentException(
-                    String.format("[ExpectedVisitCommandServiceImpl] Visit with ID: %s does not exist in Data Collection Service",
-                            command.visitId().visitId())
-            );
+                    String.format("[ExpectedVisitCommandServiceImpl] Vehicle with ID: %s does not exist in Maintenance Tracking Service",
+                            command.vehicleId().value()));
         }
 
         // Create and save Expected Visit
@@ -91,23 +89,24 @@ public class ExpectedVisitCommandServiceImpl implements ExpectedVisitCommandServ
         }
 
         // Validate if Expected Visit with the same Visit ID already exists
-        if (this.expectedVisitRepository.existsByVisitId(command.visitId())) {
+        if (this.expectedVisitRepository.existsByVisitIdAndIdIsNot(command.visitId(), command.expectedVisitId())) {
             throw new IllegalArgumentException(
-                    String.format("[ExpectedVisitCommandServiceImpl] Expected Visit with Visit ID: %s already exists",
+                    String.format("[ExpectedVisitCommandServiceImpl] Visit ID: %s is already associated with another Expected Visit",
                             command.visitId().visitId())
             );
         }
 
-        // Validate if Visit ID exists in external Data Collection Service
-        if (!this.externalDataCollectionServiceFromVehicleDiagnosis.existsVisitById(command.visitId().visitId())) {
+        // Validate if Vehicle ID exists in external Maintenance Tracking Service
+        if (!this.externalMaintenanceTrackingServiceFromVehicleDiagnosis.existsVehicleById(command.vehicleId().value())) {
             throw new IllegalArgumentException(
-                    String.format("[ExpectedVisitCommandServiceImpl] Visit with ID: %s does not exist in Data Collection Service",
-                            command.visitId().visitId())
-            );
+                    String.format("[ExpectedVisitCommandServiceImpl] Vehicle with ID: %s does not exist in Maintenance Tracking Service",
+                            command.vehicleId().value()));
         }
 
         // Update and save Expected Visit
         var expectedVisitToUpdate = this.expectedVisitRepository.findById(command.expectedVisitId()).get();
+
+        // Update Expected Visit
         expectedVisitToUpdate.updateExpectedVisit(command);
 
         // Persist Expected Visit

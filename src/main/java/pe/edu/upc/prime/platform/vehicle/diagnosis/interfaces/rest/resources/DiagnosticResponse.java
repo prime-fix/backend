@@ -14,6 +14,5 @@ public record DiagnosticResponse(
         Long id,
         String diagnosis,
         Float price,
-        @JsonProperty("vehicle_id") Long vehicleId,
-        @JsonProperty("expected_visit_id") Long expectedVisitId
+        @JsonProperty("vehicle_id") Long vehicleId
 ) {}

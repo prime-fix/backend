@@ -11,15 +11,13 @@ import java.util.Objects;
  * @param price the new price of the diagnostic to be updated
  * @param vehicleId  the identifier of the vehicle associated with the diagnostic
  * @param diagnosis the new diagnosis details
- * @param expectedVisitId the new expected visit identifier
  */
-public record UpdateDiagnosticCommand(Long diagnosticId, Float price, VehicleId vehicleId, String diagnosis, Long expectedVisitId) {
+public record UpdateDiagnosticCommand(Long diagnosticId, Float price, VehicleId vehicleId, String diagnosis) {
     public UpdateDiagnosticCommand {
         Objects.requireNonNull(diagnosticId, "[UpdateDiagnosticCommand] diagnostic id must not be null");
         Objects.requireNonNull(diagnosis, "[UpdateDiagnosticCommand] diagnosis must not be null");
         Objects.requireNonNull(price, "[UpdateDiagnosticCommand] price must not be null");
         Objects.requireNonNull(vehicleId, "[UpdateDiagnosticCommand] vehicleId must not be null");
-        Objects.requireNonNull(expectedVisitId, "[UpdateDiagnosticCommand] expected visit id must not be null");
 
         if (price < 0) {
             throw new IllegalArgumentException("[UpdateDiagnosticCommand] price must be non-negative");

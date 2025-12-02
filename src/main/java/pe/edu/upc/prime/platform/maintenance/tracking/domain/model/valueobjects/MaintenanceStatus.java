@@ -6,23 +6,26 @@ import java.util.Arrays;
  * Enumeration representing the various statuses of vehicle maintenance.
  */
 public enum MaintenanceStatus {
-    NOT_BEING_SERVICED(0),
-    WAITING(1),
-    IN_DIAGNOSIS(2),
-    IN_REPAIR(3),
-    TESTING(4),
-    READY_FOR_PICKUP(5),
-    COLLECTED(6);
+    NOT_BEING_SERVICED(0, null),
+    WAITING(1, "Your vehicle is waiting for maintenance."),
+    IN_DIAGNOSIS(2, "Your vehicle is currently being diagnosed."),
+    IN_REPAIR(3, "Your vehicle is currently under repair."),
+    TESTING(4, "Your vehicle is being tested after repairs."),
+    READY_FOR_PICKUP(5, "Your vehicle is ready for pickup."),
+    COLLECTED(6, "You have collected your vehicle. Thank you!");
 
     private final int value;
+    private final String notificationMessage;
 
     /**
      * Constructor for MaintenanceStatus enum.
      *
      * @param value the integer value associated with the MaintenanceStatus
+     * @param notificationMessage the notification message associated with the MaintenanceStatus
      */
-    MaintenanceStatus(int value) {
+    MaintenanceStatus(int value, String notificationMessage) {
         this.value = value;
+        this.notificationMessage = notificationMessage;
     }
 
     /**
@@ -32,6 +35,15 @@ public enum MaintenanceStatus {
      */
     public int getValue() {
         return value;
+    }
+
+    /**
+     * Gets the notification message associated with the MaintenanceStatus.
+     *
+     * @return the notification message
+     */
+    public String getNotificationMessage() {
+        return notificationMessage;
     }
 
     /**

@@ -1,10 +1,7 @@
 package pe.edu.upc.prime.platform.iam.domain.services;
 
 import pe.edu.upc.prime.platform.iam.domain.model.aggregates.UserAccount;
-import pe.edu.upc.prime.platform.iam.domain.model.queries.ExistsUserAccountByIdQuery;
-import pe.edu.upc.prime.platform.iam.domain.model.queries.GetAllUserAccountsQuery;
-import pe.edu.upc.prime.platform.iam.domain.model.queries.GetUserAccountByUsernameQuery;
-import pe.edu.upc.prime.platform.iam.domain.model.queries.GetUserAccountByIdQuery;
+import pe.edu.upc.prime.platform.iam.domain.model.queries.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -37,6 +34,14 @@ public interface UserAccountQueryService {
      * @return an optional user account matching the username
      */
     Optional<UserAccount> handle(GetUserAccountByUsernameQuery query);
+
+    /**
+     * Handle the query to get a user account by the associated user ID.
+     *
+     * @param query the query containing the user ID
+     * @return an optional user account matching the user ID
+     */
+    Optional<UserAccount> handle(GetUserAccountByUserIdQuery query);
 
     /**
      * Handle the query to check if a user account exists by its ID.

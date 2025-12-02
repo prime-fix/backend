@@ -11,5 +11,9 @@ import jakarta.validation.constraints.NotNull;
 public record CreateExpectedVisitRequest(
         @NotNull
         @JsonProperty("visit_id")
-        Long visitId) {
+        Long visitId,
+
+        @NotNull
+        @JsonProperty("vehicle_id")
+        Long vehicleId) {
 }

@@ -83,4 +83,18 @@ public class DataCollectionContextFacade {
                     .map(VisitAssembler::toResponseFromEntity).toList();
     }
 
+    /**
+     * Retrieves the vehicle ID associated with a specific visit ID
+     *
+     * @param visitId the ID of the visit
+     * @return the vehicle ID associated with the visit, or 0L if the visit does not exist
+     */
+    public Long getVehicleIdByVisitId(Long visitId) {
+        var visit = visitQueryService.handle(new GetVisitByIdQuery(visitId));
+        if (visit.isEmpty()) {
+            return 0L;
+        }
+        return visit.get().getVehicleId().value();
+    }
+
 }

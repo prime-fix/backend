@@ -2,10 +2,7 @@ package pe.edu.upc.prime.platform.iam.application.internal.queryservices;
 
 import org.springframework.stereotype.Service;
 import pe.edu.upc.prime.platform.iam.domain.model.aggregates.UserAccount;
-import pe.edu.upc.prime.platform.iam.domain.model.queries.ExistsUserAccountByIdQuery;
-import pe.edu.upc.prime.platform.iam.domain.model.queries.GetAllUserAccountsQuery;
-import pe.edu.upc.prime.platform.iam.domain.model.queries.GetUserAccountByIdQuery;
-import pe.edu.upc.prime.platform.iam.domain.model.queries.GetUserAccountByUsernameQuery;
+import pe.edu.upc.prime.platform.iam.domain.model.queries.*;
 import pe.edu.upc.prime.platform.iam.domain.services.UserAccountQueryService;
 import pe.edu.upc.prime.platform.iam.infrastructure.persistence.jpa.repositories.UserAccountRepository;
 import pe.edu.upc.prime.platform.shared.domain.exceptions.NotFoundIdException;
@@ -52,8 +49,8 @@ public class UserAccountQueryServiceImpl implements UserAccountQueryService {
      */
     @Override
     public Optional<UserAccount> handle(GetUserAccountByIdQuery query) {
-        return Optional.ofNullable(this.userAccountRepository.findById(query.idUserAccount())
-                .orElseThrow(() -> new NotFoundIdException(UserAccount.class, query.idUserAccount())));
+        return Optional.ofNullable(this.userAccountRepository.findById(query.userAccountId())
+                .orElseThrow(() -> new NotFoundIdException(UserAccount.class, query.userAccountId())));
     }
 
     /**
@@ -65,6 +62,17 @@ public class UserAccountQueryServiceImpl implements UserAccountQueryService {
     @Override
     public Optional<UserAccount> handle(GetUserAccountByUsernameQuery query) {
         return this.userAccountRepository.findByUsername(query.username());
+    }
+
+    /**
+     * Get a user account by the associated user ID.
+     *
+     * @param query the query containing the user ID
+     * @return an optional containing the user account if found
+     */
+    @Override
+    public Optional<UserAccount> handle(GetUserAccountByUserIdQuery query) {
+        return this.userAccountRepository.findByUserId(query.userId());
     }
 
     /**

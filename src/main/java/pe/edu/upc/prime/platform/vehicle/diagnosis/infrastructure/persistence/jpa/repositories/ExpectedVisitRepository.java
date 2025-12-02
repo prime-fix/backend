@@ -16,4 +16,13 @@ public interface ExpectedVisitRepository extends JpaRepository<ExpectedVisit, Lo
      * @return true if an ExpectedVisit with the given VisitId exists, false otherwise
      */
     boolean existsByVisitId(VisitId visitId);
+
+    /**
+     * Checks if an ExpectedVisit exists by the given VisitId, excluding a specific ExpectedVisit ID.
+     *
+     * @param visitId the VisitId to check
+     * @param id the ID of the ExpectedVisit to exclude from the check
+     * @return true if an ExpectedVisit with the given VisitId exists excluding the specified ID, false otherwise
+     */
+    boolean existsByVisitIdAndIdIsNot(VisitId visitId, Long id);
 }

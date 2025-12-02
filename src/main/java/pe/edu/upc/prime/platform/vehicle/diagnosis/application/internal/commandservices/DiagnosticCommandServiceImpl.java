@@ -25,11 +25,6 @@ import java.util.Optional;
     private final DiagnosticRepository diagnosticRepository;
 
     /**
-     * The Expected Visit repository.
-     */
-    private final ExpectedVisitRepository expectedVisitRepository;
-
-    /**
      * The external maintenance tracking service.
      */
     private final ExternalMaintenanceTrackingServiceFromVehicleDiagnosis externalMaintenanceTrackingServiceFromVehicleDiagnosis;
@@ -41,10 +36,8 @@ import java.util.Optional;
      * @param externalMaintenanceTrackingServiceFromVehicleDiagnosis the external maintenance tracking service
      */
     public DiagnosticCommandServiceImpl(DiagnosticRepository diagnosticRepository,
-                                        ExpectedVisitRepository expectedVisitRepository,
                                         ExternalMaintenanceTrackingServiceFromVehicleDiagnosis externalMaintenanceTrackingServiceFromVehicleDiagnosis) {
         this.diagnosticRepository = diagnosticRepository;
-        this.expectedVisitRepository = expectedVisitRepository;
         this.externalMaintenanceTrackingServiceFromVehicleDiagnosis = externalMaintenanceTrackingServiceFromVehicleDiagnosis;
     }
 
@@ -63,11 +56,7 @@ import java.util.Optional;
                             command.vehicleId().value()));
         }
 
-        // Fetch the associated Expected Visit
-        var expectedVisit = this.expectedVisitRepository.findById(command.expectedVisitId())
-                .orElseThrow(() -> new NotFoundIdException(Diagnostic.class, command.expectedVisitId()));
-
-        var diagnostic = new Diagnostic(command, expectedVisit);
+        var diagnostic = new Diagnostic(command);
         try {
             this.diagnosticRepository.save(diagnostic);
         } catch (Exception e) {
@@ -96,13 +85,10 @@ import java.util.Optional;
                     String.format("[DiagnosticCommandServiceImpl] Vehicle with ID: %s does not exist in Maintenance Tracking Service",
                             command.vehicleId().value()));
         }
-        // Fetch the associated Expected Visit
-        var expectedVisit = this.expectedVisitRepository.findById(command.expectedVisitId())
-                .orElseThrow(() -> new NotFoundIdException(Diagnostic.class, command.expectedVisitId()));
 
         // Fetch and update the Diagnostic
         var diagnosticToUpdate = this.diagnosticRepository.findById(command.diagnosticId()).get();
-        diagnosticToUpdate.updateDiagnostic(command, expectedVisit);
+        diagnosticToUpdate.updateDiagnostic(command);
 
         // Save the updated Diagnostic
         try {

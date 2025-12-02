@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.commands.CreateVehicleCommand;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.commands.UpdateVehicleCommand;
+import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.events.ChangeMaintenanceStatusEvent;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.valueobjects.MaintenanceStatus;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.valueobjects.UserId;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.valueobjects.VehicleInformation;
@@ -79,6 +80,7 @@ public class Vehicle extends AuditableAbstractAggregateRoot<Vehicle> {
         this.userId = command.userId();
         this.vehicleInformation = command.vehicleInformation();
         this.maintenanceStatus = command.maintenanceStatus();
+        this.registerEvent(new ChangeMaintenanceStatusEvent(this, this.getId(), command.maintenanceStatus()));
     }
 
     /**

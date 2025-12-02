@@ -3,8 +3,10 @@ package pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.aggregates;
 import jakarta.persistence.*;
 import lombok.Getter;
 import pe.edu.upc.prime.platform.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
+import pe.edu.upc.prime.platform.shared.domain.model.valueobjects.VehicleId;
 import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.commands.CreateExpectedVisitCommand;
 import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.commands.UpdateExpectedVisitCommand;
+import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.events.ChangeStateVisitEvent;
 import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.valueobjects.StateVisit;
 import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.valueobjects.VisitId;
 
@@ -26,13 +28,21 @@ public class ExpectedVisit extends AuditableAbstractAggregateRoot<ExpectedVisit>
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name = "visitId",
-                    column = @Column(name = "id_visit", nullable = false))
+                    column = @Column(name = "visit_id", nullable = false))
     })
     private VisitId visitId;
 
     @Getter
     @Column(name = "is_scheduled", length = 2, nullable = false)
     private Boolean isScheduled;
+
+    @Getter
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "vehicleId",
+                    column = @Column(name = "vehicle_id", nullable = false))
+    })
+    private VehicleId vehicleId;
 
     /*
      * Default constructor for JPA.
@@ -43,6 +53,7 @@ public class ExpectedVisit extends AuditableAbstractAggregateRoot<ExpectedVisit>
         this.stateVisit = StateVisit.PENDING_VISIT;
         this.visitId = command.visitId();
         this.isScheduled = false;
+        this.vehicleId = command.vehicleId();
     }
 
     /**
@@ -54,5 +65,7 @@ public class ExpectedVisit extends AuditableAbstractAggregateRoot<ExpectedVisit>
         this.stateVisit = command.stateVisit();
         this.visitId = command.visitId();
         this.isScheduled = command.isScheduled();
+        this.vehicleId = command.vehicleId();
+        this.registerEvent(new ChangeStateVisitEvent(this, command.vehicleId().value() ,command.stateVisit()));
     }
 }

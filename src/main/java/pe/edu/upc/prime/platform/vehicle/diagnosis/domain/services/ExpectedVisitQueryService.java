@@ -1,6 +1,7 @@
 package pe.edu.upc.prime.platform.vehicle.diagnosis.domain.services;
 
 import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.aggregates.ExpectedVisit;
+import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.queries.ExistsExpectedVisitByIdQuery;
 import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.queries.GetAllExpectedVisitsQuery;
 import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.queries.GetExpectedVisitByIdQuery;
 
@@ -26,4 +27,12 @@ public interface ExpectedVisitQueryService {
      * @return an Optional containing the expected visit if found, or empty if not found
      */
     Optional<ExpectedVisit> handle(GetExpectedVisitByIdQuery query);
+
+    /**
+     * Handle the query to check if an expected visit exists by its ID.
+     *
+     * @param query the query to check existence of expected visit by ID
+     * @return true if the expected visit exists, false otherwise
+     */
+    boolean handle(ExistsExpectedVisitByIdQuery query);
 }

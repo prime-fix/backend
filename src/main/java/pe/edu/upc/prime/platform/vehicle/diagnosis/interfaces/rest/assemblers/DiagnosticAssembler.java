@@ -22,8 +22,7 @@ public class DiagnosticAssembler {
         return new CreateDiagnosticCommand(
                 request.price(),
                 new VehicleId(request.vehicleId()),
-                request.diagnosis(),
-                request.expectedVisitId()
+                request.diagnosis()
         );
     }
 
@@ -39,8 +38,7 @@ public class DiagnosticAssembler {
                 diagnosticId,
                 request.price(),
                 new VehicleId(request.vehicleId()),
-                request.diagnosis(),
-                request.expectedVisitId()
+                request.diagnosis()
         );
     }
 
@@ -55,8 +53,7 @@ public class DiagnosticAssembler {
                 diagnostic.getId(),
                 diagnostic.getDiagnosis(),
                 diagnostic.getPrice(),
-                diagnostic.getVehicleId().value(),
-                diagnostic.getExpectedVisit().getId()
+                diagnostic.getVehicleId().value()
         );
     }
 }

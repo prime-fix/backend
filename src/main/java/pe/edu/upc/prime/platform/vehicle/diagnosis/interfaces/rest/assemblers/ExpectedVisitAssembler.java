@@ -1,5 +1,6 @@
 package pe.edu.upc.prime.platform.vehicle.diagnosis.interfaces.rest.assemblers;
 
+import pe.edu.upc.prime.platform.shared.domain.model.valueobjects.VehicleId;
 import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.aggregates.ExpectedVisit;
 import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.commands.CreateExpectedVisitCommand;
 import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.commands.UpdateExpectedVisitCommand;
@@ -21,7 +22,8 @@ public class ExpectedVisitAssembler {
      */
     public static CreateExpectedVisitCommand toCommandFromRequest(CreateExpectedVisitRequest request) {
         return new CreateExpectedVisitCommand(
-                new VisitId(request.visitId())
+                new VisitId(request.visitId()),
+                new VehicleId(request.vehicleId())
         );
     }
 
@@ -35,9 +37,10 @@ public class ExpectedVisitAssembler {
     public static UpdateExpectedVisitCommand toCommandFromRequest(Long expectedVisitId, UpdateExpectedVisitRequest request) {
         return new UpdateExpectedVisitCommand(
                 expectedVisitId,
-                StateVisit.valueOf(request.stateVisit()),
+                StateVisit.valueOf(request.stateVisit().toUpperCase()),
                 new VisitId(request.visitId()),
-                request.isScheduled()
+                request.isScheduled(),
+                new VehicleId(request.vehicleId())
         );
     }
 
@@ -52,7 +55,21 @@ public class ExpectedVisitAssembler {
                 entity.getId(),
                 entity.getStateVisit().name(),
                 entity.getVisitId().value(),
-                entity.getIsScheduled()
+                entity.getIsScheduled(),
+                entity.getVehicleId().value()
+        );
+    }
+
+    /**
+     * Converts raw values to a CreateExpectedVisitCommand.
+     *
+     * @param visitId the ID of the visit
+     * @return the corresponding CreateExpectedVisitCommand
+     */
+    public static CreateExpectedVisitCommand toCommandFromValues(Long visitId, Long vehicleId) {
+        return new CreateExpectedVisitCommand(
+                new VisitId(visitId),
+                new VehicleId(vehicleId)
         );
     }
 }

@@ -1,8 +1,8 @@
 package pe.edu.upc.prime.platform.iam.interfaces.acl;
 
 import org.springframework.stereotype.Service;
-import pe.edu.upc.prime.platform.iam.domain.model.queries.ExistsUserAccountByIdQuery;
-import pe.edu.upc.prime.platform.iam.domain.model.queries.ExistsUserByIdQuery;
+import pe.edu.upc.prime.platform.iam.domain.model.queries.*;
+import pe.edu.upc.prime.platform.iam.domain.model.valueobjects.Roles;
 import pe.edu.upc.prime.platform.iam.domain.services.UserAccountQueryService;
 import pe.edu.upc.prime.platform.iam.domain.services.UserQueryService;
 
@@ -53,5 +53,18 @@ public class IamContextFacade {
     public boolean existsUserById(Long userId) {
         var existsUserByIdQuery = new ExistsUserByIdQuery(userId);
         return userQueryService.handle(existsUserByIdQuery);
+    }
+
+    /**
+     * Retrieves the role ID associated with a given user ID.
+     *
+     * @param userId the ID of the user
+     * @return the role ID associated with the user, or 0L if the user account does not exist
+     */
+    public Roles getRoleByUserId(Long userId) {
+        var getUserAccountByUserId = new GetUserAccountByUserIdQuery(userId);
+        var optionalUserAccount = userAccountQueryService.handle(getUserAccountByUserId);
+
+        return optionalUserAccount.map(userAccount -> userAccount.getRole().getName()).orElse(null);
     }
 }

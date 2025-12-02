@@ -22,5 +22,9 @@ public record UpdateExpectedVisitRequest(
 
         @JsonProperty("is_scheduled")
         @NotNull
-        Boolean isScheduled) {
+        Boolean isScheduled,
+
+        @NotNull
+        @JsonProperty("vehicle_id")
+        Long vehicleId) {
 }

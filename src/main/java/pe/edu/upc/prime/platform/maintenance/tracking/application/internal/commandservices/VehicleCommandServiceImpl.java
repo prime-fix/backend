@@ -2,6 +2,7 @@ package pe.edu.upc.prime.platform.maintenance.tracking.application.internal.comm
 
 import jakarta.persistence.PersistenceException;
 import org.springframework.stereotype.Service;
+import pe.edu.upc.prime.platform.iam.domain.model.valueobjects.Roles;
 import pe.edu.upc.prime.platform.maintenance.tracking.application.internal.outboundservices.acl.ExternalIamServiceFromMaintenanceTracking;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.aggregates.Vehicle;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.commands.CreateVehicleCommand;
@@ -64,6 +65,13 @@ public class VehicleCommandServiceImpl implements VehicleCommandService {
                             command.userId().userId()));
         }
 
+        // Validate if user has an invalid role to own a vehicle
+        if (this.externalIamServiceFromMaintenanceTracking.getRoleIdByUserId(command.userId().userId()) == Roles.ROLE_AUTO_REPAIR) {
+            throw new IllegalArgumentException(
+                    String.format("[VehicleCommandServiceImpl] User ID: %s has an invalid role to own a vehicle",
+                            command.userId().userId()));
+        }
+
         // Create and save the new vehicle
         var vehicle = new Vehicle(command);
         try {
@@ -100,7 +108,14 @@ public class VehicleCommandServiceImpl implements VehicleCommandService {
         // Validate if user ID exists in external IAM service
         if (!this.externalIamServiceFromMaintenanceTracking.existsUserById(command.userId().userId())) {
             throw new NotFoundArgumentException(
-                    String.format("[VehicleCommandServiceImpl User ID: %s not found in the external IAM service",
+                    String.format("[VehicleCommandServiceImpl User ID: %s not found in the external IAM service.",
+                            command.userId().userId()));
+        }
+
+        // Validate if user has an invalid role to own a vehicle
+        if (this.externalIamServiceFromMaintenanceTracking.getRoleIdByUserId(command.userId().userId()) == Roles.ROLE_AUTO_REPAIR) {
+            throw new IllegalArgumentException(
+                    String.format("[VehicleCommandServiceImpl] User ID: %s has an invalid role to own a vehicle",
                             command.userId().userId()));
         }
 

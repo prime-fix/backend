@@ -7,7 +7,7 @@ import pe.edu.upc.prime.platform.maintenance.tracking.interfaces.acl.Maintenance
  * Service class for interacting with external maintenance tracking services via MaintenanceTrackingFacade.
  */
 @Service
-public class ExternalMaintenanceTrackingService {
+public class ExternalMaintenanceTrackingServiceFromDataCollection {
     /**
      * Constructor for ExternalMaintenanceTrackingService.
      */
@@ -18,7 +18,7 @@ public class ExternalMaintenanceTrackingService {
      *
      * @param maintenanceTrackingContextFacade the MaintenanceTrackingFacade to be used for maintenance tracking operations
      */
-    public ExternalMaintenanceTrackingService(MaintenanceTrackingContextFacade maintenanceTrackingContextFacade) {
+    public ExternalMaintenanceTrackingServiceFromDataCollection(MaintenanceTrackingContextFacade maintenanceTrackingContextFacade) {
         this.maintenanceTrackingContextFacade = maintenanceTrackingContextFacade;
     }
 

@@ -3,6 +3,7 @@ package pe.edu.upc.prime.platform.vehicle.diagnosis.application.internal.queryse
 import org.springframework.stereotype.Service;
 import pe.edu.upc.prime.platform.shared.domain.exceptions.NotFoundIdException;
 import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.aggregates.ExpectedVisit;
+import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.queries.ExistsExpectedVisitByIdQuery;
 import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.queries.GetAllExpectedVisitsQuery;
 import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.queries.GetExpectedVisitByIdQuery;
 import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.services.ExpectedVisitQueryService;
@@ -51,5 +52,16 @@ public class ExpectedVisitQueryServiceImpl implements ExpectedVisitQueryService 
     public Optional<ExpectedVisit> handle(GetExpectedVisitByIdQuery query) {
         return Optional.ofNullable(this.expectedVisitRepository.findById(query.expectedVisitId())
                 .orElseThrow(() -> new NotFoundIdException(ExpectedVisit.class, query.expectedVisitId())));
+    }
+
+    /**
+     * Handles query to check if an expected visit exists by its ID.
+     *
+     * @param query the query to check existence of expected visit by ID
+     * @return true if the expected visit exists, false otherwise
+     */
+    @Override
+    public boolean handle(ExistsExpectedVisitByIdQuery query) {
+        return this.expectedVisitRepository.existsById(query.expectedVisitId());
     }
 }

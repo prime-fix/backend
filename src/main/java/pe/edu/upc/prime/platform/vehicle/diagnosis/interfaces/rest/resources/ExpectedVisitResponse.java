@@ -14,5 +14,6 @@ public record ExpectedVisitResponse(
         Long id,
         @JsonProperty("state_visit") String stateVisit,
         @JsonProperty("visit_id") Long visitId,
-        @JsonProperty("is_scheduled") Boolean isScheduled) {
+        @JsonProperty("is_scheduled") Boolean isScheduled,
+        @JsonProperty("vehicle_id") Long vehicleId) {
 }

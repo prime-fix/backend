@@ -1,6 +1,7 @@
 package pe.edu.upc.prime.platform.maintenance.tracking.application.internal.outboundservices.acl;
 
 import org.springframework.stereotype.Service;
+import pe.edu.upc.prime.platform.iam.domain.model.valueobjects.Roles;
 import pe.edu.upc.prime.platform.iam.interfaces.acl.IamContextFacade;
 
 /**
@@ -31,4 +32,15 @@ public class ExternalIamServiceFromMaintenanceTracking {
     public boolean existsUserById(Long userId) {
         return this.iamContextFacade.existsUserById(userId);
     }
+
+    /**
+     * Retrieve the role associated with a given user ID.
+     *
+     * @param userId the ID of the user
+     * @return the role associated with the user
+     */
+    public Roles getRoleIdByUserId(Long userId) {
+        return this.iamContextFacade.getRoleByUserId(userId);
+    }
+
 }

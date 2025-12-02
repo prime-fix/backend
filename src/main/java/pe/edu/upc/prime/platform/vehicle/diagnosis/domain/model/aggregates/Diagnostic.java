@@ -6,6 +6,7 @@ import pe.edu.upc.prime.platform.shared.domain.model.aggregates.AuditableAbstrac
 import pe.edu.upc.prime.platform.shared.domain.model.valueobjects.VehicleId;
 import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.commands.CreateDiagnosticCommand;
 import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.commands.UpdateDiagnosticCommand;
+import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.events.DiagnosticRegisteredEvent;
 
 /**
  * Diagnostic Aggregate Root
@@ -21,19 +22,14 @@ public class Diagnostic extends AuditableAbstractAggregateRoot<Diagnostic> {
     @Getter
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name = "idVehicle",
-                    column = @Column(name = "id_vehicle", nullable = false))
+            @AttributeOverride(name = "vehicleId",
+                    column = @Column(name = "vehicle_id", nullable = false))
     })
     private VehicleId vehicleId;
 
     @Getter
     @Column(name = "diagnosis", nullable = false)
     private String diagnosis;
-
-    @Getter
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "expected_visit_id")
-    private ExpectedVisit expectedVisit;
 
     /**
      * Default constructor for JPA
@@ -45,25 +41,23 @@ public class Diagnostic extends AuditableAbstractAggregateRoot<Diagnostic> {
      * Constructor for Diagnostic using CreateDiagnosticCommand
      *
      * @param command the CreateDiagnosticCommand
-     * @param expectedVisit the ExpectedVisit associated with the Diagnostic
      */
-    public Diagnostic(CreateDiagnosticCommand command, ExpectedVisit expectedVisit) {
+    public Diagnostic(CreateDiagnosticCommand command) {
         this.vehicleId = command.vehicleId();
         this.diagnosis = command.diagnosis();
         this.price = command.price();
-        this.expectedVisit = expectedVisit;
+        this.registerEvent(new DiagnosticRegisteredEvent(this, command.vehicleId().value(), command.diagnosis()));
     }
 
     /**
      * Update Diagnostic details
      *
      * @param command the UpdateDiagnosticCommand
-     * @param expectedVisit the ExpectedVisit associated with the Diagnostic
      */
-    public void updateDiagnostic(UpdateDiagnosticCommand command, ExpectedVisit expectedVisit) {
+    public void updateDiagnostic(UpdateDiagnosticCommand command) {
         this.vehicleId = command.vehicleId();
         this.diagnosis = command.diagnosis();
         this.price = command.price();
-        this.expectedVisit = expectedVisit;
+        this.registerEvent(new DiagnosticRegisteredEvent(this, command.vehicleId().value(), command.diagnosis()));
     }
 }
