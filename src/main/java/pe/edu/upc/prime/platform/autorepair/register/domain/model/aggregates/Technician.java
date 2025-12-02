@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import pe.edu.upc.prime.platform.autorepair.register.domain.model.commands.CreateTechnicianCommand;
 import pe.edu.upc.prime.platform.autorepair.register.domain.model.commands.UpdateTechnicianCommand;
+import pe.edu.upc.prime.platform.autorepair.register.domain.model.events.TechnicianDeletedEvent;
+import pe.edu.upc.prime.platform.autorepair.register.domain.model.events.TechnicianRegisteredEvent;
 import pe.edu.upc.prime.platform.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
 import pe.edu.upc.prime.platform.shared.domain.model.valueobjects.AutoRepairId;
 
@@ -47,6 +49,7 @@ public class Technician extends AuditableAbstractAggregateRoot<Technician> {
         this.name = command.name();
         this.lastName = command.lastName();
         this.autoRepairId = command.autoRepairId();
+        this.registerEvent(new TechnicianRegisteredEvent(this, command.autoRepairId().value()));
     }
 
     /**
@@ -57,5 +60,12 @@ public class Technician extends AuditableAbstractAggregateRoot<Technician> {
     public void updateTechnician(UpdateTechnicianCommand command) {
         this.name = command.name();
         this.lastName = command.lastName();
+    }
+
+    /**
+     * Registers a TechnicianDeletedDomainEvent when the technician is deleted.
+     */
+    public void registerDeletedEvent() {
+        this.registerEvent(new TechnicianDeletedEvent(this, this.autoRepairId.value()));
     }
 }

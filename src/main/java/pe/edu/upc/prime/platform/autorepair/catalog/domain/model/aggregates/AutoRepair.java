@@ -24,7 +24,7 @@ public class AutoRepair extends AuditableAbstractAggregateRoot<AutoRepair> {
 
     @Getter
     @Column(name = "technicians_count", nullable = false)
-    private Integer technicians_count;
+    private Integer techniciansCount;
 
     @Getter
     @Column(name = "ruc", nullable = false, length = Util.RUC_LENGTH)
@@ -50,7 +50,7 @@ public class AutoRepair extends AuditableAbstractAggregateRoot<AutoRepair> {
      */
     public AutoRepair(CreateAutoRepairCommand command) {
         this.contact_email = command.contact_email();
-        this.technicians_count = 0;
+        this.techniciansCount = 0;
         this.ruc = command.ruc();
         this.userAccountId = command.userAccountId();
         this.serviceCatalog = new ServiceCatalog();
@@ -79,7 +79,6 @@ public class AutoRepair extends AuditableAbstractAggregateRoot<AutoRepair> {
      */
     public void updateAutoRepair(UpdateAutoRepairCommand command) {
         this.contact_email = command.contact_email();
-        this.technicians_count = command.technicians_count();
         this.ruc = command.ruc();
         this.userAccountId = command.userAccountId();
     }
@@ -91,5 +90,21 @@ public class AutoRepair extends AuditableAbstractAggregateRoot<AutoRepair> {
      */
     public void registerNewOffer(Service service, BigDecimal price){
             this.serviceCatalog.addServiceOffer(this,service,price);
+    }
+
+    /**
+     * Increment Technicians Count
+     */
+    public void incrementTechniciansCount() {
+        this.techniciansCount += 1;
+    }
+
+    /**
+     * Decrement Technicians Count
+     */
+    public void decrementTechniciansCount() {
+        if (this.techniciansCount > 0) {
+            this.techniciansCount -= 1;
+        }
     }
 }

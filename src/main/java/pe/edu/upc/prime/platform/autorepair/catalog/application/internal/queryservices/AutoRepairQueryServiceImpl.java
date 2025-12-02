@@ -10,6 +10,7 @@ import pe.edu.upc.prime.platform.autorepair.catalog.domain.model.queries.GetAuto
 import pe.edu.upc.prime.platform.autorepair.catalog.domain.model.queries.GetServiceOfferByServiceIdAndAutoRepairIdQuery;
 import pe.edu.upc.prime.platform.autorepair.catalog.domain.services.AutoRepairQueryService;
 import pe.edu.upc.prime.platform.autorepair.catalog.infrastructure.persistence.jpa.repositories.AutoRepairRepository;
+import pe.edu.upc.prime.platform.shared.domain.exceptions.NotFoundIdException;
 
 import java.util.List;
 import java.util.Optional;
@@ -40,7 +41,8 @@ public class AutoRepairQueryServiceImpl implements AutoRepairQueryService {
      */
     @Override
     public Optional<AutoRepair> handle(GetAutoRepairByIdQuery query) {
-        return this.autoRepairRepository.findById(query.repairId());
+        return Optional.ofNullable(this.autoRepairRepository.findById(query.repairId())
+                .orElseThrow(() -> new NotFoundIdException(AutoRepair.class, query.repairId())));
     }
 
     /**

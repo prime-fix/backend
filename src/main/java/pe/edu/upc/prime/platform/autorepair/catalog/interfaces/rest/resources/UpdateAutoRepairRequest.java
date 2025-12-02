@@ -8,7 +8,6 @@ import jakarta.validation.constraints.NotNull;
  * Request to update an auto repair
  *
  * @param contactEmail the contact email of the auto repair to be updated
- * @param technicianCount the number of technicians in the auto repair to be updated
  * @param ruc the RUC of the auto repair to be updated
  * @param userAccountId the user account ID associated with the auto repair to be updated
  */
@@ -17,11 +16,6 @@ public record UpdateAutoRepairRequest(
         @NotNull
         @JsonProperty("contact_email")
         String contactEmail,
-
-        @NotBlank
-        @NotNull
-        @JsonProperty("technician_count")
-        Integer technicianCount,
 
         @NotBlank
         @NotNull

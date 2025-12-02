@@ -124,10 +124,12 @@ public class VehicleCommandServiceImpl implements VehicleCommandService {
      */
     @Override
     public void handle(DeleteVehicleCommand command) {
+        // Validate if vehicle ID exists
         if (!this.vehicleRepository.existsById(command.vehicleId())) {
             throw new NotFoundIdException(Vehicle.class, command.vehicleId());
         }
 
+        // Delete the vehicle
         try {
             this.vehicleRepository.deleteById(command.vehicleId());
         } catch (Exception e) {

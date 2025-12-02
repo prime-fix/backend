@@ -41,7 +41,6 @@ public class AutoRepairAssembler {
         return new UpdateAutoRepairCommand(
                 autoRepairId,
                 request.contactEmail(),
-                request.technicianCount(),
                 request.ruc(),
                 new UserAccountId(request.userAccountId())
         );
@@ -62,7 +61,7 @@ public class AutoRepairAssembler {
         return new AutoRepairResponse(
                 entity.getId(),
                 entity.getContact_email(),
-                entity.getTechnicians_count(),
+                entity.getTechniciansCount(),
                 entity.getRuc(),
                 entity.getUserAccountId().value(),
                 serviceOffer
