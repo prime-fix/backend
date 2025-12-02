@@ -33,7 +33,7 @@ public record UpdateUserRequest(
     @Size(min = 7, max = 15)
     String phoneNumber,
 
-    @JsonProperty("id_location")
+    @JsonProperty("location_id")
     @NotNull @NotBlank
     Long locationId) {
 }
