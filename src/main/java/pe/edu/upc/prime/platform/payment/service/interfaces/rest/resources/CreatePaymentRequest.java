@@ -25,14 +25,17 @@ public record CreatePaymentRequest(
         @Pattern(regexp = "VISA|MASTERCARD|AMEX", message = "Card type must be VISA, MASTERCARD or AMEX")
         String cardType,
 
+        @JsonProperty("month")
         @NotNull
         @Min(1) @Max(12)
         Integer month,
 
+        @JsonProperty("year")
         @NotNull
         @Min(2000)
         Integer year,
 
+        @JsonProperty("ccv")
         @NotNull
         @Min(100) @Max(9999)
         Integer ccv,
