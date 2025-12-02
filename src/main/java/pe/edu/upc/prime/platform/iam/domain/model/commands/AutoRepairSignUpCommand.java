@@ -10,9 +10,7 @@ import java.time.LocalDate;
  * Command to sign up a new auto repair in the system.
  * This command encapsulates all the necessary information required to create a Location, AutoRepair, UserAccount, User, Membership, and Payment.
  *
- * @param name the first name of the auto repair consultant
- * @param lastName the last name of the auto  consultant
- * @param dni the national identification number of the auto repair consultant
+ * @param auto_repair_name the name of the auto repair consultant
  * @param phoneNumber the phone number of the auto repair consultant
  * @param username the desired username for the auto repair account consultant
  * @param email the email address of the auto repair consultant
@@ -29,9 +27,7 @@ import java.time.LocalDate;
  * @param year the expiration year of the card
  * @param cvv the CVV code of the card
  */
-public record AutoRepairSignUpCommand(String name,
-                                      String lastName,
-                                      String dni,
+public record AutoRepairSignUpCommand(String auto_repair_name,
                                       String phoneNumber,
                                       String username,
                                       String email,

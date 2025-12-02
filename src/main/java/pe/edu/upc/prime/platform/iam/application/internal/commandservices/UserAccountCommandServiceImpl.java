@@ -257,8 +257,8 @@ public class UserAccountCommandServiceImpl implements UserAccountCommandService 
                 .orElseThrow(() -> new IllegalArgumentException("[UserAccountCommandServiceImpl] Membership could not be created."));
 
         // Create user entity and retrieve it
-        var user = userRepository.findById(userCommandService.handle(new CreateUserCommand(command.name(), command.lastName(),
-                        command.dni(), command.phoneNumber(), location.getId())))
+        var user = userRepository.findById(userCommandService.handle(new CreateUserCommand(command.username(), "Auto Repair",
+                        "00000000", command.phoneNumber(), location.getId())))
                 .orElseThrow(() -> new IllegalArgumentException("[UserAccountCommandServiceImpl] User could not be created."));
 
         // Create user account entity

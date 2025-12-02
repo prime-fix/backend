@@ -9,14 +9,8 @@ import java.time.LocalDate;
 
 public record AutoRepairSignUpRequest(
         @NotNull @NotBlank
-        String name,
-
-        @NotNull @NotBlank
-        @JsonProperty("last_name")
-        String lastName,
-
-        @NotNull @NotBlank
-        String dni,
+        @JsonProperty("auto_repair_name")
+        String autoRepairName,
 
         @NotNull @NotBlank
         @JsonProperty("phone_number")

@@ -64,9 +64,7 @@ public class AuthenticationAssembler {
      */
     public static AutoRepairSignUpCommand toCommandFromRequestSignUpAutoRepair(AutoRepairSignUpRequest request) {
         return new AutoRepairSignUpCommand(
-                request.name(),
-                request.lastName(),
-                request.dni(),
+                request.autoRepairName(),
                 request.phoneNumber(),
                 request.username(),
                 request.email(),
