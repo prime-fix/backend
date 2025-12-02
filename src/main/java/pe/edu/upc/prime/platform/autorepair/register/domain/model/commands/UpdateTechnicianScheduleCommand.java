@@ -15,8 +15,8 @@ import java.util.Objects;
 public record UpdateTechnicianScheduleCommand(
         Long technicianScheduleId,
         String dayOfWeek,
-        LocalDateTime startTime,
-        LocalDateTime endTime,
+        String startTime,
+        String endTime,
         Boolean isActive
 ) {
     public UpdateTechnicianScheduleCommand {
@@ -28,9 +28,6 @@ public record UpdateTechnicianScheduleCommand(
         }
         if (Objects.isNull(startTime) || Objects.isNull(endTime)) {
             throw new IllegalArgumentException("[UpdateTechnicianScheduleCommand] Start and end time cannot be null");
-        }
-        if (endTime.isBefore(startTime)) {
-            throw new IllegalArgumentException("[UpdateTechnicianScheduleCommand] End time cannot be before start time");
         }
         if (Objects.isNull(isActive)) {
             throw new IllegalArgumentException("[UpdateTechnicianScheduleCommand] Active status cannot be null");

@@ -51,8 +51,8 @@ public class TechnicianScheduleAssembler {
      */
     public static TechnicianScheduleResponse toResponseFromEntity(TechnicianSchedule entity) {
         return new TechnicianScheduleResponse(
-                entity.getId().toString(),
-                entity.getTechnician().getId().toString(),
+                entity.getId(),
+                entity.getTechnician().getId(),
                 entity.getDayOfWeek(),
                 entity.getStartTime(),
                 entity.getEndTime(),

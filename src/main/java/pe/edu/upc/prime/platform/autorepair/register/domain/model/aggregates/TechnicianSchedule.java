@@ -29,11 +29,11 @@ public class TechnicianSchedule extends AuditableAbstractAggregateRoot<Technicia
 
     @Getter
     @Column(name = "start_time", nullable = false)
-    private LocalDateTime startTime;
+    private String startTime;
 
     @Getter
     @Column(name = "end_time", nullable = false)
-    private LocalDateTime endTime;
+    private String endTime;
 
     @Getter
     @Column(name = "is_active", nullable = false)
@@ -61,9 +61,6 @@ public class TechnicianSchedule extends AuditableAbstractAggregateRoot<Technicia
             throw new IllegalArgumentException("[TechnicianSchedule] Start and end time cannot be null");
         }
 
-        if (command.endTime().isBefore(command.startTime())) {
-            throw new IllegalArgumentException("[TechnicianSchedule] End time cannot be before start time");
-        }
 
         if (Objects.isNull(command.isActive())) {
             throw new IllegalArgumentException("[TechnicianSchedule] Active status cannot be null");
@@ -85,9 +82,6 @@ public class TechnicianSchedule extends AuditableAbstractAggregateRoot<Technicia
         }
 
         if (Objects.nonNull(command.startTime()) && Objects.nonNull(command.endTime())) {
-            if (command.endTime().isBefore(command.startTime())) {
-                throw new IllegalArgumentException("[TechnicianSchedule] End time cannot be before start time");
-            }
             this.startTime = command.startTime();
             this.endTime = command.endTime();
         }

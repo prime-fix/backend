@@ -9,8 +9,8 @@ import java.time.LocalDateTime;
 public record CreateTechnicianScheduleCommand(
         Technician technician,
         String dayOfWeek,
-        LocalDateTime startTime,
-        LocalDateTime endTime,
+        String startTime,
+        String endTime,
         Boolean isActive
 ) {
     public CreateTechnicianScheduleCommand {
@@ -22,9 +22,6 @@ public record CreateTechnicianScheduleCommand(
         }
         if (startTime == null || endTime == null) {
             throw new IllegalArgumentException("[CreateTechnicianScheduleCommand] Start and end time cannot be null");
-        }
-        if (endTime.isBefore(startTime)) {
-            throw new IllegalArgumentException("[CreateTechnicianScheduleCommand] End time cannot be before start time");
         }
         if (isActive == null) {
             throw new IllegalArgumentException("[CreateTechnicianScheduleCommand] Active status cannot be null");

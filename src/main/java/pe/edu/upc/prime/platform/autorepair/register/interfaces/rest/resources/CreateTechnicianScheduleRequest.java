@@ -27,14 +27,12 @@ public record CreateTechnicianScheduleRequest(
         String dayOfWeek,
 
         @NotNull
-        @JsonFormat(pattern = Util.DATE_FORMAT_PATTERN)
         @JsonProperty("start_time")
-        LocalDateTime startTime,
+        String startTime,
 
         @NotNull
-        @JsonFormat(pattern = Util.DATE_FORMAT_PATTERN)
         @JsonProperty("end_time")
-        LocalDateTime endTime,
+        String endTime,
 
         @NotNull
         @JsonProperty("is_active")
