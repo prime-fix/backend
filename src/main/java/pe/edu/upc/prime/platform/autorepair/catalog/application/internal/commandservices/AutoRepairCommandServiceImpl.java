@@ -3,13 +3,10 @@ package pe.edu.upc.prime.platform.autorepair.catalog.application.internal.comman
 import jakarta.persistence.PersistenceException;
 import org.springframework.stereotype.Service;
 import pe.edu.upc.prime.platform.autorepair.catalog.application.internal.outboundservices.acl.ExternalIamServiceFromAutoRepairCatalog;
+import pe.edu.upc.prime.platform.autorepair.catalog.domain.model.commands.*;
 import pe.edu.upc.prime.platform.shared.domain.exceptions.NotFoundArgumentException;
 import pe.edu.upc.prime.platform.shared.domain.exceptions.NotFoundIdException;
 import pe.edu.upc.prime.platform.autorepair.catalog.domain.model.aggregates.AutoRepair;
-import pe.edu.upc.prime.platform.autorepair.catalog.domain.model.commands.AddServiceToAutoRepairServiceCatalogCommand;
-import pe.edu.upc.prime.platform.autorepair.catalog.domain.model.commands.CreateAutoRepairCommand;
-import pe.edu.upc.prime.platform.autorepair.catalog.domain.model.commands.DeleteAutoRepairCommand;
-import pe.edu.upc.prime.platform.autorepair.catalog.domain.model.commands.UpdateAutoRepairCommand;
 import pe.edu.upc.prime.platform.autorepair.catalog.domain.services.AutoRepairCommandService;
 import pe.edu.upc.prime.platform.autorepair.catalog.infrastructure.persistence.jpa.repositories.AutoRepairRepository;
 import pe.edu.upc.prime.platform.autorepair.catalog.infrastructure.persistence.jpa.repositories.ServiceRepository;
@@ -151,6 +148,48 @@ public class AutoRepairCommandServiceImpl implements AutoRepairCommandService {
             throw new IllegalArgumentException("Error de dominio al registrar oferta: " + ex.getMessage());
         } catch (Exception ex) {
             throw new IllegalArgumentException("Error al guardar la oferta del taller: " + ex.getMessage());
+        }
+    }
+
+    /**
+     * Increments technicians count for the target auto repair.
+     *
+     * @param command the increment technicians count command
+     * @return current technicians count after persistence
+     */
+    @Override
+    public Integer handle(IncrementAutoRepairTechniciansCountCommand command) {
+        var autoRepair = this.autoRepairRepository.findById(command.autoRepairId())
+                .orElseThrow(() -> new NotFoundIdException(AutoRepair.class, command.autoRepairId()));
+
+        autoRepair.incrementTechniciansCount();
+        try {
+            this.autoRepairRepository.save(autoRepair);
+            return autoRepair.getTechniciansCount();
+        } catch (Exception ex) {
+            throw new PersistenceException("[AutoRepairCommandServiceImpl] Error while incrementing technicians count"
+                    + ex.getMessage());
+        }
+    }
+
+    /**
+     * Decrements technicians count for the target auto repair.
+     *
+     * @param command the decrement technicians count command
+     * @return current technicians count after persistence
+     */
+    @Override
+    public Integer handle(DecrementAutoRepairTechniciansCountCommand command) {
+        var autoRepair = this.autoRepairRepository.findById(command.autoRepairId())
+                .orElseThrow(() -> new NotFoundIdException(AutoRepair.class, command.autoRepairId()));
+
+        autoRepair.decrementTechniciansCount();
+        try {
+            this.autoRepairRepository.save(autoRepair);
+            return autoRepair.getTechniciansCount();
+        } catch (Exception ex) {
+            throw new PersistenceException("[AutoRepairCommandServiceImpl] Error while decrementing technicians count"
+                    + ex.getMessage());
         }
     }
 }

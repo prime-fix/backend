@@ -2,7 +2,7 @@ package pe.edu.upc.prime.platform.maintenance.tracking.domain.model.events;
 
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
-import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.valueobjects.MaintenanceStatus;
+import pe.edu.upc.prime.platform.shared.domain.model.valueobjects.MaintenanceStatus;
 
 /**
  * Event triggered when the maintenance status of a notification is changed.

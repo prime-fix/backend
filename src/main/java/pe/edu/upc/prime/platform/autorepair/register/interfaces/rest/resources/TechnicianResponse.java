@@ -6,8 +6,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * REST response for a Technician resource.
  */
 public record TechnicianResponse(
-        @JsonProperty("id_technician") String idTechnician,
-        @JsonProperty("name") String name,
+        Long id,
+        String name,
         @JsonProperty("last_name") String lastName,
-        @JsonProperty("id_auto_repair") Long idAutoRepair
+        @JsonProperty("auto_repair_id") Long autoRepairId
 ) { }

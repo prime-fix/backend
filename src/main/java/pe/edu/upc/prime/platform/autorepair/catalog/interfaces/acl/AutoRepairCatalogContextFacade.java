@@ -1,6 +1,8 @@
 package pe.edu.upc.prime.platform.autorepair.catalog.interfaces.acl;
 
 import org.springframework.stereotype.Service;
+import pe.edu.upc.prime.platform.autorepair.catalog.domain.model.commands.DecrementAutoRepairTechniciansCountCommand;
+import pe.edu.upc.prime.platform.autorepair.catalog.domain.model.commands.IncrementAutoRepairTechniciansCountCommand;
 import pe.edu.upc.prime.platform.autorepair.catalog.domain.model.queries.ExistsAutoRepairByIdQuery;
 import pe.edu.upc.prime.platform.autorepair.catalog.domain.services.AutoRepairCommandService;
 import pe.edu.upc.prime.platform.autorepair.catalog.domain.services.AutoRepairQueryService;
@@ -45,6 +47,36 @@ public class AutoRepairCatalogContextFacade {
     public boolean existsAutoRepairById(Long autoRepairId) {
         var existsAutoRepairByIdQuery = new ExistsAutoRepairByIdQuery(autoRepairId);
         return this.autoRepairQueryService.handle(existsAutoRepairByIdQuery);
+    }
+
+    /**
+     * Increment the technicians count of an Auto Repair by its ID
+     *
+     * @param autoRepairId the ID of the Auto Repair
+     * @return the current number of the technicians after incrementing, or null if the Auto Repair does not exist
+     */
+    public Integer incrementAutoRepairById(Long autoRepairId) {
+        if (!this.existsAutoRepairById(autoRepairId)) {
+            return null;
+        }
+
+        var incrementCommand = new IncrementAutoRepairTechniciansCountCommand(autoRepairId);
+        return this.autoRepairCommandService.handle(incrementCommand);
+    }
+
+    /**
+     * Decrement the technicians count of an Auto Repair by its ID
+     *
+     * @param autoRepairId the ID of the Auto Repair
+     * @return the current number of the technicians after decrementing, or null if the Auto Repair does not exist
+     */
+   public Integer decrementAutoRepairById(Long autoRepairId) {
+        if (!this.existsAutoRepairById(autoRepairId)) {
+            return null;
+        }
+
+        var decrementCommand = new DecrementAutoRepairTechniciansCountCommand(autoRepairId);
+        return this.autoRepairCommandService.handle(decrementCommand);
     }
 
     /**

@@ -51,7 +51,7 @@ public class TechnicianAssembler {
      */
     public static TechnicianResponse toResponseFromEntity(Technician entity) {
         return new TechnicianResponse(
-                entity.getId().toString(),
+                entity.getId(),
                 entity.getName(),
                 entity.getLastName(),
                 entity.getAutoRepairId().value()

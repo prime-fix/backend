@@ -5,7 +5,6 @@ import pe.edu.upc.prime.platform.data.collection.domain.model.queries.ExistsVisi
 import pe.edu.upc.prime.platform.data.collection.domain.model.queries.GetVisitByAutoRepairIdQuery;
 import pe.edu.upc.prime.platform.data.collection.domain.model.queries.GetVisitByIdQuery;
 import pe.edu.upc.prime.platform.data.collection.domain.model.queries.GetVisitByVehicleIdQuery;
-import pe.edu.upc.prime.platform.data.collection.domain.services.VisitCommandService;
 import pe.edu.upc.prime.platform.data.collection.domain.services.VisitQueryService;
 import pe.edu.upc.prime.platform.data.collection.interfaces.rest.assemblers.VisitAssembler;
 import pe.edu.upc.prime.platform.data.collection.interfaces.rest.resources.VisitResponse;
@@ -18,16 +17,13 @@ import java.util.Optional;
  */
 @Service
 public class DataCollectionContextFacade {
-    private final VisitCommandService visitCommandService;
     private final VisitQueryService visitQueryService;
 
     /**
      * Constructs a VisitsContextFacade with the specified command and query services
-     * @param visitCommandService the service for handling visit commands
      * @param visitQueryService the service for handling visit queries
      */
-    public DataCollectionContextFacade(VisitCommandService visitCommandService, VisitQueryService visitQueryService) {
-        this.visitCommandService = visitCommandService;
+    public DataCollectionContextFacade(VisitQueryService visitQueryService) {
         this.visitQueryService = visitQueryService;
     }
 

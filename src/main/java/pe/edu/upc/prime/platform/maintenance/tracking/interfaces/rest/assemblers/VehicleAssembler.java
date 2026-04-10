@@ -3,7 +3,7 @@ package pe.edu.upc.prime.platform.maintenance.tracking.interfaces.rest.assembler
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.aggregates.Vehicle;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.commands.CreateVehicleCommand;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.commands.UpdateVehicleCommand;
-import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.valueobjects.MaintenanceStatus;
+import pe.edu.upc.prime.platform.shared.domain.model.valueobjects.MaintenanceStatus;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.valueobjects.UserId;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.valueobjects.VehicleInformation;
 import pe.edu.upc.prime.platform.maintenance.tracking.interfaces.rest.resources.CreateVehicleRequest;

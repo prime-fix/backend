@@ -109,8 +109,8 @@ public class TechnicianCommandServiceImpl implements TechnicianCommandService {
         try {
             // Register deletion event
             technician.registerDeletedEvent();
-            // Delete technician from repository
-            technicianRepository.deleteById(command.technicianId());
+            // Delete aggregate instance so Spring Data can publish domain events
+            technicianRepository.delete(technician);
         } catch (Exception e) {
             throw new PersistenceException(
                     "[TechnicianCommandServiceImpl] Error while deleting technician: "
