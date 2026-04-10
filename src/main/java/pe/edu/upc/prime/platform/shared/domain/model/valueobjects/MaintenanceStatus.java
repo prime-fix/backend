@@ -1,4 +1,4 @@
-package pe.edu.upc.prime.platform.maintenance.tracking.domain.model.valueobjects;
+package pe.edu.upc.prime.platform.shared.domain.model.valueobjects;
 
 import java.util.Arrays;
 

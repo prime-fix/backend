@@ -41,7 +41,7 @@ public class AutoRepairQueryServiceImpl implements AutoRepairQueryService {
      */
     @Override
     public Optional<AutoRepair> handle(GetAutoRepairByIdQuery query) {
-        return Optional.ofNullable(this.autoRepairRepository.findById(query.repairId())
+        return Optional.of(this.autoRepairRepository.findById(query.repairId())
                 .orElseThrow(() -> new NotFoundIdException(AutoRepair.class, query.repairId())));
     }
 

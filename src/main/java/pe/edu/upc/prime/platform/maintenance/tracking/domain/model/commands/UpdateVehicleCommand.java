@@ -1,8 +1,7 @@
 package pe.edu.upc.prime.platform.maintenance.tracking.domain.model.commands;
 
-import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.valueobjects.MaintenanceStatus;
+import pe.edu.upc.prime.platform.shared.domain.model.valueobjects.MaintenanceStatus;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.valueobjects.UserId;
-import pe.edu.upc.prime.platform.shared.utils.Util;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.valueobjects.VehicleInformation;
 
 import java.util.Objects;

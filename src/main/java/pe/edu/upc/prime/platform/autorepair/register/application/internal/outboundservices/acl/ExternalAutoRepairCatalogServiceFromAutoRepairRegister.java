@@ -32,4 +32,24 @@ public class ExternalAutoRepairCatalogServiceFromAutoRepairRegister {
     public boolean existsAutoRepairById(Long autoRepairId) {
         return this.autoRepairCatalogContextFacade.existsAutoRepairById(autoRepairId);
     }
+
+    /**
+     * Increment the technicians count of an Auto Repair by its ID
+     *
+     * @param autoRepairId the ID of the Auto Repair
+     * @return the current number of the technicians after incrementing, or null if the Auto Repair does not exist
+     */
+    public Integer incrementAutoRepairById(Long autoRepairId) {
+        return this.autoRepairCatalogContextFacade.incrementAutoRepairById(autoRepairId);
+    }
+
+    /**
+     * Decrement the technicians count of an Auto Repair by its ID
+     *
+     * @param autoRepairId the ID of the Auto Repair
+     * @return the current number of the technicians after decrementing, or null if the Auto Repair does not exist
+     */
+    public Integer decrementAutoRepairById(Long autoRepairId) {
+        return this.autoRepairCatalogContextFacade.decrementAutoRepairById(autoRepairId);
+    }
 }

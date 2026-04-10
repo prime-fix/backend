@@ -10,7 +10,6 @@ import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.commands.DeleteD
 import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.commands.UpdateDiagnosticCommand;
 import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.services.DiagnosticCommandService;
 import pe.edu.upc.prime.platform.vehicle.diagnosis.infrastructure.persistence.jpa.repositories.DiagnosticRepository;
-import pe.edu.upc.prime.platform.vehicle.diagnosis.infrastructure.persistence.jpa.repositories.ExpectedVisitRepository;
 
 import java.util.Optional;
 

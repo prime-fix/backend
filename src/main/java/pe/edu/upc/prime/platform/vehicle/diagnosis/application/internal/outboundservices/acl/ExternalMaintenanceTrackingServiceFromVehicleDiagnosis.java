@@ -2,6 +2,7 @@ package pe.edu.upc.prime.platform.vehicle.diagnosis.application.internal.outboun
 
 import org.springframework.stereotype.Service;
 import pe.edu.upc.prime.platform.maintenance.tracking.interfaces.acl.MaintenanceTrackingContextFacade;
+import pe.edu.upc.prime.platform.shared.domain.model.valueobjects.MaintenanceStatus;
 
 import java.time.LocalDate;
 
@@ -40,9 +41,20 @@ public class ExternalMaintenanceTrackingServiceFromVehicleDiagnosis {
      * @param message the notification message
      * @param vehicleId the ID of the vehicle
      * @param sent the date the notification is sent
-     * @return
+     * @return the ID of the created notification, or 0L if creation failed
      */
     public Long createNotification(String message, Long vehicleId, LocalDate sent) {
         return this.maintenanceTrackingContextFacade.createNotification(message, vehicleId, sent);
+    }
+
+    /**
+     * Updates the MaintenanceStatus of an existing.
+     *
+     * @param vehicleId the ID of the vehicle to update
+     * @param maintenanceStatus the maintenance status of the vehicle
+     * @return true if the update was successful, false otherwise
+     */
+    public boolean updateVehicleByMaintenanceStatus(Long vehicleId, MaintenanceStatus maintenanceStatus) {
+        return this.maintenanceTrackingContextFacade.updateVehicleByMaintenanceStatus(vehicleId, maintenanceStatus);
     }
 }

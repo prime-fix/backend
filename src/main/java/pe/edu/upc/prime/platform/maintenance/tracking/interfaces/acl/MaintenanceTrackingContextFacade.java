@@ -1,14 +1,17 @@
 package pe.edu.upc.prime.platform.maintenance.tracking.interfaces.acl;
 
 import org.springframework.stereotype.Service;
+import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.commands.UpdateVehicleCommand;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.queries.ExistsNotificationByIdQuery;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.queries.ExistsVehicleByIdQuery;
+import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.queries.GetVehicleByIdQuery;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.services.NotificationCommandService;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.services.NotificationQueryService;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.services.VehicleCommandService;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.services.VehicleQueryService;
 import pe.edu.upc.prime.platform.maintenance.tracking.interfaces.rest.assemblers.NotificationAssembler;
 import pe.edu.upc.prime.platform.maintenance.tracking.interfaces.rest.assemblers.VehicleAssembler;
+import pe.edu.upc.prime.platform.shared.domain.model.valueobjects.MaintenanceStatus;
 
 import java.time.LocalDate;
 import java.util.Objects;
@@ -75,33 +78,24 @@ public class MaintenanceTrackingContextFacade {
         return this.notificationQueryService.handle(existsNotificationByIdQuery);
     }
 
-
     /**
-     * Updates an existing vehicle with the provided details.
+     * Updates the MaintenanceStatus of an existing vehicle.
      *
      * @param vehicleId the ID of the vehicle to update
-     * @param color the color of the vehicle
-     * @param model the model of the vehicle
-     * @param userId the ID of the user associated with the vehicle
-     * @param vehicleBrand the brand of the vehicle
-     * @param vehiclePlate the plate number of the vehicle
-     * @param vehicleType the type of the vehicle
      * @param maintenanceStatus the maintenance status of the vehicle
-     * @return the ID of the updated vehicle, or 0L if the update failed
+     * @return true if the update was successful, false otherwise
      */
-    public Long updateVehicle(Long vehicleId, String color, String model, Long userId,
-                              String vehicleBrand, String vehiclePlate,
-                              String vehicleType, Integer maintenanceStatus) {
-        var updateVehicleCommand = VehicleAssembler.toCommandFromValues(
-                vehicleId, color, model, userId,
-                vehicleBrand, vehiclePlate,
-                vehicleType, maintenanceStatus);
+    public boolean updateVehicleByMaintenanceStatus(Long vehicleId, MaintenanceStatus maintenanceStatus) {
+        var getVehicleByIdQuery = new GetVehicleByIdQuery(vehicleId);
 
-        var optionalVehicle = this.vehicleCommandService.handle(updateVehicleCommand);
-        if (optionalVehicle.isEmpty()) {
-            return 0L;
+        var optionalVehicle = this.vehicleQueryService.handle(getVehicleByIdQuery);
+        if (optionalVehicle.isPresent()) {
+            var vehicle = optionalVehicle.get();
+            var updateVehicleCommand = new UpdateVehicleCommand(vehicle.getId(), vehicle.getColor(), vehicle.getModel(),
+                    vehicle.getUserId(), vehicle.getVehicleInformation(), maintenanceStatus);
+            return vehicleCommandService.handle(updateVehicleCommand).isPresent();
         }
-        return optionalVehicle.get().getId();
+        return false;
     }
 
     /**

@@ -6,7 +6,7 @@ import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.queries.Exist
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.queries.GetAllVehiclesQuery;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.queries.GetVehicleByIdQuery;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.queries.GetVehiclesByMaintenanceStatusQuery;
-import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.valueobjects.MaintenanceStatus;
+import pe.edu.upc.prime.platform.shared.domain.model.valueobjects.MaintenanceStatus;
 import pe.edu.upc.prime.platform.maintenance.tracking.domain.services.VehicleQueryService;
 import pe.edu.upc.prime.platform.maintenance.tracking.infrastructure.persistence.jpa.repositories.VehicleRepository;
 import pe.edu.upc.prime.platform.shared.domain.exceptions.NotFoundIdException;

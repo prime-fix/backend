@@ -1,11 +1,10 @@
-package pe.edu.upc.prime.platform.maintenance.tracking.application.internal.eventhandlers;
+package pe.edu.upc.prime.platform.vehicle.diagnosis.application.internal.eventhandlers;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
-import pe.edu.upc.prime.platform.maintenance.tracking.domain.model.commands.CreateNotificationCommand;
-import pe.edu.upc.prime.platform.maintenance.tracking.domain.services.NotificationCommandService;
+import pe.edu.upc.prime.platform.vehicle.diagnosis.application.internal.outboundservices.acl.ExternalMaintenanceTrackingServiceFromVehicleDiagnosis;
 import pe.edu.upc.prime.platform.vehicle.diagnosis.domain.model.events.DiagnosticRegisteredEvent;
 
 import java.time.LocalDate;
@@ -17,9 +16,9 @@ import java.util.Objects;
 @Service
 public class DiagnosticRegisteredEventHandler {
     /**
-     * Service for handling notification commands.
+     * External service to interact with Maintenance Tracking
      */
-    private final NotificationCommandService notificationCommandService;
+    private final ExternalMaintenanceTrackingServiceFromVehicleDiagnosis externalMaintenanceTrackingService;
     /**
      * Logger for logging events and errors.
      */
@@ -28,20 +27,17 @@ public class DiagnosticRegisteredEventHandler {
     /**
      * Constructor for DiagnosticRegisteredEventHandler.
      *
-     * @param notificationCommandService the notification command service
+     * @param externalMaintenanceTrackingService the external maintenance tracking service from vehicle diagnosis
      */
-    public DiagnosticRegisteredEventHandler(NotificationCommandService notificationCommandService) {
-        this.notificationCommandService = notificationCommandService;
+    public DiagnosticRegisteredEventHandler(ExternalMaintenanceTrackingServiceFromVehicleDiagnosis externalMaintenanceTrackingService) {
+        this.externalMaintenanceTrackingService = externalMaintenanceTrackingService;
     }
 
     @EventListener
     public void on(DiagnosticRegisteredEvent event) {
         // Create a notification when a diagnostic is registered
-        var createNotificationCommand = new CreateNotificationCommand(event.getDiagnosis(), event.getVehicleId(), LocalDate.now());
         LOGGER.info("Handling DiagnosticRegisteredEvent for Vehicle ID: {}", event.getVehicleId());
-
-        // Invoke the command service to create the notification
-        var notificationId = notificationCommandService.handle(createNotificationCommand);
+        var notificationId = externalMaintenanceTrackingService.createNotification(event.getDiagnosis(), event.getVehicleId(), LocalDate.now());
 
         // Log the result of the notification creation
         if (Objects.isNull(notificationId)) {
